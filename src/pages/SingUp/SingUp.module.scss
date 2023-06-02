@@ -1,0 +1,22 @@
+@import "src/styles/colors";
+
+.signIn {
+  color: $primary;
+  margin-left: 4px;
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}
+
+.additionalInfo {
+  font-family: "Inter";
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  color: $gray;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}

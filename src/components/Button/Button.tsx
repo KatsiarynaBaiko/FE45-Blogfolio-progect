@@ -25,6 +25,7 @@ type ButtonProps = {
     title: string | ReactElement;
     onClick: () => void;
     disabled?: boolean; // для состояния кнопочки и необязательная
+    className?: string;
 }
 
 // step 6
@@ -46,7 +47,7 @@ type ButtonProps = {
 // передаем полученные props в App.tsx
 // также присваиваем стили с помощью className
 
-const Button: FC<ButtonProps> = ({ type, title, onClick, disabled }) => {
+const Button: FC<ButtonProps> = ({ type, title, onClick, disabled, className }) => {
     // return <div>Тут будет кнопка</div>
     const buttonStyle = styles[type]
     // return <div onClick={onClick} className={styles.button}>{title}</div>;
@@ -56,7 +57,7 @@ const Button: FC<ButtonProps> = ({ type, title, onClick, disabled }) => {
     // далее принимаем элементы
     // для onClick прописываем условия для клика
     return <div onClick={!disabled ? onClick : undefined} 
-    className={classNames(buttonStyle, {[styles.disabled]:disabled})}>{title}</div>;
+    className={classNames(buttonStyle, className, {[styles.disabled]:disabled})}>{title}</div>;
 };
 
 // step 2

@@ -60,7 +60,7 @@ const Input: FC<InputProps> = ({ title, errorText, placeholder, onChange, disabl
     };
 
     return (
-        <div>
+        <div className={styles.container}>
             <div className={styles.title}>{title}</div>
             {/* <input onChange={onChange} value={value} placeholder={placeholder} /> */}
             {/* <input

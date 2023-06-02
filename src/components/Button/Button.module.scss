@@ -18,6 +18,8 @@
   box-sizing: border-box;
   border: 1px solid transparent; // чтобы не скакала кнопочка
   border-radius: 4px;
+  display: flex;
+  justify-content: center;
   &:hover {
     cursor: pointer;
   }
