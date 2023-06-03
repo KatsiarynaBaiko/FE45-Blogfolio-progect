@@ -37,3 +37,37 @@
     object-fit: cover;
     object-position: center;
 }
+
+@mixin signLink {
+    color: $primary;
+    margin-left: 4px;
+
+    &:hover {
+        cursor: pointer;
+        text-decoration: underline;
+    }
+}
+
+@mixin additionalInfo {
+    font-family: "Inter";
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20px;
+    color: $gray;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    margin-top: 24px;
+}
+
+@mixin breadcrumbs {
+    margin-bottom: 32px;
+    font-weight: 400;
+    font-size: 16px;
+    color: $secondary;
+    cursor: pointer;
+
+    &:hover {
+        color: $primary;
+    }
+}

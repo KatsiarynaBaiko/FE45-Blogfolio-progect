@@ -2,7 +2,6 @@ import React from "react";
 import { useState } from "react";
 import FormPagesContainer from "../../components/FormPagesContainer"
 import Input from "../../components/Input";
-import Usermane from "../../components/Username/Username";
 import styles from './SingUp.module.scss'
 
 // step 1
@@ -28,8 +27,8 @@ const SingUp = () => {
 
     return (
         <FormPagesContainer
-            title={'Sing Up'}
-            btnTitle={'Sing Up'}
+            title={'Sign Up'}
+            btnTitle={'Sign Up'}
             onSubmit={() => { }}
             additionalInfo={
                 <div className={styles.additionalInfo}>
@@ -42,7 +41,7 @@ const SingUp = () => {
             <Input title={'Name'} placeholder={'Your name'} onChange={setName} value={name} />
             <Input title={'Email'} placeholder={'Your email'} onChange={setEmail} value={email} />
             <Input title={'Password'} placeholder={'Your password'} onChange={setPassword} value={password} />
-            <Input title={'Confirm Passwors'} placeholder={'Confirm password'} onChange={setConfirmPassword} value={confirmPassword} />
+            <Input title={'Confirm Password'} placeholder={'Confirm password'} onChange={setConfirmPassword} value={confirmPassword} />
         </FormPagesContainer>
     )
 };
