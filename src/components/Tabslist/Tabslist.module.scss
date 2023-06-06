@@ -1,13 +1,21 @@
 @import "src/styles/colors";
 
-.tabsList {
-    display: flex;
-    align-items: center;
-    gap: 40px;
-    border-bottom: 1px solid $medium;
-    margin-bottom: 85px;
+// .tabsList {
+//   display: flex;
+//   align-items: center;
+//   gap: 40px;
+//   border-bottom: 1px solid $medium;
+//   margin-bottom: 85px;
 
-    &:last-child {
-      margin-bottom: 0px;
-    }
-  }
+//   &:last-child {
+//     margin-bottom: 0px;
+//   }
+// }
+
+// upd lesson 40
+.tabsListContainer {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 80px;
+  border-bottom: 1px solid $medium;
+}

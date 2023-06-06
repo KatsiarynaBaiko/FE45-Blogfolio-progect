@@ -6,11 +6,13 @@ import classNames from "classnames";
 // step 4
 // создаем enum, так как у нас несколько свойств Tabs
 // не забываем для него export
-export enum TabsTypes {
-    All = 'all',
-    Myfavorites = 'myfavorites',
-    Popular = 'popular',
-}
+
+// upd Lesson 40 - переносим в @types
+// export enum TabsTypes {
+//     All = 'all',
+//     Myfavorites = 'myfavorites',
+//     Popular = 'popular',
+// }
 
 // step 5
 // прописываем props для кнопочек
@@ -20,9 +22,9 @@ export enum TabsTypes {
 // ? - это необязательная props
 
 type TabsProps = {
-    type: TabsTypes;
+    // type: TabsTypes; - не нужен в качестве пропсы upd Lesson 40 
     title: string;
-    onClick: () => void;
+    onClick?: () => void;
     active?: boolean; // для состояния кнопочки и необязательная
     disabled?: boolean; // для состояния кнопочки и необязательная
 }
@@ -46,10 +48,25 @@ type TabsProps = {
 //     return <div>Тут будут Tabs</div>
 // };
 
-const Tabs: FC<TabsProps> = ({ type, title, onClick, active, disabled }) => {
-    const tabsStyle = styles[type]
-    return <div onClick={!disabled ? onClick : undefined} 
-    className={classNames(tabsStyle, {[styles.active]:active}, {[styles.disabled]:disabled})}>{title}</div>;
+// const Tabs: FC<TabsProps> = ({ type, title, onClick, active, disabled }) => {
+//     const tabsStyle = styles[type]
+//     return <div onClick={!disabled ? onClick : undefined} 
+//     className={classNames(tabsStyle, {[styles.active]:active}, {[styles.disabled]:disabled})}>{title}</div>;
+// };
+
+// upd Lesson 40
+const Tabs: FC<TabsProps> = ({ title, onClick, active, disabled }) => {
+    return (
+        <div
+            onClick={!disabled ? onClick : undefined}
+            className={classNames(styles.tab, {
+                [styles.active]: active,
+                [styles.disabled]: disabled,
+            })}
+        >
+            {title}
+        </div>
+    );
 };
 
 // step 2

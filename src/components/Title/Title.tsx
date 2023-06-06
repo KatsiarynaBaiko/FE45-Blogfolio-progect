@@ -14,6 +14,7 @@ import classNames from "classnames";
 
 type TitleProps = {
     title: string;
+    className?: string;
 };
 
 //  step 6
@@ -27,9 +28,9 @@ type TitleProps = {
 // передаем полученные props в App.tsx
 // также присваиваем стили с помощью className
 
-const Title: FC<TitleProps> = ({ title }) => {
+const Title: FC<TitleProps> = ({ title, className }) => {
     // return <div>Sing in (тут будет title)</div>
-    return <div className={styles.title}>{title}</div>;
+    return <div className={classNames(styles.title, className)}>{title}</div>;
 };
 
 // step 2

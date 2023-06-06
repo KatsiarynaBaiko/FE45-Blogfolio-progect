@@ -3,4 +3,5 @@
 export { default } from './Tabs';
 
 // step 4
-export {TabsTypes} from './Tabs';
+// upd Lesson 40 (закоментировали)
+// export {TabsTypes} from './Tabs';
