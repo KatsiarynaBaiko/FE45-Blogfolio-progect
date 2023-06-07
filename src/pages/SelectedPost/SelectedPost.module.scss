@@ -1,0 +1,95 @@
+@import "src/styles/colors";
+@import "src/styles/mixins";
+
+.container {
+    width: 1120px;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    padding: 0 0 72px;
+    border-bottom: 1px solid $medium;
+}
+
+.breadcrumbs {
+    @include breadcrumbs;
+}
+
+.postNumber {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: $gray;
+}
+
+.title {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 56px;
+    line-height: 80px;
+    color: $secondary;
+    margin-bottom: 48px;
+}
+
+.selectedPostImage {
+    width: 992px;
+    height: 518px;
+    padding: 0 64px;
+    margin-bottom: 48px;
+}
+
+.selectedPostImage img {
+    @include cardImageImg();
+}
+
+.selectedPostText {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 32px;
+    color: $secondary;
+    width: 992px;
+    margin-bottom: 48px;
+    padding: 0 99px;
+    text-align: justify; // выравнивание по левому и правому краю
+}
+
+.SelectedPostReaction {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 992px;
+    padding: 0 99px;
+}
+
+.SelectedPostReactionLikeDislike,
+.SelectedPostReactionToFavorites {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    &:hover {
+        cursor: pointer
+    }
+}
+
+.SelectedPostLike,
+.SelectedPostDislike,
+.SelectedPostReactionToFavorites {
+    padding: 16px 32px;
+    background-color: $medium;
+    border-radius: 4px;
+}
+
+
+.SelectedPostReactionToFavorites {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 24px;
+    color: $secondary;
+}
