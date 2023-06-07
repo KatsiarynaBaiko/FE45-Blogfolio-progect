@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import FormPagesContainer from "../../components/FormPagesContainer"
 import Input from "../../components/Input";
+import { useThemeContext } from "../../context/Theme";
 import styles from './SingUp.module.scss'
 
 // step 1
@@ -24,6 +25,9 @@ const SingUp = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
+
+    // Lesson 41: работа с контекстом
+    const { themeValue } = useThemeContext();
 
     return (
         <FormPagesContainer

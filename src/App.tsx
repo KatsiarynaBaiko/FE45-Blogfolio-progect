@@ -22,6 +22,9 @@ import SignIn from './pages/SignIn';
 import SelectedPost from './pages/SelectedPost';
 import CardsList from './components/CardsList';
 import Home from './pages/Home';
+import { ThemeProvider } from "./context/Theme"
+import { Theme } from './@types';
+import ThemeSwitcher from './components/ThemeSwitcher';
 
 
 
@@ -190,6 +193,15 @@ const App = () => {
     setInputValue(value)
   }
 
+  // step 10
+  // создаем для работы ThemeProvider
+  const [themeValue, setThemeValue] = useState<Theme>(Theme.Light);
+  // также создаем функцию, которая будет менять нашу тему
+  // и дальше ее же нужно передать и записать в пропсы
+  const onChangeTheme = (value: Theme) => () => {
+    setThemeValue(value);
+  };
+
   return (
     // <SingUp />
     // <Home />
@@ -259,7 +271,17 @@ const App = () => {
 
 
       {/* //step 4 */}
-      <SingUp />
+      {/* // step 9 Lesson 41: оборачиваем компонент в ThemeProvider  */}
+      {/* // он хочет value => нам нужно его взть и положить => создаем const */}
+      {/* //  const [themeValue, setThemeValue] = useState<Theme>(Theme.Light); */}
+      {/* // также переходим в SingUp */}
+       {/* // <ThemeSwitcher />  - это кнопочки переключения темы - солнцу и луна */}
+
+      <ThemeProvider themeValue={themeValue} onChangeTheme={onChangeTheme}>
+        <SingUp />
+        <ThemeSwitcher /> 
+      </ThemeProvider>
+
 
       {/* //step 4 */}
       <RegistrationConfirmation />

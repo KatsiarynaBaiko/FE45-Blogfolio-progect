@@ -1,9 +1,10 @@
-import React, { Children } from "react";
+import React from "react";
 import { FC, ReactElement } from "react";
 import Title from "../Title";
 import styles from './FormPagesContainer.module.scss';
 import Button from "../Button";
 import { ButtonTypes } from "../Button";
+import { Children } from "src/@types";
 
 // step 4
 // после того, как сделан контейнер для страниц создаем сами страницы
@@ -18,7 +19,7 @@ import { ButtonTypes } from "../Button";
 
 type FormPagesContainerProps = {
     title: string;
-    children: ReactElement | ReactElement[];
+    children: Children;
     btnTitle: string;
     onSubmit: () => void;
     additionalInfo?: ReactElement;
