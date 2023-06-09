@@ -1,0 +1,50 @@
+@import "src/styles/colors";
+@import "src/styles/mixins";
+
+.container {
+  max-width: 1120px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background-color: $extra-light;
+}
+
+.breadcrumbs {
+  @include breadcrumbs;
+}
+
+.formContainer {
+  margin: 72px auto 0 auto;
+  flex: 1;
+  width: 624px;
+  padding: 40px;
+  box-sizing: border-box;
+  border: 1px solid $medium;
+}
+
+.fieldsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  flex: 1;
+}
+
+.button {
+  margin-top: 48px;
+}
+
+.darkContainer {
+  background-color: $secondary;
+
+  .breadcrumbs {
+    color: $white;
+
+    &:hover {
+      color: $primary-secondary;
+    }
+  }
+
+  .formContainer {
+    border-color: $gray;
+  }
+}
