@@ -8,3 +8,10 @@
 .additionalInfo {
   @include additionalInfo
 }
+
+.darkAdditionalInfo {
+  color: $medium;
+  .signIn {
+    color: $primary-secondary;
+  }
+}

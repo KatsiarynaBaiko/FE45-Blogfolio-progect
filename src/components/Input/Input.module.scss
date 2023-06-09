@@ -53,3 +53,9 @@
 .errorInput {
   border-color: $error;
 }
+
+.darkContainer {
+  .title {
+    color: $white;
+  }
+}

@@ -4,7 +4,9 @@ import Title from "../Title";
 import styles from './FormPagesContainer.module.scss';
 import Button from "../Button";
 import { ButtonTypes } from "../Button";
-import { Children } from "src/@types";
+import { Children, Theme } from "src/@types";
+import { useThemeContext } from "src/context/Theme";
+import classNames from "classnames";
 
 // step 4
 // после того, как сделан контейнер для страниц создаем сами страницы
@@ -42,9 +44,17 @@ const FormPagesContainer: FC<FormPagesContainerProps> = ({
     onSubmit,
     additionalInfo,
 }) => {
+
+    // HW4 Добавление темной темы 
+    // так как меняется по проекту, то открываем контекств
+    // далее themeValue передаем прописываем в return. чтобы темная тема возвращалась
+    // темная тема - с помощью classNames => {[styles.darkContainer]: themeValue === Theme.Dark}
+    const { themeValue } = useThemeContext();
+
+
     // return <div></div>
     return (
-        <div className={styles.container}>
+        <div className={classNames(styles.container, {[styles.darkContainer]: themeValue === Theme.Dark})}>
             <div className={styles.breadcrumbs}>Back to home</div>
             <Title title={title} />
             <div className={styles.formContainer}>

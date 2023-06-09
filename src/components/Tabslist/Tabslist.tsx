@@ -8,7 +8,8 @@ import classNames from "classnames";
 import Tabs from '../Tabs';
 // upd Lesson 40 (закоментировали)
 // import { TabsTypes } from '../Tabs';
-import { TabsListType, TabsTypes } from "../../@types";
+import { TabsListType, TabsTypes, Theme } from "../../@types";
+import { useThemeContext } from "src/context/Theme";
 
 
 // upd Lesson 40
@@ -59,8 +60,16 @@ type TabsListProps = {
 // upd Lesson 40
 
 const TabsList: FC<TabsListProps> = ({ tabsList, activeTab, onTabClick }) => {
+
+    // HW4 Добавление темной темы 
+    // так как меняется по проекту, то открываем контекств
+    // далее themeValue передаем прописываем в return. чтобы темная тема возвращалась
+    // темная тема - с помощью classNames => {[styles.ddarkTabsListContainer]: themeValue === Theme.Dark}
+    const { themeValue } = useThemeContext();
+
+
     return (
-      <div className={styles.tabsListContainer}>
+      <div className={classNames(styles.tabsListContainer, {[styles.darkTabsListContainer]: themeValue === Theme.Dark})}>
         {tabsList.map(({ key, title, disabled }) => (
           <Tabs
             key={key}

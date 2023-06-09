@@ -93,3 +93,33 @@
     line-height: 24px;
     color: $secondary;
 }
+
+.darkContainer {
+    background-color: $secondary;
+
+    .breadcrumbs {
+        color: $white;
+
+        &:hover {
+            color: $primary-secondary;
+        }
+    }
+
+    .title {
+        color: $white;
+    }
+
+    .selectedPostText {
+        color: $gray;
+    }
+
+    .SelectedPostLike,
+    .SelectedPostDislike,
+    .SelectedPostReactionToFavorites {
+        color: $white;
+        background-color: $gray;
+        svg>path {
+            fill: $white;
+        }
+    }
+}

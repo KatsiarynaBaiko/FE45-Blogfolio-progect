@@ -8,6 +8,8 @@ import { DislikeIcon, DotsMenuIcon } from "../../assets/icons";
 import { LikeIcon } from "../../assets/icons";
 import { BookmarkIcon } from "../../assets/icons";
 import { skipPartiallyEmittedExpressions } from "typescript";
+import { useThemeContext } from "src/context/Theme";
+import { Theme } from "src/@types";
 
 
 // step 4
@@ -53,10 +55,16 @@ const Card: FC<CardProps> = ({ type, id, date, title, text, image, lesson_num, a
     // return <div>Тут будет Card</div>
     const cardStyle = styles[type]
 
+    // HW4 Добавление темной темы 
+    // так как меняется по проекту, то открываем контекств
+    // далее themeValue передаем прописываем в return. чтобы темная тема возвращалась
+    // темная тема - с помощью classNames => {[styles.dark...]: themeValue === Theme.Dark}
+    const { themeValue } = useThemeContext();
+
     return (
         <div className={classNames(cardStyle)}>
             <div className={styles.cardContent}>
-                <div className={styles.cardTextContent}>
+                <div className={classNames(styles.cardTextContent, {[styles.darkCardTextContent]: themeValue === Theme.Dark})}>
                     <span className={styles.date}>{date}</span>
                     <div className={styles.cardTitle}>{title}</div>
                     {/* <div className={styles.cardText}>{text}</div> */}
@@ -69,7 +77,7 @@ const Card: FC<CardProps> = ({ type, id, date, title, text, image, lesson_num, a
                     <img src={image} alt="#" />
                 </div>
             </div>
-            <div className={styles.cardReaction}>
+            <div className={classNames(styles.cardReaction, {[styles.darkCardReaction]: themeValue === Theme.Dark})}>
                 <div className={styles.cardReactionLikeDislike}>
                     <LikeIcon />
                     <DislikeIcon />

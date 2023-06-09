@@ -23,3 +23,20 @@
         color: $primary;
     }
 }
+
+.darkAdditionalInfo {
+    color: $medium;
+
+    .signUp {
+        color: $primary-secondary;
+    }
+}
+
+.darkForgotPassword {
+    color: $white;
+
+    &:hover {
+        cursor: pointer;
+        color: $primary-secondary;;
+    }
+}

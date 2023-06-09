@@ -1,5 +1,7 @@
+import classNames from "classnames";
 import React from "react";
 import { useState } from "react";
+import { Theme } from "src/@types";
 import FormPagesContainer from "../../components/FormPagesContainer"
 import Input from "../../components/Input";
 import { useThemeContext } from "../../context/Theme";
@@ -27,6 +29,10 @@ const SingUp = () => {
     const [confirmPassword, setConfirmPassword] = useState('')
 
     // Lesson 41: работа с контекстом
+    // HW4 Добавление темной темы 
+    // так как меняется по проекту, то открываем контекств
+    // далее themeValue передаем прописываем в return. чтобы темная тема возвращалась
+    // темная тема - с помощью classNames => {[styles.darkAdditionalInfo]: themeValue === Theme.Dark}
     const { themeValue } = useThemeContext();
 
     return (
@@ -35,7 +41,7 @@ const SingUp = () => {
             btnTitle={'Sign Up'}
             onSubmit={() => { }}
             additionalInfo={
-                <div className={styles.additionalInfo}>
+                <div className={classNames(styles.additionalInfo, {[styles.darkAdditionalInfo]: themeValue === Theme.Dark})}>
                     {'Already have an account? '} 
                     <span className={styles.signIn}>Sign In</span>
                 </div>

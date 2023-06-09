@@ -72,3 +72,28 @@
     color: $gray;
   }
 }
+
+.darkTab {
+  color: $white;
+
+  &:hover {
+    color: $primary-secondary;
+  }
+}
+
+.darkActive{
+  border-bottom: 2px solid $white;
+  &:hover {
+    border-bottom: 2px solid $primary-secondary;
+  }
+}
+
+.darkDisabled {
+  color: $gray;
+  &:hover {
+    cursor: not-allowed;
+    color: $gray;
+  }
+}
+
+

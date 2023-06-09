@@ -1,6 +1,8 @@
 import classNames from "classnames";
 import React, { ChangeEvent } from "react";
 import { FC } from "react";
+import { Theme } from "src/@types";
+import { useThemeContext } from "src/context/Theme";
 import styles from './Input.module.scss';
 
 // step 4
@@ -42,8 +44,14 @@ type InputProps = {
 // => (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)
 
 
-const Input: FC<InputProps> = ({ title, errorText, placeholder, onChange, disabled, value, isTextarea}) => {
+const Input: FC<InputProps> = ({ title, errorText, placeholder, onChange, disabled, value, isTextarea }) => {
     // return null
+
+    // HW4 Добавление темной темы 
+    // так как меняется везде по проекту то логично напрямую в Инпуте открыть контекст
+    // далее themeValue передаем прописываем в return. чтобы темная тема возвращалась
+    // темная тема - с помощью classNames => {[styles.darkContainer]: themeValue === Theme.Dark}
+    const { themeValue } = useThemeContext();
 
     const onInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         onChange(event.target.value);
@@ -60,7 +68,8 @@ const Input: FC<InputProps> = ({ title, errorText, placeholder, onChange, disabl
     };
 
     return (
-        <div className={styles.container}>
+        // <div className={styles.container}> // до темной темы, ниже - после темной темы
+        <div className={classNames(styles.container, {[styles.darkContainer]: themeValue === Theme.Dark})}>
             <div className={styles.title}>{title}</div>
             {/* <input onChange={onChange} value={value} placeholder={placeholder} /> */}
             {/* <input

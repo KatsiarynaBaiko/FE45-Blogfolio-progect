@@ -2,6 +2,8 @@ import React, { ReactElement } from "react";
 import { FC } from "react";
 import styles from './Tabs.module.scss';
 import classNames from "classnames";
+import { useThemeContext } from "src/context/Theme";
+import { Theme } from "src/@types";
 
 // step 4
 // создаем enum, так как у нас несколько свойств Tabs
@@ -56,16 +58,30 @@ type TabsProps = {
 
 // upd Lesson 40
 const Tabs: FC<TabsProps> = ({ title, onClick, active, disabled }) => {
+
+
+    // HW4 Добавление темной темы 
+    // так как меняется по проекту, то открываем контекств
+    // далее themeValue передаем прописываем в return. чтобы темная тема возвращалась
+    // темная тема - с помощью classNames => {[styles.darkTab]: themeValue === Theme.Dark}
+    const { themeValue } = useThemeContext();
+
+
     return (
         <div
             onClick={!disabled ? onClick : undefined}
             className={classNames(styles.tab, {
                 [styles.active]: active,
                 [styles.disabled]: disabled,
+                [styles.darkTab]: themeValue === Theme.Dark,
+                [styles.darkActive]: active && themeValue === Theme.Dark,
+                [styles.darkDisabled]: disabled && themeValue === Theme.Dark,
+                // [styles.darkTab || styles.darkTab&&styles.darkActive || styles.darkTab&&styles.darkDisabled]: themeValue === Theme.Dark
             })}
         >
             {title}
         </div>
+
     );
 };
 

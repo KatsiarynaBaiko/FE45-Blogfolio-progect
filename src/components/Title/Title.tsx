@@ -3,6 +3,8 @@ import React from "react";
 import { FC } from "react"
 import styles from './Title.module.scss';
 import classNames from "classnames";
+import { useThemeContext } from "src/context/Theme";
+import { Theme } from "src/@types";
 
 // step 4 нет enum
 
@@ -29,8 +31,17 @@ type TitleProps = {
 // также присваиваем стили с помощью className
 
 const Title: FC<TitleProps> = ({ title, className }) => {
+
+    // HW4 Добавление темной темы 
+    // так как меняется по проекту, то открываем контекст
+    // далее themeValue передаем прописываем в return. чтобы темная тема возвращалась
+    // темная тема - с помощью classNames => {[styles.darkTitle]: themeValue === Theme.Dark}
+    const { themeValue } = useThemeContext();
+
+
+
     // return <div>Sing in (тут будет title)</div>
-    return <div className={classNames(styles.title, className)}>{title}</div>;
+    return <div className={classNames(styles.title, className, {[styles.darkTitle]: themeValue === Theme.Dark})}>{title}</div>;
 };
 
 // step 2

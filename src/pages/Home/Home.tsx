@@ -1,5 +1,7 @@
+import classNames from "classnames";
 import React, { useEffect, useMemo, useState } from "react";
-import { CardsListik, TabsTypes } from "../../@types";
+import { useThemeContext } from "src/context/Theme";
+import { CardsListik, TabsTypes, Theme } from "../../@types";
 import CardsList from "../../components/CardsList";
 import TabsList from "../../components/Tabslist/Tabslist";
 import Title from "../../components/Title";
@@ -209,9 +211,16 @@ const Home = () => {
         }
     };
 
+    // HW4 Добавление темной темы 
+    // так как меняется по проекту, то открываем контекст
+    // далее themeValue передаем прописываем в return. чтобы темная тема возвращалась
+    // темная тема - с помощью classNames => {[styles.darkHomeContainer]: themeValue === Theme.Dark}
+    const { themeValue } = useThemeContext();
+
     return (
-        <div>
-            <Title title={"Blog"} className={styles.pageTitle} />
+        <div className={classNames(styles.container, {[styles.darkContainer]: themeValue === Theme.Dark})}>
+            
+            <Title title={"Blogfolio"} className={styles.pageTitle} />
 
             <TabsList
                 tabsList={tabsList}

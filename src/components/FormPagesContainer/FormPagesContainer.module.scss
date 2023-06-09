@@ -10,7 +10,7 @@
 }
 
 .breadcrumbs {
-@include breadcrumbs;
+  @include breadcrumbs;
 }
 
 .formContainer {
@@ -31,4 +31,20 @@
 
 .button {
   margin-top: 48px;
+}
+
+.darkContainer {
+  background-color: $secondary;
+
+  .breadcrumbs {
+    color: $white;
+
+    &:hover {
+      color: $primary-secondary;
+    }
+  }
+
+  .formContainer {
+    border-color: $gray;
+  }
 }
