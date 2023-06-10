@@ -6,3 +6,6 @@ export { LikeIcon } from './LikeIcon';
 export { DotsMenuIcon } from './DotsMenuIcon';
 export { MoonIcon } from './MoonIcon'
 export { SunIcon } from './SunIcon'
+export { MenuIcon } from "./MenuIcon";
+export { CloseIcon } from "./CloseIcon";
+
