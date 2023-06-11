@@ -8,4 +8,6 @@ export { MoonIcon } from './MoonIcon'
 export { SunIcon } from './SunIcon'
 export { MenuIcon } from "./MenuIcon";
 export { CloseIcon } from "./CloseIcon";
+export { SearchIcon } from "./SearchIcon";
+export { UserIcon } from "./UserIcon";
 

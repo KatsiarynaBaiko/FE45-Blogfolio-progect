@@ -3,8 +3,10 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 import Header from "src/components/Header";
 import Home from "src/pages/Home";
 import RegistrationConfirmation from "./RegistrationConfirmation";
+import SelectedPost from "./SelectedPost";
 import SignIn from "./SignIn";
 import SingUp from "./SingUp";
+import Success from "./Success";
 
 
 
@@ -16,6 +18,8 @@ export enum RoutesList {
     SingUp = "/sing-up",
     SignIn = "/sign-in",
     RegistrationConfirmation = "/sing-up/confirm",
+    Success = "/sing-up/confirm/success", 
+    SelectedPost = "selected-post",
     Default = "*",
 }
 
@@ -62,6 +66,7 @@ const Router = () => {
                 <Route path={RoutesList.SingUp} element={<SingUp />} />
                 <Route path={RoutesList.SignIn} element={<SignIn />} />
                 <Route path={RoutesList.RegistrationConfirmation} element={<RegistrationConfirmation />} />
+                <Route path={RoutesList.Success} element={<Success />} />
                 <Route path={RoutesList.Default} element={<Navigate to={RoutesList.Home}/>} />
             </Route>
         </Routes>

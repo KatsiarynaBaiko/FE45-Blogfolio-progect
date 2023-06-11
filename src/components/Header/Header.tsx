@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react"
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { CloseIcon, MenuIcon } from "src/assets/icons";
+import { CloseIcon, MenuIcon, SearchIcon, UserIcon } from "src/assets/icons";
 import Button, { ButtonTypes } from "../Button";
 import ThemeSwitcher from "../ThemeSwitcher";
 import styles from './Header.module.scss';
@@ -102,13 +102,30 @@ const Header = () => {
     return (
         <div className={classNames(styles.container, { [styles.darkContainer]: themeValue === Theme.Dark })}>
             <div className={styles.header}>
-                <Button
-                    type={ButtonTypes.Primary}
-                    title={isOpened ? <CloseIcon /> : <MenuIcon />}
-                    onClick={handleMenuOpened}
-                    className={styles.burgerMenuButton}
-                />
-                HEADER - доделать дома
+                <div className={styles.headerLeftSide}>
+                    <Button
+                        type={ButtonTypes.Primary}
+                        title={isOpened ? <CloseIcon /> : <MenuIcon />}
+                        onClick={handleMenuOpened}
+                        className={styles.burgerMenuButton}
+                    />
+                </div>
+
+                <div className={styles.headerRightSide}>
+                    <Button
+                        type={ButtonTypes.Primary}
+                        title={<SearchIcon />}
+                        onClick={onLoginButtonClick} // пока что так, но по факту должен открываться поиск
+                        className={styles.searchButton}
+                    />
+
+                    <Button
+                        type={ButtonTypes.Primary}
+                        title={<UserIcon />}
+                        onClick={onLoginButtonClick}
+                        className={styles.userButton}
+                    />
+                </div>
             </div>
 
             <div className={styles.infoContainer}>
