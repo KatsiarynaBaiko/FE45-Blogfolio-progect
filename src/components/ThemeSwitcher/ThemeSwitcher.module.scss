@@ -1,0 +1,29 @@
+@import "src/styles/colors";
+
+.container {
+    display: flex;
+    border-top: 1px solid $light;
+    // margin-top: 20px; // для проверки отображения кнопочки, чтобы было ее видно
+    // margin-left: 20px; // для проверки отображения кнопочки, чтобы было ее видно
+    max-height: 80px; 
+}
+
+.button {
+    padding: 28px 47px;
+    &:hover {
+        cursor: pointer;
+        svg>path {
+            fill: $primary;
+        }
+    }
+
+    &:first-child {
+        border-right: 1px solid $light; // разделяющая линия между 2 кнопочками
+    }
+}
+
+.activeButton {
+    svg>path {
+        fill: $secondary;
+    }
+}
