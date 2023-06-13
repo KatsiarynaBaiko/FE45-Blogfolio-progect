@@ -9,6 +9,7 @@ import Username from "../Username";
 import { useThemeContext } from "src/context/Theme";
 import classNames from "classnames";
 import { Theme } from "src/@types";
+import Input from "../Input";
 
 
 // step 1
@@ -59,6 +60,12 @@ import { Theme } from "src/@types";
 // под которую и подвязано useMemo, мы передаем ее туда
 // и если она true - доступно: 
 // имя пользователя (прописываем ее в userName) и кнопка Add Post
+// ---
+// в Header есть поисковая строкаю Это Инпут в который мы вводим информацию + рядом кнопочка
+// для Input нет title => это не обязательная пропса => title? в компоненте Input
+// также нам необходимо стилизовать интуп => добавляем ему пропсу  className?:string;
+// нам необходимо отслеживать его состояние => используем useState
+// также прописываем открытие и закрытие инпута по аналогии с боковым меню
 
 
 const Header = () => {
@@ -98,6 +105,16 @@ const Header = () => {
     // темная тема
     const { themeValue } = useThemeContext();
 
+    // отслкживаем состояние input
+    // и передаем его в инпут
+    const [inputValue, setInputValue] = useState('');
+
+    // открытие и закрытие инпутв
+    const [isSearch, setSearch] = useState(false);
+    const handleSearchOpened = () => {
+        setSearch(!isSearch);
+    };
+
 
     return (
         <div className={classNames(styles.container, { [styles.darkContainer]: themeValue === Theme.Dark })}>
@@ -111,11 +128,28 @@ const Header = () => {
                     />
                 </div>
 
+                {isSearch ?
+                    <div className={styles.headerCenterSearch}>
+                        <Input className={styles.inputSearch}
+                            placeholder='Search...'
+                            onChange={setInputValue}
+                            value={inputValue}
+                        />
+                        <Button
+                            type={ButtonTypes.Primary}
+                            title={<CloseIcon />}
+                            onClick={handleSearchOpened}
+                            className={styles.closeSearchButton}
+                        />
+                    </div>
+                    : <div> </div>
+                }
+
                 <div className={styles.headerRightSide}>
                     <Button
                         type={ButtonTypes.Primary}
                         title={<SearchIcon />}
-                        onClick={onLoginButtonClick} // пока что так, но по факту должен открываться поиск
+                        onClick={handleSearchOpened} // пока что так, но по факту должен открываться поиск. UPD поиск найден в компонентах фигма. Делаем через Инпут
                         className={styles.searchButton}
                     />
 

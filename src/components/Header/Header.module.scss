@@ -29,6 +29,28 @@
     align-items: center;
 }
 
+.headerCenterSearch {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    background-color: $primary-secondary;
+}
+
+.inputSearch {
+    color: $gray;
+    border-radius: none;
+    border: none;
+    background-color: $primary-secondary;
+}
+
+.closeSearchButton {
+    height: 84px;
+    width: 84px;
+    border-radius: 0;
+    background-color: $primary-secondary;
+}
+
 .infoContainer {
     margin: 156px auto 0 auto; //72px+84px
 }

@@ -11,13 +11,14 @@ import styles from './Input.module.scss';
 // то указываем параметры и их типы, то есть (value: string)
 
 type InputProps = {
-    title: string;
+    title?: string;
     placeholder: string;
     onChange: (value: string) => void;
     value: string;
     disabled?: boolean;
     errorText?: string;
     isTextarea?: boolean;
+    className?: string;
 };
 
 // step 1
@@ -44,7 +45,7 @@ type InputProps = {
 // => (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)
 
 
-const Input: FC<InputProps> = ({ title, errorText, placeholder, onChange, disabled, value, isTextarea }) => {
+const Input: FC<InputProps> = ({ title, errorText, placeholder, onChange, disabled, value, isTextarea, className }) => {
     // return null
 
     // HW4 Добавление темной темы 
@@ -61,7 +62,7 @@ const Input: FC<InputProps> = ({ title, errorText, placeholder, onChange, disabl
         onChange: onInputChange,
         value,
         placeholder,
-        className: classNames(styles.input, {
+        className: classNames(styles.input, className, {
             [styles.disabled]: disabled,
             [styles.errorInput]: errorText,
         }),
@@ -69,7 +70,7 @@ const Input: FC<InputProps> = ({ title, errorText, placeholder, onChange, disabl
 
     return (
         // <div className={styles.container}> // до темной темы, ниже - после темной темы
-        <div className={classNames(styles.container, {[styles.darkContainer]: themeValue === Theme.Dark})}>
+        <div className={classNames(styles.container, className, {[styles.darkContainer]: themeValue === Theme.Dark})}>
             <div className={styles.title}>{title}</div>
             {/* <input onChange={onChange} value={value} placeholder={placeholder} /> */}
             {/* <input
