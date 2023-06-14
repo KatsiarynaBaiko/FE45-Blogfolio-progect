@@ -98,8 +98,6 @@ export const { setSelectedPostModalOpened, setSelectedPost } =
 // вынесли объект, где ключ - это функция
 // ---
 // создаем getSelectedPost для SelectedPost
-// ---
-// isSelectedPostModalOpened и selectedPost ругается красным
 
 export const PostSelectors = {
     getSelectedPostModalOpened: (state: RootState) =>

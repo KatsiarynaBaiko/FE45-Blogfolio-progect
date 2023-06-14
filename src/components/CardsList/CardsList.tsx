@@ -57,23 +57,25 @@ type CardsListProps = {
 
 const CardsList: FC<CardsListProps> = ({ cardsList }) => {
 
-    // const dispatch = useDispatch();
-    // const onMoreClick = (post: Card) => () => {
-    //     dispatch(setSelectedPostModalOpened(true));
-    //     dispatch(setSelectedPost(post));
-    //     // dispatch - ручки
-    //     // setSelectedPost - экшен, куда данные должны улететь
-    //     // null - payload, т е сами данные, которые летят в ф-ии, которые их меняют
-    // };
+    const dispatch = useDispatch();
+    const onMoreClick = (post: Card) => () => {
+        dispatch(setSelectedPostModalOpened(true));
+        dispatch(setSelectedPost(post));
+        // dispatch - ручки
+        // setSelectedPost - экшен, куда данные должны улететь
+        // null - payload, т е сами данные, которые летят в ф-ии, которые их меняют
+    };
 
     return cardsList.length ? (
         <div className={styles.cardsListContainer}>
             <div className={styles.cardsListWrapLeft}>
                 <Card type={CardTypes.Large} {...cardsList[0]} />
+                {/* <Card type={CardTypes.Large} {...cardsList[0]} onMoreClick={onMoreClick(cardsList[0])}/> */}
                 <div className={styles.mediumContainer}>
                     {cardsList.map((el, idx) => {
                         if (idx >= 1 && idx <= 4) {
                             return <Card key={el.id} type={CardTypes.Medium} {...el} />
+                            // return <Card key={el.id} type={CardTypes.Medium} {...el} onMoreClick={onMoreClick(el)}/>
                         }
                     })}
                 </div>
@@ -82,6 +84,7 @@ const CardsList: FC<CardsListProps> = ({ cardsList }) => {
                 {cardsList.map((el, idx) => {
                     if (idx >= 5 && idx <= 10) {
                         return <Card key={el.id} type={CardTypes.Small} {...el} />
+                        // return <Card key={el.id} type={CardTypes.Small} {...el} onMoreClick={onMoreClick(el)}/>
                     }
                 })}
             </div>
