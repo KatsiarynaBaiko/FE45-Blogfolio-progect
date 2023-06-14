@@ -6,6 +6,7 @@ import CardsList from "../../components/CardsList";
 import TabsList from "../../components/Tabslist/Tabslist";
 import Title from "../../components/Title";
 import styles from './Home.module.scss'
+import SelectedPostModal from "./SelectedPostModal";
 
 
 
@@ -230,6 +231,8 @@ const Home = () => {
 
             {/* <CardsList cardsList={MOCK_ARRAY} /> */}
             <CardsList cardsList={cardsList} />
+
+            <SelectedPostModal />
 
         </div>
     )

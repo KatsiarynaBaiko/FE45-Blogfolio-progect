@@ -28,6 +28,9 @@ import ThemeSwitcher from './components/ThemeSwitcher';
 import Tabslist from './components/Tabslist';
 import { TabsTypes } from './@types';
 import Router from './pages/Router';
+import { useDispatch, useSelector } from 'react-redux';
+import { setThemeValue, ThemeSelectors } from './redux/reducers/themeSlice';
+import { RootState } from './redux/store';
 
 
 
@@ -198,12 +201,38 @@ const App = () => {
 
   // step 10 lesson 41
   // создаем для работы ThemeProvider
-  const [themeValue, setThemeValue] = useState<Theme>(Theme.Light);
+  // const [themeValue, setThemeValue] = useState<Theme>(Theme.Light);
   // также создаем функцию, которая будет менять нашу тему
   // и дальше ее же нужно передать и записать в пропсы
+  // const onChangeTheme = (value: Theme) => () => {
+  //   setThemeValue(value);
+  // };
+
+
+  // внедрение redux для работы с темой
+  // lesson 43
+  // step 5 themeSlice
+  // используем dispatch и хук useDispatch, который швыряет наши данные
+  // ---
+  // функционал самой замены работает, но внутри нашего приложения не меняются цвета
+  // а это происходит потому что данные мы положили, но не получили в наше приложение
+  // то есть не использовали selector
+  const dispatch = useDispatch();
   const onChangeTheme = (value: Theme) => () => {
-    setThemeValue(value);
+    dispatch(setThemeValue(value)); // то, что швыряет в редакс данные
   };
+
+  //  step 6 themeSlice
+  // создаем селектор для получения темы обратно в приложение
+  // также указываем тип RootState 
+  // где state -состояние, themeReducer- наш этаж, themeValue-значение
+  // ---
+  // рекомендуется выносить функции из селектора, чтобы их потом переиспользовать => 
+  // => прописываем const ThemeSelectors в themeSlice
+  // const themeValue = useSelector((state: RootState) => state.themeReducer.themeValue); 
+  // то, что данные из редакса достает
+  const themeValue = useSelector(ThemeSelectors.getThemeValue);
+  
 
   // HW4
   // переменная для TabsList
@@ -236,6 +265,13 @@ const App = () => {
 
 
     // проверка работы <Router />
+    // <ThemeProvider themeValue={themeValue} onChangeTheme={onChangeTheme}>
+    //   <Router />
+    // </ThemeProvider>
+
+    // после внедрение redux
+    // themeValue подчеркивается красным, так как ругается, что нет типа
+    // => создаем тип (step 5 themeSlice)
     <ThemeProvider themeValue={themeValue} onChangeTheme={onChangeTheme}>
       <Router />
     </ThemeProvider>

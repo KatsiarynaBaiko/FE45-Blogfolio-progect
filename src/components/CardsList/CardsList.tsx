@@ -1,5 +1,7 @@
 import React from "react";
 import { FC } from "react";
+import { useDispatch } from "react-redux";
+import { setSelectedPost, setSelectedPostModalOpened } from "src/redux/reducers/postSlice";
 import { CardsListik } from "../../@types";
 import Card from "../Card/Card";
 import { CardTypes } from "../Card/Card";
@@ -42,9 +44,28 @@ type CardsListProps = {
 // используем метод map чтобы выбрать необходимые карточки 
 // c одновременным выполнением условия (idx >= 1 && idx <= 4)
 // не забываем прописать key (всегда), если мапим список key={el.id}
+// ---
+// Lesson 43 Redux
+// мы прописали фунционал закрытия модального окна в SelectedPostModal
+// но еще необходим функционал с его открытие по нажатию на три точечки в карточке
+// для этого идем в CardList и также прописываем ей dispatch 
+// в функциях задаем обнатные значения (true и post)
+// в return добавляем onMoreClick={onMoreClick(cardsList[0])} или onMoreClick={onMoreClick(el)}
+
+
 
 
 const CardsList: FC<CardsListProps> = ({ cardsList }) => {
+
+    // const dispatch = useDispatch();
+    // const onMoreClick = (post: Card) => () => {
+    //     dispatch(setSelectedPostModalOpened(true));
+    //     dispatch(setSelectedPost(post));
+    //     // dispatch - ручки
+    //     // setSelectedPost - экшен, куда данные должны улететь
+    //     // null - payload, т е сами данные, которые летят в ф-ии, которые их меняют
+    // };
+
     return cardsList.length ? (
         <div className={styles.cardsListContainer}>
             <div className={styles.cardsListWrapLeft}>
@@ -65,7 +86,7 @@ const CardsList: FC<CardsListProps> = ({ cardsList }) => {
                 })}
             </div>
         </div>
-    ): null;
+    ) : null;
 }
 
 

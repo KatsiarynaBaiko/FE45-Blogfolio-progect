@@ -64,7 +64,7 @@ const Card: FC<CardProps> = ({ type, id, date, title, text, image, lesson_num, a
     return (
         <div className={classNames(cardStyle)}>
             <div className={styles.cardContent}>
-                <div className={classNames(styles.cardTextContent, {[styles.darkCardTextContent]: themeValue === Theme.Dark})}>
+                <div className={classNames(styles.cardTextContent, { [styles.darkCardTextContent]: themeValue === Theme.Dark })}>
                     <span className={styles.date}>{date}</span>
                     <div className={styles.cardTitle}>{title}</div>
                     {/* <div className={styles.cardText}>{text}</div> */}
@@ -77,7 +77,7 @@ const Card: FC<CardProps> = ({ type, id, date, title, text, image, lesson_num, a
                     <img src={image} alt="#" />
                 </div>
             </div>
-            <div className={classNames(styles.cardReaction, {[styles.darkCardReaction]: themeValue === Theme.Dark})}>
+            <div className={classNames(styles.cardReaction, { [styles.darkCardReaction]: themeValue === Theme.Dark })}>
                 <div className={styles.cardReactionLikeDislike}>
                     <LikeIcon />
                     <DislikeIcon />
@@ -85,6 +85,11 @@ const Card: FC<CardProps> = ({ type, id, date, title, text, image, lesson_num, a
                 <div className={styles.cardReactionNavigation}>
                     <BookmarkIcon />
                     <DotsMenuIcon />
+                    {/* {onMoreClick && (
+                        <div onClick={onMoreClick}>
+                            <DotsMenuIcon />
+                        </div>
+                    )} */}
                 </div>
             </div>
         </div>
