@@ -1,7 +1,9 @@
 import classNames from "classnames";
 import React, { useEffect, useMemo, useState } from "react";
 import { useThemeContext } from "src/context/Theme";
-import { CardsListik, TabsTypes, Theme } from "../../@types";
+// на 43 уроке конфликт - замена CardsListik на PostsList в @types"
+// import { CardsListik, TabsTypes, Theme } from "../../@types";
+import { PostsList, TabsTypes, Theme } from "../../@types";
 import CardsList from "../../components/CardsList";
 import TabsList from "../../components/Tabslist/Tabslist";
 import Title from "../../components/Title";
@@ -180,6 +182,8 @@ const MOCK_ARRAY = [
 // MOCK_ARRAY мы прокидывали напрямую: <CardsList cardsList={MOCK_ARRAY} />
 // но можно через useEffect
 // для этого создается  const [cardsList, setCardsList] = useState<CardsListik>([]);
+// --- на 43 уроке конфликт - замена CardsListik на PostsList в @types"
+// --- => const [cardsList, setCardsList] = useState<PostsList>([]);
 // {cardsList} передается вместо {MOCK_ARRAY}
 // и используется useEffect, который и запихивает MOCK_ARRAY
 // чтобы отрабатывал после первого рендара прописываем [] (отработает как DidMount)
@@ -190,7 +194,7 @@ const Home = () => {
     const [activeTab, setActiveTab] = useState(TabsTypes.All);
     // const isLoggedIn = true; // проверка isLoggedIn
     const [isLoggedIn, setLoggedIn] = useState(false);
-    const [cardsList, setCardsList] = useState<CardsListik>([]);
+    const [cardsList, setCardsList] = useState<PostsList>([]);
 
     const tabsList = useMemo(
         () => [

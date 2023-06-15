@@ -1,8 +1,9 @@
 import React from "react";
 import { FC } from "react";
 import { useDispatch } from "react-redux";
+import { Post, PostsList } from "src/@types";
 import { setSelectedPost, setSelectedPostModalOpened } from "src/redux/reducers/postSlice";
-import { CardsListik } from "../../@types";
+// import { CardsListik } from "../../@types";
 import Card from "../Card/Card";
 import { CardTypes } from "../Card/Card";
 import styles from './CardsList.module.scss';
@@ -10,9 +11,11 @@ import styles from './CardsList.module.scss';
 
 // step 4
 // CardsListik - это из @types 
+// на 43 уроке конфликт - замена на PostsList
 // то есть это массив наших постов (карточек)
 type CardsListProps = {
-    cardsList: CardsListik;
+    // cardsList: CardsListik;
+    cardsList: PostsList;
 }
 
 // step 5 стилизация
@@ -58,9 +61,10 @@ type CardsListProps = {
 const CardsList: FC<CardsListProps> = ({ cardsList }) => {
 
     const dispatch = useDispatch();
-    const onMoreClick = (post: Card) => () => {
+    const onMoreClick = (post: Post) => () => {
         dispatch(setSelectedPostModalOpened(true));
         dispatch(setSelectedPost(post));
+        // было Card, на 43 уроке конфликт - замена на Post в @types
         // dispatch - ручки
         // setSelectedPost - экшен, куда данные должны улететь
         // null - payload, т е сами данные, которые летят в ф-ии, которые их меняют
@@ -69,13 +73,13 @@ const CardsList: FC<CardsListProps> = ({ cardsList }) => {
     return cardsList.length ? (
         <div className={styles.cardsListContainer}>
             <div className={styles.cardsListWrapLeft}>
-                <Card type={CardTypes.Large} {...cardsList[0]} />
-                {/* <Card type={CardTypes.Large} {...cardsList[0]} onMoreClick={onMoreClick(cardsList[0])}/> */}
+                {/* <Card type={CardTypes.Large} {...cardsList[0]} /> */}
+                <Card type={CardTypes.Large} {...cardsList[0]} onMoreClick={onMoreClick(cardsList[0])}/>
                 <div className={styles.mediumContainer}>
                     {cardsList.map((el, idx) => {
                         if (idx >= 1 && idx <= 4) {
-                            return <Card key={el.id} type={CardTypes.Medium} {...el} />
-                            // return <Card key={el.id} type={CardTypes.Medium} {...el} onMoreClick={onMoreClick(el)}/>
+                            // return <Card key={el.id} type={CardTypes.Medium} {...el} />
+                            return <Card key={el.id} type={CardTypes.Medium} {...el} onMoreClick={onMoreClick(el)}/>
                         }
                     })}
                 </div>
@@ -83,8 +87,8 @@ const CardsList: FC<CardsListProps> = ({ cardsList }) => {
             <div className={styles.smallContainer}>
                 {cardsList.map((el, idx) => {
                     if (idx >= 5 && idx <= 10) {
-                        return <Card key={el.id} type={CardTypes.Small} {...el} />
-                        // return <Card key={el.id} type={CardTypes.Small} {...el} onMoreClick={onMoreClick(el)}/>
+                        // return <Card key={el.id} type={CardTypes.Small} {...el} />
+                        return <Card key={el.id} type={CardTypes.Small} {...el} onMoreClick={onMoreClick(el)}/>
                     }
                 })}
             </div>

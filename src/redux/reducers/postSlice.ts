@@ -13,7 +13,9 @@
 // создаем reducer в котором все это будет происходить => postSlice (по аналогии с themeSlice)
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Card } from "src/@types";
+// было Card, на 43 уроке конфликт - замена на Post в @types
+// import { Card } from "src/@types";
+import { Post } from "src/@types";
 import { RootState } from "../store";
 
 // step 4 
@@ -27,7 +29,8 @@ import { RootState } from "../store";
 
 type InitialState = {
     isSelectedPostModalOpened: boolean;
-    selectedPost: Card | null;
+    // selectedPost: Card | null;  //было Card, на 43 уроке конфликт - замена на Post в @types
+    selectedPost: Post | null;
 };
 
 // step 3
@@ -71,7 +74,7 @@ const postSlice = createSlice({
       setSelectedPostModalOpened: (state, action: PayloadAction<boolean>) => {
         state.isSelectedPostModalOpened = action.payload; //тут данные ловятся и кладутся на нужное место
       },
-      setSelectedPost: (state, action: PayloadAction<Card | null>) => {
+      setSelectedPost: (state, action: PayloadAction<Post | null>) => {
         state.selectedPost = action.payload;
       },
     }, // вот тут живут функции, которые ловят экшены по типу(т.е. по названию ф-и)

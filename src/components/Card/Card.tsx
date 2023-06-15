@@ -88,12 +88,12 @@ const Card: FC<CardProps> = ({ type, id, date, title, text, image, lesson_num, a
                 </div>
                 <div className={styles.cardReactionNavigation}>
                     <BookmarkIcon />
-                    <DotsMenuIcon />
-                    {/* {onMoreClick && (
+                    {/* <DotsMenuIcon /> */}
+                    {onMoreClick && (
                         <div onClick={onMoreClick}>
                             <DotsMenuIcon />
                         </div>
-                    )} */}
+                    )}
                 </div>
             </div>
         </div>

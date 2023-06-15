@@ -2,7 +2,8 @@ import { ReactElement } from "react";
 
 // данные CardProps
 // Но убрали type
-export type Card = {
+// было Card, на 43 уроке конфликт - замена на Post
+export type Post = {
   id: number,
   image: string,
   text: string,
@@ -13,7 +14,8 @@ export type Card = {
 }
 
 // CardsListik - это массив наших постов (карточек)
-export type CardsListik = Card[]
+// было CardsListik, на 43 уроке конфликт - замена на PostsList
+export type PostsList = Post[]
 
 // lesson 40
 // переносим enum, так как у нас несколько свойств Tabs
