@@ -30,6 +30,7 @@ export enum CardTypes {
 // импортируем import {FC} from "react";
 // а также присваиваем props в const : FC <CardProps>
 // сразу же достаем их их props и получаем их в FC <CardProps>
+// ---
 // Lesson 43 Redux
 // передаем пропсой onMoreClick, оборачивае кнопочку с тремя точечками
 // прописываем условие, чтобы в модальном окне нельзя было вызывать другое модальное окно
@@ -43,7 +44,9 @@ type CardProps = {
     lesson_num?: number,
     title: string,
     author?: number,
-    onMoreClick?: () => void;
+    onMoreClick?: () => void,
+    onImageClick?: () => void,
+    
 }
 
 // step 6
@@ -55,7 +58,7 @@ type CardProps = {
 // компонент Card
 // возврашает Card у которых есть три состояния: Large, Medium, Small
 
-const Card: FC<CardProps> = ({ type, id, date, title, text, image, lesson_num, author, onMoreClick }) => {
+const Card: FC<CardProps> = ({ type, id, date, title, text, image, lesson_num, author, onMoreClick, onImageClick}) => {
     // return <div>Тут будет Card</div>
     const cardStyle = styles[type]
 
@@ -77,7 +80,7 @@ const Card: FC<CardProps> = ({ type, id, date, title, text, image, lesson_num, a
                         <div className={styles.cardText}>{text}</div>
                     )}
                 </div>
-                <div className={styles.cardImage}>
+                <div className={styles.cardImage} onClick={onImageClick}>
                     <img src={image} alt="#" />
                 </div>
             </div>

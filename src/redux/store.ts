@@ -26,7 +26,7 @@ import postReducer from './reducers/postSlice'
 const store = configureStore({
     reducer: {
         themeReducer,
-        postReducer, 
+        postReducer,
     },
 });
 

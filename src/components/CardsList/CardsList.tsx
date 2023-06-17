@@ -2,7 +2,7 @@ import React from "react";
 import { FC } from "react";
 import { useDispatch } from "react-redux";
 import { Post, PostsList } from "src/@types";
-import { setSelectedPost, setSelectedPostModalOpened } from "src/redux/reducers/postSlice";
+import {setSelectedImage, setSelectedPost, setSelectedPostModalOpened } from "src/redux/reducers/postSlice";
 // import { CardsListik } from "../../@types";
 import Card from "../Card/Card";
 import { CardTypes } from "../Card/Card";
@@ -56,11 +56,10 @@ type CardsListProps = {
 // в return добавляем onMoreClick={onMoreClick(cardsList[0])} или onMoreClick={onMoreClick(el)}
 
 
-
-
 const CardsList: FC<CardsListProps> = ({ cardsList }) => {
 
     const dispatch = useDispatch();
+
     const onMoreClick = (post: Post) => () => {
         dispatch(setSelectedPostModalOpened(true));
         dispatch(setSelectedPost(post));
@@ -70,16 +69,26 @@ const CardsList: FC<CardsListProps> = ({ cardsList }) => {
         // null - payload, т е сами данные, которые летят в ф-ии, которые их меняют
     };
 
+    const onImageClick = (cardsList: string) => () => {
+        dispatch(setSelectedPostModalOpened(true));
+        dispatch(setSelectedImage(cardsList));
+        // dispatch - ручки
+        // setSelectedPost - экшен, куда данные должны улететь
+        // null - payload, т е сами данные, которые летят в ф-ии, которые их меняют
+    };
+
+
+
     return cardsList.length ? (
         <div className={styles.cardsListContainer}>
             <div className={styles.cardsListWrapLeft}>
                 {/* <Card type={CardTypes.Large} {...cardsList[0]} /> */}
-                <Card type={CardTypes.Large} {...cardsList[0]} onMoreClick={onMoreClick(cardsList[0])}/>
+                <Card type={CardTypes.Large} {...cardsList[0]} onMoreClick={onMoreClick(cardsList[0])} onImageClick={onImageClick(cardsList[0].image)}/>
                 <div className={styles.mediumContainer}>
                     {cardsList.map((el, idx) => {
                         if (idx >= 1 && idx <= 4) {
                             // return <Card key={el.id} type={CardTypes.Medium} {...el} />
-                            return <Card key={el.id} type={CardTypes.Medium} {...el} onMoreClick={onMoreClick(el)}/>
+                            return <Card key={el.id} type={CardTypes.Medium} {...el} onMoreClick={onMoreClick(el)} onImageClick={onImageClick(el.image)}/>
                         }
                     })}
                 </div>
@@ -88,7 +97,7 @@ const CardsList: FC<CardsListProps> = ({ cardsList }) => {
                 {cardsList.map((el, idx) => {
                     if (idx >= 5 && idx <= 10) {
                         // return <Card key={el.id} type={CardTypes.Small} {...el} />
-                        return <Card key={el.id} type={CardTypes.Small} {...el} onMoreClick={onMoreClick(el)}/>
+                        return <Card key={el.id} type={CardTypes.Small} {...el} onMoreClick={onMoreClick(el)} onImageClick={onImageClick(el.image)}/>
                     }
                 })}
             </div>

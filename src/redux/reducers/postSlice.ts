@@ -12,6 +12,7 @@
 // нам нужно отследить вызвано ли модальное окно и какой пост в него положили
 // создаем reducer в котором все это будет происходить => postSlice (по аналогии с themeSlice)
 
+
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // было Card, на 43 уроке конфликт - замена на Post в @types
 // import { Card } from "src/@types";
@@ -27,10 +28,12 @@ import { RootState } from "../store";
 // значение: наш пост - то есть Card  или null - так как его может и быть 
 // у объектов всегда исходное состояние null
 
+
 type InitialState = {
-    isSelectedPostModalOpened: boolean;
-    // selectedPost: Card | null;  //было Card, на 43 уроке конфликт - замена на Post в @types
-    selectedPost: Post | null;
+  isSelectedPostModalOpened: boolean;
+  // selectedPost: Card | null;  //было Card, на 43 уроке конфликт - замена на Post в @types
+  selectedPost: Post | null;
+  selectedImage: string;
 };
 
 // step 3
@@ -43,8 +46,9 @@ type InitialState = {
 // у объектов всегда исходное состояние null => selectedPost: null
 
 const initialState: InitialState = {
-    isSelectedPostModalOpened: false,
-    selectedPost: null,
+  isSelectedPostModalOpened: false,
+  selectedPost: null,
+  selectedImage: '',
 };
 
 // step 1
@@ -68,17 +72,20 @@ const initialState: InitialState = {
 
 
 const postSlice = createSlice({
-    name: "postReducer",
-    initialState,
-    reducers: {
-      setSelectedPostModalOpened: (state, action: PayloadAction<boolean>) => {
-        state.isSelectedPostModalOpened = action.payload; //тут данные ловятся и кладутся на нужное место
-      },
-      setSelectedPost: (state, action: PayloadAction<Post | null>) => {
-        state.selectedPost = action.payload;
-      },
-    }, // вот тут живут функции, которые ловят экшены по типу(т.е. по названию ф-и)
-  });
+  name: "postReducer",
+  initialState,
+  reducers: {
+    setSelectedPostModalOpened: (state, action: PayloadAction<boolean>) => {
+      state.isSelectedPostModalOpened = action.payload; //тут данные ловятся и кладутся на нужное место
+    },
+    setSelectedPost: (state, action: PayloadAction<Post | null>) => {
+      state.selectedPost = action.payload;
+    },
+    setSelectedImage: (state, action: PayloadAction<string>) => {
+      state.selectedImage = action.payload;
+  },
+  }, // вот тут живут функции, которые ловят экшены по типу(т.е. по названию ф-и)
+});
 
 
 // step 5
@@ -88,10 +95,12 @@ const postSlice = createSlice({
 // ---
 // добавляем функцию setSelectedPost для SelectedPost в export
 // ---
-// тут сперва необходимо поменять в App 
+// тут сперва необходимо поменять (обработать) в App 
 // используем dispatch
+// ---
+// для SelectedPost - обрабатываем в SelectedPostModal 
 
-export const { setSelectedPostModalOpened, setSelectedPost } =
+  export const { setSelectedPostModalOpened, setSelectedPost, setSelectedImage} =
   postSlice.actions;
 // а вот тут живут сами экшены, которые рождаются библиотекой исходя
 // из названия ф-ии, которая их ловит
@@ -103,10 +112,11 @@ export const { setSelectedPostModalOpened, setSelectedPost } =
 // создаем getSelectedPost для SelectedPost
 
 export const PostSelectors = {
-    getSelectedPostModalOpened: (state: RootState) =>
-      state.postReducer.isSelectedPostModalOpened,
-    getSelectedPost: (state: RootState) => state.postReducer.selectedPost,
-  };
+  getSelectedPostModalOpened: (state: RootState) =>
+    state.postReducer.isSelectedPostModalOpened,
+  getSelectedPost: (state: RootState) => state.postReducer.selectedPost,
+  getSelectedImage: (state: RootState) => state.postReducer.selectedImage,
+};
 // вот отсюда мы достаем данные, которые заранее видоизменили снежками (экшенами)
 
 

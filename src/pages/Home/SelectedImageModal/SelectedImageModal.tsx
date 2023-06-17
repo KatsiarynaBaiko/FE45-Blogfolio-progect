@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Card, { CardTypes } from "src/components/Card";
 import Modal from "src/components/Modal";
-import { PostSelectors, setSelectedPost, setSelectedPostModalOpened } from "src/redux/reducers/postSlice";
+import { PostSelectors, setSelectedImage, setSelectedPost, setSelectedPostModalOpened } from "src/redux/reducers/postSlice";
 
 
 // после создания компонента Modal
@@ -49,30 +49,28 @@ import { PostSelectors, setSelectedPost, setSelectedPostModalOpened } from "src/
 // для этого идем в CardList и также прописываем ей dispatch
 
 
-const SelectedPostModal = () => {
+const SelectedImageModal = () => {
 
     const isOpened = useSelector(PostSelectors.getSelectedPostModalOpened);
-    const selectedPost = useSelector(PostSelectors.getSelectedPost);
-    
+    const selectedImage = useSelector(PostSelectors.getSelectedImage);
 
     const dispatch = useDispatch();
 
     const onCloseModal = () => {
         dispatch(setSelectedPostModalOpened(false));
-        dispatch(setSelectedPost(null));
+        dispatch(setSelectedImage(''));
         // dispatch - ручки
         // setSelectedPost - экшен, куда данные должны улететь
         // null - payload, т е сами данные, которые летят в ф-ии, которые их меняют
     }
 
-    return selectedPost ? (
+    return selectedImage ? (
         <Modal isOpen={isOpened} onClose={onCloseModal} >
-            {/* <Card type={CardTypes.Large} id={ } image={ } text={ } date={ } title={ } /> */}
-            <Card type={CardTypes.Large} {...selectedPost} />
+            <img src={selectedImage} />
         </Modal>
     ) : null;
 };
 
 
 // step 2
-export default SelectedPostModal;
+export default SelectedImageModal;

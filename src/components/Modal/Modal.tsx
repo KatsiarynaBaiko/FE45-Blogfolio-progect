@@ -2,6 +2,7 @@ import React from "react"
 import { FC } from 'react'
 import ReactModal from 'react-modal' // react-madal ругается => yarn add -D @types/react-modal
 import { Children } from "src/@types";
+import styles from './Modal.module.scss';
 
 // нам необходимо реализовать предпросмотр поста
 // по клику на кнопочку "три точечки" (DotsMenuIcon)
@@ -31,7 +32,13 @@ type ModalProps = {
 const Modal: FC<ModalProps> = ({ isOpen, onClose, children }) => {
     return (
         <ReactModal isOpen={isOpen} onRequestClose={onClose}>
-            {children}
+            <div className={styles.modalContainer} >
+                <div className={styles.modalContent}>
+                    {/* для крестика на закрытие */}
+                    <div></div> 
+                    <div className={styles.modalInfo}>{children}</div>
+                </div>
+            </div>
         </ReactModal>
     )
 }

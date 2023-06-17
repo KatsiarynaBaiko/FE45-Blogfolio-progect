@@ -8,6 +8,7 @@ import CardsList from "../../components/CardsList";
 import TabsList from "../../components/Tabslist/Tabslist";
 import Title from "../../components/Title";
 import styles from './Home.module.scss'
+import SelectedImageModal from "./SelectedImageModal";
 import SelectedPostModal from "./SelectedPostModal";
 
 
@@ -237,6 +238,8 @@ const Home = () => {
             <CardsList cardsList={cardsList} />
 
             <SelectedPostModal />
+
+            <SelectedImageModal />
 
         </div>
     )
