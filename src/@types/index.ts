@@ -47,3 +47,10 @@ export enum Theme {
 // то выносим в @types и переиспользуем
 
 export type Children = ReactElement| ReactElement[];
+
+
+// lesson 44
+export enum LikeStatus {
+  Like = 'like',
+  Dislike = 'dislike',
+}
