@@ -68,7 +68,10 @@ const SelectedPostModal = () => {
     return selectedPost ? (
         <Modal isOpen={isOpened} onClose={onCloseModal} >
             {/* <Card type={CardTypes.Large} id={ } image={ } text={ } date={ } title={ } /> */}
-            <Card type={CardTypes.Large} {...selectedPost} onStatusClick={(_) => {}}/>
+            {/* setSavedStatus - version 1 */}
+            {/* <Card type={CardTypes.Large} {...selectedPost} onStatusClick={(_) => {}} onSavedClick={(_) => {}}/> */}
+            {/* setSavedStatus - version 2 */}
+            <Card type={CardTypes.Large} {...selectedPost} onStatusClick={(_) => {}} />
         </Modal>
     ) : null;
 };

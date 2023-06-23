@@ -4,12 +4,12 @@ import styles from './Card.module.scss';
 import classNames from "classnames";
 import { type } from "os";
 
-import { DislikeIcon, DotsMenuIcon } from "../../assets/icons";
+import { AddBookmarkIcon, DislikeIcon, DotsMenuIcon } from "../../assets/icons";
 import { LikeIcon } from "../../assets/icons";
 import { BookmarkIcon } from "../../assets/icons";
 import { skipPartiallyEmittedExpressions } from "typescript";
 import { useThemeContext } from "src/context/Theme";
-import { LikeStatus, Theme } from "src/@types";
+import { LikeStatus, SaveStatus, Theme } from "src/@types";
 import { useSelector } from "react-redux";
 import { PostSelectors } from "src/redux/reducers/postSlice";
 
@@ -47,6 +47,13 @@ export enum CardTypes {
 // но у нас не отображаются циферки количества лайков/дизлайков
 // тут должна проверяться есть ли эта карточка в массиве
 // => в карточке с помощью селекторов достаем эти данные (массив лайков/дизлайков)
+// ---
+// HW6
+// передаем пропсой onSavedClick и оборачиваем нашу иконочку bookmark в div
+// с помощью селекторов достаем массив сохраненных постов
+// => icons добавляем еще один вариант сохраненной иконочки
+// и прописываем условие
+
 
 
 
@@ -63,7 +70,8 @@ type CardProps = {
     onMoreClick?: () => void,
     onImageClick?: () => void,
     onStatusClick: (status: LikeStatus) => void;
-
+    // onSavedClick: (status: SaveStatus) => void; // setSavedStatus - version 1
+    onSavedClick?: () => void; // setSavedStatus - version 2
 }
 
 // step 6
@@ -75,7 +83,7 @@ type CardProps = {
 // компонент Card
 // возврашает Card у которых есть три состояния: Large, Medium, Small
 
-const Card: FC<CardProps> = ({ type, id, date, title, text, image, lesson_num, author, onMoreClick, onImageClick, onStatusClick }) => {
+const Card: FC<CardProps> = ({ type, id, date, title, text, image, lesson_num, author, onMoreClick, onImageClick, onStatusClick, onSavedClick }) => {
     // return <div>Тут будет Card</div>
     const cardStyle = styles[type]
 
@@ -96,6 +104,11 @@ const Card: FC<CardProps> = ({ type, id, date, title, text, image, lesson_num, a
     const likedIndex = likedPosts.findIndex((item) => item.id === id);
     const dislikedIndex = dislikedPosts.findIndex((item) => item.id === id);
 
+    // с помощью селекторов достаем массив сохраненных постов
+    // также достаем индексб чтобы менять картиночку при сохранении поста
+    // => icons добавляем еще один вариант сохраненной иконочки
+    const savedPosts = useSelector(PostSelectors.getSavedPosts);
+    const savedIndex = savedPosts.findIndex((item) => item.id === id);
 
     return (
         <div className={classNames(cardStyle)}>
@@ -115,17 +128,23 @@ const Card: FC<CardProps> = ({ type, id, date, title, text, image, lesson_num, a
             </div>
             <div className={classNames(styles.cardReaction, { [styles.darkCardReaction]: themeValue === Theme.Dark })}>
                 <div className={styles.cardReactionLikeDislike}>
-                    <div onClick={() => onStatusClick(LikeStatus.Like)} className={styles.likeStatusNumber}>
+                    <div onClick={() => onStatusClick(LikeStatus.Like)} className={classNames(styles.likeStatusNumber, { [styles.darkLikeStatusNumber]: themeValue === Theme.Dark })}>
                         {/* <LikeIcon /> */}
                         <LikeIcon /> {likedIndex > -1 && 1}
                     </div>
-                    <div onClick={() => onStatusClick(LikeStatus.Dislike)} className={styles.likeStatusNumber}>
+                    <div onClick={() => onStatusClick(LikeStatus.Dislike)} className={classNames(styles.likeStatusNumber, { [styles.darkLikeStatusNumber]: themeValue === Theme.Dark })}>
                         {/* <DislikeIcon /> */}
                         <DislikeIcon /> {dislikedIndex > -1 && 1}
                     </div>
                 </div>
                 <div className={styles.cardReactionNavigation}>
-                    <BookmarkIcon />
+                    {/* setSavedStatus - version 1 */}
+                    {/* <div onClick={() => onSavedClick(SaveStatus.Saved)}> */}
+                    {/* setSavedStatus - version 2 */}
+                    <div onClick={onSavedClick}>
+                        {/* <BookmarkIcon /> */}
+                        {savedIndex > -1 ? <AddBookmarkIcon /> : <BookmarkIcon />}
+                    </div>
                     {/* <DotsMenuIcon /> */}
                     {onMoreClick && (
                         <div onClick={onMoreClick}>

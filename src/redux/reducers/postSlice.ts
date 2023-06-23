@@ -14,6 +14,10 @@
 // => like -1, а dislike +1 и наоборот
 // у нас будет 2 массива: лайкнутые и дизлайкнутые посты,
 // которые создаются в initialState (это наши данные)
+// --- HW7
+// реализовать функционал, по сохранению поста при нажатии на кнопочку Bookmark
+// сохраненные посты помезаются в массив и удаляются из него (savedPosts)
+
 
 
 // preparing - сделать модальное окно (можно через react-modal)
@@ -28,7 +32,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // было Card, на 43 уроке конфликт - замена на Post в @types
 // import { Card } from "src/@types";
-import { LikeStatus, Post, PostsList } from "src/@types";
+import { LikeStatus, Post, PostsList, SaveStatus } from "src/@types";
 import { RootState } from "../store";
 
 // step 4 
@@ -44,6 +48,8 @@ import { RootState } from "../store";
 // ---
 // для likedPosts и dislikedPosts типизация будет массив наших постов
 // то есть PostsList из @types 
+// ---
+// для Bookmark (savedPosts) типизация - массив наших постов PostsList из @types 
 
 
 type InitialState = {
@@ -53,6 +59,7 @@ type InitialState = {
   selectedImage: string;
   likedPosts: PostsList;
   dislikedPosts: PostsList;
+  savedPosts: PostsList;
 };
 
 // step 3
@@ -70,6 +77,9 @@ type InitialState = {
 // у нас будет 2 массива: лайкнутые и дизлайкнутые посты,
 // которые создаются в initialState (это наши данные)
 // исходное значение у массива - пустой массив
+// ---
+// Bookmark (savedPosts)
+// для Bookmark будет один массив куда ьуду помещаться/удаляться посты
 
 const initialState: InitialState = {
   isSelectedPostModalOpened: false,
@@ -77,6 +87,7 @@ const initialState: InitialState = {
   selectedImage: '',
   likedPosts: [],
   dislikedPosts: [],
+  savedPosts: [],
 };
 
 // step 1
@@ -149,6 +160,11 @@ const initialState: InitialState = {
 // если уже лежит карточка (например стоит уже лайк) - это значит 
 // что индекс > -1 (карточка уже существует)
 // то нам нужноее оттуда убрать (вырезать) через splice
+// ---
+// Bookmark (savedPosts)
+// логика мысли аналогична Like & Dilslike
+// за исключением того, что не будет разветвления действий
+// для Bookmark (savedPosts) мы либо кладем пост, либо его удаляем
 
 
 
@@ -199,7 +215,40 @@ const postSlice = createSlice({
       if (secondaryIndex > -1) {
         state[secondaryKey].splice(secondaryIndex, 1)
       }
-    }
+    },
+
+    // setSavedStatus - version 1
+    // setSavedStatus: (state, action: PayloadAction<{ card: Post; status: SaveStatus }>) => {
+    //   const { card, status } = action.payload;
+
+    //   const savedIndex = state.savedPosts.findIndex(
+    //     (item) => item.id === card.id
+    //   );
+
+    //   const isSaved = status === SaveStatus.Saved
+
+    //   const mainIndex = isSaved ? savedIndex : 1
+
+    //   if (mainIndex === -1) {
+    //     state.savedPosts.push(card)
+    //   } else
+    //     state.savedPosts.splice(mainIndex, 1)
+    // },
+
+    // setSavedStatus - version 2
+    setSavedStatus: (state, action: PayloadAction<{ card: Post}>) => {
+      const { card } = action.payload;
+
+      const savedIndex = state.savedPosts.findIndex(
+        (item) => item.id === card.id
+      );
+
+      if (savedIndex === -1) {
+        state.savedPosts.push(card)
+      } else
+        state.savedPosts.splice(savedIndex, 1)
+    },
+
   }, // вот тут живут функции, которые ловят экшены по типу(т.е. по названию ф-и)
 });
 
@@ -218,9 +267,10 @@ const postSlice = createSlice({
 // ---
 // добавляем экшен setSelectedImage и обрабатываем его в SelectedImageModal
 // добавляем экшен setLikeStatus и обрабатываем его в CardList
+// добавляем экшен setSavedStatus и обрабатываем его в CardList
 
 
-export const { setSelectedPostModalOpened, setSelectedPost, setSelectedImage, setLikeStatus } =
+export const { setSelectedPostModalOpened, setSelectedPost, setSelectedImage, setLikeStatus, setSavedStatus } =
   postSlice.actions;
 // а вот тут живут сами экшены, которые рождаются библиотекой исходя
 // из названия ф-ии, которая их ловит
@@ -232,6 +282,7 @@ export const { setSelectedPostModalOpened, setSelectedPost, setSelectedImage, se
 // создаем getSelectedPost для SelectedPost
 // создаем  getSelectedImage для selectedImage
 // getLikedPosts и getDislikedPosts для SelectedPost
+// создаем getSavedPosts для SavedPosts
 
 export const PostSelectors = {
   getSelectedPostModalOpened: (state: RootState) =>
@@ -239,7 +290,9 @@ export const PostSelectors = {
   getSelectedPost: (state: RootState) => state.postReducer.selectedPost,
   getSelectedImage: (state: RootState) => state.postReducer.selectedImage,
   getLikedPosts: (state: RootState) => state.postReducer.likedPosts,
-  getDislikedPosts: (state: RootState) => state.postReducer.dislikedPosts
+  getDislikedPosts: (state: RootState) => state.postReducer.dislikedPosts,
+  getSavedPosts: (state: RootState) => state.postReducer.savedPosts,
+
 };
 // вот отсюда мы достаем данные, которые заранее видоизменили снежками (экшенами)
 
@@ -248,6 +301,7 @@ export const PostSelectors = {
 // и теперь все это необходимо обработать в SelectedPostModal 
 // обрабатываем image в SelectedImageModal
 // Like & Dilslike необходимо обработать в CardList
+// SavedPosts необходимо обработать в CardList
 
 // step 2
 export default postSlice.reducer; // это мы группу функций экспортируем единым объектом

@@ -1,8 +1,8 @@
 import React from "react";
 import { FC } from "react";
 import { useDispatch } from "react-redux";
-import { LikeStatus, Post, PostsList } from "src/@types";
-import { setLikeStatus, setSelectedImage, setSelectedPost, setSelectedPostModalOpened } from "src/redux/reducers/postSlice";
+import { LikeStatus, Post, PostsList, SaveStatus } from "src/@types";
+import { setLikeStatus, setSavedStatus, setSelectedImage, setSelectedPost, setSelectedPostModalOpened } from "src/redux/reducers/postSlice";
 // import { CardsListik } from "../../@types";
 import Card from "../Card/Card";
 import { CardTypes } from "../Card/Card";
@@ -61,6 +61,9 @@ type CardsListProps = {
 // Lesson 44 Redux
 // необходимо прописать функционал кнопочек like & dislike
 // то, что уладем в скобочки всегда совпалает с тем, что ледит в <>
+// ---
+// HW7
+// необходимо прописать функционал кнопочки Bookmark (onSavedClick)
 
 
 
@@ -89,17 +92,27 @@ const CardsList: FC<CardsListProps> = ({ cardsList }) => {
         dispatch(setLikeStatus({ card, status }))
     }
 
+    // setSavedStatus - version 1
+    // const onSavedClick = (card: Post) => (status: SaveStatus) => {
+    //     dispatch(setSavedStatus({ card, status }))
+    // }
+
+    // setSavedStatus - version 2
+    const onSavedClick = (card: Post) => () => {
+        dispatch(setSavedStatus({ card }))
+    }
+
 
     return cardsList.length ? (
         <div className={styles.cardsListContainer}>
             <div className={styles.cardsListWrapLeft}>
                 {/* <Card type={CardTypes.Large} {...cardsList[0]} /> */}
-                <Card type={CardTypes.Large} {...cardsList[0]} onMoreClick={onMoreClick(cardsList[0])} onImageClick={onImageClick(cardsList[0].image)} onStatusClick = {onStatusClick(cardsList[0])} />
+                <Card type={CardTypes.Large} {...cardsList[0]} onMoreClick={onMoreClick(cardsList[0])} onImageClick={onImageClick(cardsList[0].image)} onStatusClick={onStatusClick(cardsList[0])} onSavedClick={onSavedClick(cardsList[0])} />
                 <div className={styles.mediumContainer}>
                     {cardsList.map((el, idx) => {
                         if (idx >= 1 && idx <= 4) {
                             // return <Card key={el.id} type={CardTypes.Medium} {...el} />
-                            return <Card key={el.id} type={CardTypes.Medium} {...el} onMoreClick={onMoreClick(el)} onImageClick={onImageClick(el.image)} onStatusClick = {onStatusClick(el)}/>
+                            return <Card key={el.id} type={CardTypes.Medium} {...el} onMoreClick={onMoreClick(el)} onImageClick={onImageClick(el.image)} onStatusClick={onStatusClick(el)} onSavedClick={onSavedClick(el)} />
                         }
                     })}
                 </div>
@@ -108,7 +121,7 @@ const CardsList: FC<CardsListProps> = ({ cardsList }) => {
                 {cardsList.map((el, idx) => {
                     if (idx >= 5 && idx <= 10) {
                         // return <Card key={el.id} type={CardTypes.Small} {...el} />
-                        return <Card key={el.id} type={CardTypes.Small} {...el} onMoreClick={onMoreClick(el)} onImageClick={onImageClick(el.image)} onStatusClick = {onStatusClick(el)}/>
+                        return <Card key={el.id} type={CardTypes.Small} {...el} onMoreClick={onMoreClick(el)} onImageClick={onImageClick(el.image)} onStatusClick={onStatusClick(el)} onSavedClick={onSavedClick(el)} />
                     }
                 })}
             </div>

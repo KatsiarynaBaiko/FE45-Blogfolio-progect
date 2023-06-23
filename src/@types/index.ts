@@ -46,7 +46,7 @@ export enum Theme {
 // так как у нас повторяется  сhildren = ReactElement | ReactElement[];
 // то выносим в @types и переиспользуем
 
-export type Children = ReactElement| ReactElement[];
+export type Children = ReactElement | ReactElement[];
 
 
 // lesson 44
@@ -54,3 +54,10 @@ export enum LikeStatus {
   Like = 'like',
   Dislike = 'dislike',
 }
+
+// HW7
+export enum SaveStatus {
+  Saved = 'saved',
+  NotSaved = 'notSaved'
+}
+
