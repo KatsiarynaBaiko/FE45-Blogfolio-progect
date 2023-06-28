@@ -1,7 +1,9 @@
 import classNames from "classnames";
 import React from "react";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Theme } from "src/@types";
+import { sighUpUser } from "src/redux/reducers/authSlice";
 import FormPagesContainer from "../../components/FormPagesContainer"
 import Input from "../../components/Input";
 import { useThemeContext } from "../../context/Theme";
@@ -35,14 +37,30 @@ const SingUp = () => {
     // темная тема - с помощью classNames => {[styles.darkAdditionalInfo]: themeValue === Theme.Dark}
     const { themeValue } = useThemeContext();
 
+    // step 8 lesson 45 (saga)
+    // сага написана, необходимо ее вызвать и запустить
+    // у нас уже есть username, email, password и это необходимо кинуть в сторону саги
+    // => нам необходима функция, которая будет это делать (кидать ручками (dispatch))
+
+    const dispatch = useDispatch();
+    const onSubmit = () => {
+        const data = {
+            username: name,
+            email,
+            password,
+        };
+        dispatch(sighUpUser({ data, callback: () => { } }));
+    };
+
+
     return (
         <FormPagesContainer
             title={'Sign Up'}
             btnTitle={'Sign Up'}
-            onSubmit={() => { }}
+            onSubmit={onSubmit}
             additionalInfo={
-                <div className={classNames(styles.additionalInfo, {[styles.darkAdditionalInfo]: themeValue === Theme.Dark})}>
-                    {'Already have an account? '} 
+                <div className={classNames(styles.additionalInfo, { [styles.darkAdditionalInfo]: themeValue === Theme.Dark })}>
+                    {'Already have an account? '}
                     <span className={styles.signIn}>Sign In</span>
                 </div>
             }
