@@ -1,10 +1,15 @@
 // step 7 Lesson 45 (saga)
 // создание запроса в api, в который мы будет стучаться
 // для этого устанавливали библиотеку apisauce (=> идем в папочку  api)
+// ---
+// step 2 HW 8 (saga)
+// так как мы получаем данные с сервера
+// то нам нужен get-запрос
+// => необходима функция, которая возвращает get-запрос
 
 
 import { create } from "apisauce";
-import { SignUpUserData } from "src/redux/@types";
+import { SignInData, SignUpUserData } from "src/redux/@types";
 
 // создаем API Инстанс — это виртуальная машина, которая запускается и работает в облаке
 // внутрь  напихиваем конфиги этого API
@@ -24,9 +29,24 @@ const signUpUser = (data: SignUpUserData) => {
     return API.post("/auth/users/", data);
 };
 
+// создаем getPosts - получение постов из сервера
+// => запрос get
+// лимит 12 - количество постов на страничке по макету
+const getPosts = () => {
+    return API.get("/blog/posts/?limit=12");
+};
+
+
+
+
+const createToken = (data: SignInData) => {
+    return API.post('/auth/jwt/create/', data);
+}
 
 
 // не забываем экспортировать
 export default {
     signUpUser,
+    getPosts,
+    createToken,
 };

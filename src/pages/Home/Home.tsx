@@ -1,6 +1,9 @@
 import classNames from "classnames";
 import React, { useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useThemeContext } from "src/context/Theme";
+import { AuthSelectors } from "src/redux/reducers/authSlice";
+import { getPostsList, PostSelectors } from "src/redux/reducers/postSlice";
 // на 43 уроке конфликт - замена CardsListik на PostsList в @types"
 // import { CardsListik, TabsTypes, Theme } from "../../@types";
 import { PostsList, TabsTypes, Theme } from "../../@types";
@@ -12,153 +15,155 @@ import SelectedImageModal from "./SelectedImageModal";
 import SelectedPostModal from "./SelectedPostModal";
 
 
-
-const MOCK_ARRAY = [
-    {
-        id: 0,
-        image:
-            "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
-        text: "Astronauts Kayla Barron and Raja Chari floated out of the International Space Station airlock for a spacewalk Tuesday, installing brackets and struts to support new solar arrays to upgrade the research lab’s power system on the same day that crewmate Mark Vande Hei marked his 341st day in orbit, a U.S. record for a single spaceflight.",
-        date: "12-10-2023",
-        lesson_num: 12,
-        title:
-            "Astronauts prep for new solar arrays on nearly seven-hour spacewalk ...",
-        description: "Описание поста",
-        author: 10,
-    },
-    {
-        id: 1,
-        image:
-            "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
-        text: "Astronauts Kayla Barron and Raja Chari floated out of the International Space Station airlock for a spacewalk Tuesday, installing brackets and struts to support new solar arrays to upgrade the research lab’s power system on the same day that crewmate Mark Vande Hei marked his 341st day in orbit, a U.S. record for a single spaceflight.",
-        date: "12-10-2023",
-        lesson_num: 12,
-        title:
-            "Astronauts prep for new solar arrays on nearly seven-hour spacewalk ...",
-        description: "Описание поста",
-        author: 10,
-    },
-    {
-        id: 2,
-        image:
-            "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
-        text: "Astronauts Kayla Barron and Raja Chari floated out of the International Space Station airlock for a spacewalk Tuesday, installing brackets and struts to support new solar arrays to upgrade the research lab’s power system on the same day that crewmate Mark Vande Hei marked his 341st day in orbit, a U.S. record for a single spaceflight.",
-        date: "12-10-2023",
-        lesson_num: 12,
-        title:
-            "Astronauts prep for new solar arrays on nearly seven-hour spacewalk ...",
-        description: "Описание поста",
-        author: 10,
-    },
-    {
-        id: 3,
-        image:
-            "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
-        text: "Astronauts Kayla Barron and Raja Chari floated out of the International Space Station airlock for a spacewalk Tuesday, installing brackets and struts to support new solar arrays to upgrade the research lab’s power system on the same day that crewmate Mark Vande Hei marked his 341st day in orbit, a U.S. record for a single spaceflight.",
-        date: "12-10-2023",
-        lesson_num: 12,
-        title:
-            "Astronauts prep for new solar arrays on nearly seven-hour spacewalk ...",
-        description: "Описание поста",
-        author: 10,
-    },
-    {
-        id: 4,
-        image:
-            "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
-        text: "Astronauts Kayla Barron and Raja Chari floated out of the International Space Station airlock for a spacewalk Tuesday, installing brackets and struts to support new solar arrays to upgrade the research lab’s power system on the same day that crewmate Mark Vande Hei marked his 341st day in orbit, a U.S. record for a single spaceflight.",
-        date: "12-10-2023",
-        lesson_num: 12,
-        title:
-            "Astronauts prep for new solar arrays on nearly seven-hour spacewalk ...",
-        description: "Описание поста",
-        author: 10,
-    },
-    {
-        id: 5,
-        image:
-            "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
-        text: "Astronauts Kayla Barron and Raja Chari floated out of the International Space Station airlock for a spacewalk Tuesday, installing brackets and struts to support new solar arrays to upgrade the research lab’s power system on the same day that crewmate Mark Vande Hei marked his 341st day in orbit, a U.S. record for a single spaceflight.",
-        date: "12-10-2023",
-        lesson_num: 12,
-        title:
-            "Astronauts prep for new solar arrays on nearly seven-hour spacewalk ...",
-        description: "Описание поста",
-        author: 10,
-    },
-    {
-        id: 6,
-        image:
-            "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
-        text: "Astronauts Kayla Barron and Raja Chari floated out of the International Space Station airlock for a spacewalk Tuesday, installing brackets and struts to support new solar arrays to upgrade the research lab’s power system on the same day that crewmate Mark Vande Hei marked his 341st day in orbit, a U.S. record for a single spaceflight.",
-        date: "12-10-2023",
-        lesson_num: 12,
-        title:
-            "Astronauts prep for new solar arrays on nearly seven-hour spacewalk ...",
-        description: "Описание поста",
-        author: 10,
-    },
-    {
-        id: 7,
-        image:
-            "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
-        text: "Astronauts Kayla Barron and Raja Chari floated out of the International Space Station airlock for a spacewalk Tuesday, installing brackets and struts to support new solar arrays to upgrade the research lab’s power system on the same day that crewmate Mark Vande Hei marked his 341st day in orbit, a U.S. record for a single spaceflight.",
-        date: "12-10-2023",
-        lesson_num: 12,
-        title:
-            "Astronauts prep for new solar arrays on nearly seven-hour spacewalk ...",
-        description: "Описание поста",
-        author: 10,
-    },
-    {
-        id: 8,
-        image:
-            "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
-        text: "Astronauts Kayla Barron and Raja Chari floated out of the International Space Station airlock for a spacewalk Tuesday, installing brackets and struts to support new solar arrays to upgrade the research lab’s power system on the same day that crewmate Mark Vande Hei marked his 341st day in orbit, a U.S. record for a single spaceflight.",
-        date: "12-10-2023",
-        lesson_num: 12,
-        title:
-            "Astronauts prep for new solar arrays on nearly seven-hour spacewalk ...",
-        description: "Описание поста",
-        author: 10,
-    },
-    {
-        id: 9,
-        image:
-            "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
-        text: "Astronauts Kayla Barron and Raja Chari floated out of the International Space Station airlock for a spacewalk Tuesday, installing brackets and struts to support new solar arrays to upgrade the research lab’s power system on the same day that crewmate Mark Vande Hei marked his 341st day in orbit, a U.S. record for a single spaceflight.",
-        date: "12-10-2023",
-        lesson_num: 12,
-        title:
-            "Astronauts prep for new solar arrays on nearly seven-hour spacewalk ...",
-        description: "Описание поста",
-        author: 10,
-    },
-    {
-        id: 10,
-        image:
-            "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
-        text: "Astronauts Kayla Barron and Raja Chari floated out of the International Space Station airlock for a spacewalk Tuesday, installing brackets and struts to support new solar arrays to upgrade the research lab’s power system on the same day that crewmate Mark Vande Hei marked his 341st day in orbit, a U.S. record for a single spaceflight.",
-        date: "12-10-2023",
-        lesson_num: 12,
-        title:
-            "Astronauts prep for new solar arrays on nearly seven-hour spacewalk ...",
-        description: "Описание поста",
-        author: 10,
-    },
-    {
-        id: 11,
-        image:
-            "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
-        text: "Astronauts Kayla Barron and Raja Chari floated out of the International Space Station airlock for a spacewalk Tuesday, installing brackets and struts to support new solar arrays to upgrade the research lab’s power system on the same day that crewmate Mark Vande Hei marked his 341st day in orbit, a U.S. record for a single spaceflight.",
-        date: "12-10-2023",
-        lesson_num: 12,
-        title:
-            "Astronauts prep for new solar arrays on nearly seven-hour spacewalk ...",
-        description: "Описание поста",
-        author: 10,
-    },
-];
+// HW8 step 5
+// после получения данные из сервера с помощью get-запроса
+// нам не нужен MOCK_ARRAY => можем удалять
+// const MOCK_ARRAY = [
+//     {
+//         id: 0,
+//         image:
+//             "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
+//         text: "Astronauts Kayla Barron and Raja Chari floated out of the International Space Station airlock for a spacewalk Tuesday, installing brackets and struts to support new solar arrays to upgrade the research lab’s power system on the same day that crewmate Mark Vande Hei marked his 341st day in orbit, a U.S. record for a single spaceflight.",
+//         date: "12-10-2023",
+//         lesson_num: 12,
+//         title:
+//             "Astronauts prep for new solar arrays on nearly seven-hour spacewalk ...",
+//         description: "Описание поста",
+//         author: 10,
+//     },
+//     {
+//         id: 1,
+//         image:
+//             "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
+//         text: "Astronauts Kayla Barron and Raja Chari floated out of the International Space Station airlock for a spacewalk Tuesday, installing brackets and struts to support new solar arrays to upgrade the research lab’s power system on the same day that crewmate Mark Vande Hei marked his 341st day in orbit, a U.S. record for a single spaceflight.",
+//         date: "12-10-2023",
+//         lesson_num: 12,
+//         title:
+//             "Astronauts prep for new solar arrays on nearly seven-hour spacewalk ...",
+//         description: "Описание поста",
+//         author: 10,
+//     },
+//     {
+//         id: 2,
+//         image:
+//             "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
+//         text: "Astronauts Kayla Barron and Raja Chari floated out of the International Space Station airlock for a spacewalk Tuesday, installing brackets and struts to support new solar arrays to upgrade the research lab’s power system on the same day that crewmate Mark Vande Hei marked his 341st day in orbit, a U.S. record for a single spaceflight.",
+//         date: "12-10-2023",
+//         lesson_num: 12,
+//         title:
+//             "Astronauts prep for new solar arrays on nearly seven-hour spacewalk ...",
+//         description: "Описание поста",
+//         author: 10,
+//     },
+//     {
+//         id: 3,
+//         image:
+//             "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
+//         text: "Astronauts Kayla Barron and Raja Chari floated out of the International Space Station airlock for a spacewalk Tuesday, installing brackets and struts to support new solar arrays to upgrade the research lab’s power system on the same day that crewmate Mark Vande Hei marked his 341st day in orbit, a U.S. record for a single spaceflight.",
+//         date: "12-10-2023",
+//         lesson_num: 12,
+//         title:
+//             "Astronauts prep for new solar arrays on nearly seven-hour spacewalk ...",
+//         description: "Описание поста",
+//         author: 10,
+//     },
+//     {
+//         id: 4,
+//         image:
+//             "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
+//         text: "Astronauts Kayla Barron and Raja Chari floated out of the International Space Station airlock for a spacewalk Tuesday, installing brackets and struts to support new solar arrays to upgrade the research lab’s power system on the same day that crewmate Mark Vande Hei marked his 341st day in orbit, a U.S. record for a single spaceflight.",
+//         date: "12-10-2023",
+//         lesson_num: 12,
+//         title:
+//             "Astronauts prep for new solar arrays on nearly seven-hour spacewalk ...",
+//         description: "Описание поста",
+//         author: 10,
+//     },
+//     {
+//         id: 5,
+//         image:
+//             "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
+//         text: "Astronauts Kayla Barron and Raja Chari floated out of the International Space Station airlock for a spacewalk Tuesday, installing brackets and struts to support new solar arrays to upgrade the research lab’s power system on the same day that crewmate Mark Vande Hei marked his 341st day in orbit, a U.S. record for a single spaceflight.",
+//         date: "12-10-2023",
+//         lesson_num: 12,
+//         title:
+//             "Astronauts prep for new solar arrays on nearly seven-hour spacewalk ...",
+//         description: "Описание поста",
+//         author: 10,
+//     },
+//     {
+//         id: 6,
+//         image:
+//             "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
+//         text: "Astronauts Kayla Barron and Raja Chari floated out of the International Space Station airlock for a spacewalk Tuesday, installing brackets and struts to support new solar arrays to upgrade the research lab’s power system on the same day that crewmate Mark Vande Hei marked his 341st day in orbit, a U.S. record for a single spaceflight.",
+//         date: "12-10-2023",
+//         lesson_num: 12,
+//         title:
+//             "Astronauts prep for new solar arrays on nearly seven-hour spacewalk ...",
+//         description: "Описание поста",
+//         author: 10,
+//     },
+//     {
+//         id: 7,
+//         image:
+//             "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
+//         text: "Astronauts Kayla Barron and Raja Chari floated out of the International Space Station airlock for a spacewalk Tuesday, installing brackets and struts to support new solar arrays to upgrade the research lab’s power system on the same day that crewmate Mark Vande Hei marked his 341st day in orbit, a U.S. record for a single spaceflight.",
+//         date: "12-10-2023",
+//         lesson_num: 12,
+//         title:
+//             "Astronauts prep for new solar arrays on nearly seven-hour spacewalk ...",
+//         description: "Описание поста",
+//         author: 10,
+//     },
+//     {
+//         id: 8,
+//         image:
+//             "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
+//         text: "Astronauts Kayla Barron and Raja Chari floated out of the International Space Station airlock for a spacewalk Tuesday, installing brackets and struts to support new solar arrays to upgrade the research lab’s power system on the same day that crewmate Mark Vande Hei marked his 341st day in orbit, a U.S. record for a single spaceflight.",
+//         date: "12-10-2023",
+//         lesson_num: 12,
+//         title:
+//             "Astronauts prep for new solar arrays on nearly seven-hour spacewalk ...",
+//         description: "Описание поста",
+//         author: 10,
+//     },
+//     {
+//         id: 9,
+//         image:
+//             "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
+//         text: "Astronauts Kayla Barron and Raja Chari floated out of the International Space Station airlock for a spacewalk Tuesday, installing brackets and struts to support new solar arrays to upgrade the research lab’s power system on the same day that crewmate Mark Vande Hei marked his 341st day in orbit, a U.S. record for a single spaceflight.",
+//         date: "12-10-2023",
+//         lesson_num: 12,
+//         title:
+//             "Astronauts prep for new solar arrays on nearly seven-hour spacewalk ...",
+//         description: "Описание поста",
+//         author: 10,
+//     },
+//     {
+//         id: 10,
+//         image:
+//             "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
+//         text: "Astronauts Kayla Barron and Raja Chari floated out of the International Space Station airlock for a spacewalk Tuesday, installing brackets and struts to support new solar arrays to upgrade the research lab’s power system on the same day that crewmate Mark Vande Hei marked his 341st day in orbit, a U.S. record for a single spaceflight.",
+//         date: "12-10-2023",
+//         lesson_num: 12,
+//         title:
+//             "Astronauts prep for new solar arrays on nearly seven-hour spacewalk ...",
+//         description: "Описание поста",
+//         author: 10,
+//     },
+//     {
+//         id: 11,
+//         image:
+//             "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
+//         text: "Astronauts Kayla Barron and Raja Chari floated out of the International Space Station airlock for a spacewalk Tuesday, installing brackets and struts to support new solar arrays to upgrade the research lab’s power system on the same day that crewmate Mark Vande Hei marked his 341st day in orbit, a U.S. record for a single spaceflight.",
+//         date: "12-10-2023",
+//         lesson_num: 12,
+//         title:
+//             "Astronauts prep for new solar arrays on nearly seven-hour spacewalk ...",
+//         description: "Описание поста",
+//         author: 10,
+//     },
+// ];
 
 
 // step 1
@@ -194,8 +199,12 @@ const Home = () => {
 
     const [activeTab, setActiveTab] = useState(TabsTypes.All);
     // const isLoggedIn = true; // проверка isLoggedIn
-    const [isLoggedIn, setLoggedIn] = useState(false);
-    const [cardsList, setCardsList] = useState<PostsList>([]);
+    // const [isLoggedIn, setLoggedIn] = useState(false);
+    // const [cardsList, setCardsList] = useState<PostsList>([]); 
+    // убираем state так как перенесли данные в редакс (HW8 step 5) и вместо него useSelector c getPostsList
+    const cardsList = useSelector(PostSelectors.getPostsList)
+
+    const isLoggedIn = useSelector(AuthSelectors.getLoggedIn)
 
     const tabsList = useMemo(
         () => [
@@ -206,15 +215,21 @@ const Home = () => {
         [isLoggedIn]
     );
 
+    // HW8 step 5
+    // в useEffect вызываем dispatch (наши ручки) которые кидают наши посты
+    // делаем в useEffect - так как префетчинг данных
+    const dispatch = useDispatch ()
+
     useEffect(() => {
-        setCardsList(MOCK_ARRAY);
+        // setCardsList(MOCK_ARRAY);
+        dispatch(getPostsList())
     }, [])
 
     const onTabClick = (tab: TabsTypes) => () => {
         setActiveTab(tab);
-        if (tab === TabsTypes.Popular) {
-            setLoggedIn(true);
-        }
+        // if (tab === TabsTypes.Popular) {
+        //     // setLoggedIn(true);
+        // }
     };
 
     // HW4 Добавление темной темы 
@@ -224,8 +239,8 @@ const Home = () => {
     const { themeValue } = useThemeContext();
 
     return (
-        <div className={classNames(styles.container, {[styles.darkContainer]: themeValue === Theme.Dark})}>
-            
+        <div className={classNames(styles.container, { [styles.darkContainer]: themeValue === Theme.Dark })}>
+
             <Title title={"Blogfolio"} className={styles.pageTitle} />
 
             <TabsList

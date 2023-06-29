@@ -17,6 +17,16 @@
 // --- HW7
 // реализовать функционал, по сохранению поста при нажатии на кнопочку Bookmark
 // сохраненные посты помезаются в массив и удаляются из него (savedPosts)
+// --- HW8 step 3
+// => в postSlice необходимо создать еще один action на получение данных
+// (которые получаем из сервера через get-запрос)
+// action в сагах - пустые
+// ---
+// полученные посты из сервера нам необходимо отправить в редакс
+// помещаем их в редакс через put в саге
+// yield put(setPostsList(response.data.results))
+// а так как нам необходимо поместить в редакс и работа будет с action, то 
+// в postSlice необходима функция, которая ловит экшен и помещает в редакс (setPostsList)
 
 
 
@@ -50,6 +60,8 @@ import { RootState } from "../store";
 // то есть PostsList из @types 
 // ---
 // для Bookmark (savedPosts) типизация - массив наших постов PostsList из @types 
+// ---
+// типизация postsList (полученные посты с помощью get-запроса) - массив наших постов PostsList из @types
 
 
 type InitialState = {
@@ -60,6 +72,7 @@ type InitialState = {
   likedPosts: PostsList;
   dislikedPosts: PostsList;
   savedPosts: PostsList;
+  postsList: PostsList;
 };
 
 // step 3
@@ -80,6 +93,8 @@ type InitialState = {
 // ---
 // Bookmark (savedPosts)
 // для Bookmark будет один массив куда ьуду помещаться/удаляться посты
+// ---
+// postsList - полученные посты с помощью get-запроса из сервера
 
 const initialState: InitialState = {
   isSelectedPostModalOpened: false,
@@ -88,6 +103,7 @@ const initialState: InitialState = {
   likedPosts: [],
   dislikedPosts: [],
   savedPosts: [],
+  postsList: [],
 };
 
 // step 1
@@ -165,6 +181,16 @@ const initialState: InitialState = {
 // логика мысли аналогична Like & Dilslike
 // за исключением того, что не будет разветвления действий
 // для Bookmark (savedPosts) мы либо кладем пост, либо его удаляем
+// ---
+// HW8 step 3
+// action на получение данных (которые получаем из сервера через get-запрос)
+// action в сагах - пустые
+// так как нам ничего не нужно передавать, то тип action: undefined 
+// => getPostsList: (state, action: PayloadAction<undefined>) => { }
+// или getPostsList: (_, __: PayloadAction<undefined>) => { } (_ - когда не нужно использовать дальше)
+// ---
+// полученные посты из сервера (get-запрос) нам необходимо отправить в редакс 
+// =>  нужна функция, которая ловит экшен и отправляет его setPostsList 
 
 
 
@@ -236,7 +262,7 @@ const postSlice = createSlice({
     // },
 
     // setSavedStatus - version 2
-    setSavedStatus: (state, action: PayloadAction<{ card: Post}>) => {
+    setSavedStatus: (state, action: PayloadAction<{ card: Post }>) => {
       const { card } = action.payload;
 
       const savedIndex = state.savedPosts.findIndex(
@@ -247,6 +273,12 @@ const postSlice = createSlice({
         state.savedPosts.push(card)
       } else
         state.savedPosts.splice(savedIndex, 1)
+    },
+
+    getPostsList: (_, __: PayloadAction<undefined>) => { },
+
+    setPostsList: (state, action: PayloadAction<PostsList>) => {
+      state.postsList = action.payload;
     },
 
   }, // вот тут живут функции, которые ловят экшены по типу(т.е. по названию ф-и)
@@ -268,9 +300,9 @@ const postSlice = createSlice({
 // добавляем экшен setSelectedImage и обрабатываем его в SelectedImageModal
 // добавляем экшен setLikeStatus и обрабатываем его в CardList
 // добавляем экшен setSavedStatus и обрабатываем его в CardList
+// экспортируем getPostsList и setPostsList
 
-
-export const { setSelectedPostModalOpened, setSelectedPost, setSelectedImage, setLikeStatus, setSavedStatus } =
+export const { setSelectedPostModalOpened, setSelectedPost, setSelectedImage, setLikeStatus, setSavedStatus, getPostsList, setPostsList } =
   postSlice.actions;
 // а вот тут живут сами экшены, которые рождаются библиотекой исходя
 // из названия ф-ии, которая их ловит
@@ -283,6 +315,7 @@ export const { setSelectedPostModalOpened, setSelectedPost, setSelectedImage, se
 // создаем  getSelectedImage для selectedImage
 // getLikedPosts и getDislikedPosts для SelectedPost
 // создаем getSavedPosts для SavedPosts
+// создаем getPostsList для PostsList
 
 export const PostSelectors = {
   getSelectedPostModalOpened: (state: RootState) =>
@@ -292,6 +325,7 @@ export const PostSelectors = {
   getLikedPosts: (state: RootState) => state.postReducer.likedPosts,
   getDislikedPosts: (state: RootState) => state.postReducer.dislikedPosts,
   getSavedPosts: (state: RootState) => state.postReducer.savedPosts,
+  getPostsList: (state: RootState) => state.postReducer.postsList,
 
 };
 // вот отсюда мы достаем данные, которые заранее видоизменили снежками (экшенами)
@@ -302,6 +336,7 @@ export const PostSelectors = {
 // обрабатываем image в SelectedImageModal
 // Like & Dilslike необходимо обработать в CardList
 // SavedPosts необходимо обработать в CardList
+// postsList обрабатываем в Home
 
 // step 2
 export default postSlice.reducer; // это мы группу функций экспортируем единым объектом

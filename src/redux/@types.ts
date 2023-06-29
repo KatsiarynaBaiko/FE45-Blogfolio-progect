@@ -5,16 +5,21 @@
 // => создаем в папке redux файл @types.ts и SignUpUserData и SignUpUserPayload
 // и привязываем наш SignUpUserPayload к экшену
 
+import { PostsList } from "src/@types";
+
+// дженерик (для периспользования кода)
+export type PayloadWithDataAndCallback <Data> = {
+    data: Data;
+    callback: () => void;
+}
+
 export type SignUpUserData = {
     username: string;
     email: string;
     password: string;
 };
 
-export type SignUpUserPayload = {
-    data: SignUpUserData;
-    callback: () => void; // функция, которая будет выполняться, если успешно проведено создание. Функция для навигирования
-};
+export type SignUpUserPayload = PayloadWithDataAndCallback<SignUpUserData>
 
 // step 6 Lesson 45 (saga)
 // поплохело, так как не непонятно что вернутся => используем ApiResponse
@@ -25,3 +30,27 @@ export type SignUpResponseData = {
     id: number;
 };
 
+// step 4 HW8 (saga)
+// используем ApiResponse и внутрь кладем то, что вернется (типизируем то, что придет из сервера нам)
+// results - это массив наших постов, то есть PostsList
+
+export type PostsResponseData = {
+    count: number,
+    next: string,
+    previous: null,
+    results: PostsList,
+}
+
+
+
+export type SignInData = {
+    email: string,
+    password: string,
+}
+
+export type SignInUserPayload = PayloadWithDataAndCallback<SignInData>
+
+export type SignInUserResponseData = {
+    access: string,
+    refresh: string,
+}

@@ -1,10 +1,14 @@
 import classNames from "classnames";
 import React from "react";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { Theme } from "src/@types";
 import { useThemeContext } from "src/context/Theme";
+import { signInUser } from "src/redux/reducers/authSlice";
 import FormPagesContainer from "../../components/FormPagesContainer"
 import Input from "../../components/Input";
+import { RoutesList } from "../Router";
 import styles from './SignIn.module.scss'
 
 //step 1
@@ -27,11 +31,18 @@ const SignIn = () => {
     // темная тема - с помощью classNames => {[styles.darkAdditionalInfo]: themeValue === Theme.Dark}
     const { themeValue } = useThemeContext();
 
+    const dispatch = useDispatch ()
+    const navigate = useNavigate ()
+
+    const onSubmit = () => {
+        dispatch(signInUser({data: {email, password}, callback: () => navigate(RoutesList.Home)}))
+    }
+
     return (
         <FormPagesContainer
             title={'Sign In'}
             btnTitle={'Sign In'}
-            onSubmit={() => { }}
+            onSubmit={onSubmit}
             additionalInfo={
                 <div className={classNames(styles.additionalInfo, {[styles.darkAdditionalInfo]: themeValue === Theme.Dark})}>
                     {'Don’t have an account? '}

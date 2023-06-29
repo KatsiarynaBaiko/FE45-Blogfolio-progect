@@ -1,7 +1,9 @@
 import React from "react"
+import { useSelector } from "react-redux";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 import Header from "src/components/Header";
 import Home from "src/pages/Home";
+import { AuthSelectors } from "src/redux/reducers/authSlice";
 import RegistrationConfirmation from "./RegistrationConfirmation";
 import SelectedPost from "./SelectedPost";
 import SignIn from "./SignIn";
@@ -55,6 +57,9 @@ export enum RoutesList {
 
 
 const Router = () => {
+
+    const isLoggedIn = useSelector(AuthSelectors.getLoggedIn)
+
     return <BrowserRouter>
         <Routes>
             {/* <Route path="/" element={<Home /> }/> */}
@@ -63,10 +68,10 @@ const Router = () => {
             {/* после создания enum */}
             <Route path={RoutesList.Home} element={<Header />}>
                 <Route path={RoutesList.Home} element={<Home />} />
-                <Route path={RoutesList.SingUp} element={<SingUp />} />
-                <Route path={RoutesList.SignIn} element={<SignIn />} />
-                <Route path={RoutesList.RegistrationConfirmation} element={<RegistrationConfirmation />} />
-                <Route path={RoutesList.Success} element={<Success />} />
+                <Route path={RoutesList.SingUp} element={!isLoggedIn ? <SingUp /> : <Navigate to={RoutesList.Home}/>} />
+                <Route path={RoutesList.SignIn} element={!isLoggedIn ? <SignIn /> : <Navigate to={RoutesList.Home}/>} />
+                <Route path={RoutesList.RegistrationConfirmation} element={!isLoggedIn ? <RegistrationConfirmation /> : <Navigate to={RoutesList.Home}/>} />
+                <Route path={RoutesList.Success} element={!isLoggedIn ? <Success /> : <Navigate to={RoutesList.Home}/>} />
                 <Route path={RoutesList.Default} element={<Navigate to={RoutesList.Home}/>} />
             </Route>
         </Routes>

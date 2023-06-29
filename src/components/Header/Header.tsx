@@ -10,6 +10,8 @@ import { useThemeContext } from "src/context/Theme";
 import classNames from "classnames";
 import { Theme } from "src/@types";
 import Input from "../Input";
+import { useSelector } from "react-redux";
+import { AuthSelectors } from "src/redux/reducers/authSlice";
 
 
 // step 1
@@ -85,7 +87,8 @@ const Header = () => {
     // передаем переменную в navLinks
     // и если она true - то доступно 
     // имя пользователя (прописываем ее в userName) и кнопка Add Post
-    const isLoggedIn = true;
+    // const isLoggedIn = true;
+    const isLoggedIn = useSelector(AuthSelectors.getLoggedIn)
     // const isLoggedIn = false;
 
     // кнопочки в верхней части бокового меню через map
@@ -159,6 +162,12 @@ const Header = () => {
                         onClick={onLoginButtonClick}
                         className={styles.userButton}
                     />
+                    {isLoggedIn ? <Username username={'Katsiaryna'} /> : <Button
+                        type={ButtonTypes.Primary}
+                        title={<UserIcon />}
+                        onClick={onLoginButtonClick}
+                        className={styles.userButton}
+                    />}
                 </div>
             </div>
 

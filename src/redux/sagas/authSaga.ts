@@ -3,12 +3,14 @@
 // без активации (активация на след занятии)
 
 import { PayloadAction } from "@reduxjs/toolkit";
-import { all, call, takeLatest } from "redux-saga/effects";
-import { SignUpResponseData, SignUpUserPayload } from "../@types";
-import { sighUpUser } from "../reducers/authSlice";
+import { all, call, put, takeLatest } from "redux-saga/effects";
+import { SignInUserPayload, SignInUserResponseData, SignUpResponseData, SignUpUserPayload } from "../@types";
+import { setAccessToken, sighUpUser, signInUser } from "../reducers/authSlice";
 import { ApiResponse } from "apisauce";
 import { callbackify } from "util";
 import API from "src/utils/api";
+import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from "src/utils/constants";
+import { access } from "fs";
 
 // redux-saga имеет 2 важных разделения в функциях:
 // функция watcher - распределение (привязывает action к исполнителю)
@@ -98,6 +100,22 @@ function* sighUpUserWorker(action: PayloadAction<SignUpUserPayload>) {
 }
 
 
+function* signInUserWorker(action: PayloadAction<SignInUserPayload>) {
+    const { data, callback } = action.payload;
+
+    const response:ApiResponse<SignInUserResponseData> = yield call(API.createToken, data);
+
+    if (response.ok && response.data) {
+        yield put(setAccessToken(response.data.access))
+        localStorage.setItem(ACCESS_TOKEN_KEY, response.data.access)
+        localStorage.setItem(REFRESH_TOKEN_KEY, response.data.refresh)
+        callback(); // в этом случае делаем callback
+    } else {
+        console.error("Sigh In User error", response.problem);
+    }
+}
+
+
 // step 2 
 // создаем watcher, который будет за всем следить и перераспределять
 // сразу же помещаем в rootSaga, чтобы все полноценно работало
@@ -112,5 +130,5 @@ function* sighUpUserWorker(action: PayloadAction<SignUpUserPayload>) {
 // takeLatest: забери наш экшен sighUpUser и впихни его в воркер sighUpUserWorker и  пусть там он дальше работает
 
 export default function* authSagaWatcher() {
-    yield all([takeLatest(sighUpUser, sighUpUserWorker)]);
+    yield all([takeLatest(sighUpUser, sighUpUserWorker), takeLatest(signInUser, signInUserWorker)]);
 }
