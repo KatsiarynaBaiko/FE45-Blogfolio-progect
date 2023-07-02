@@ -204,6 +204,9 @@ const Home = () => {
     // убираем state так как перенесли данные в редакс (HW8 step 5) и вместо него useSelector c getPostsList
     const cardsList = useSelector(PostSelectors.getPostsList)
 
+    // step 10 Lesson 47 (auth+ access token)
+    // переменную isLoggedIn привязываем в селектору
+    // в onTabClick убираем условие if
     const isLoggedIn = useSelector(AuthSelectors.getLoggedIn)
 
     const tabsList = useMemo(

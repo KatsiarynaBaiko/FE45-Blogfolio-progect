@@ -12,6 +12,7 @@ import { useThemeContext } from "src/context/Theme";
 import { LikeStatus, SaveStatus, Theme } from "src/@types";
 import { useSelector } from "react-redux";
 import { PostSelectors } from "src/redux/reducers/postSlice";
+import { useNavigate } from "react-router-dom";
 
 
 // step 4
@@ -53,9 +54,10 @@ export enum CardTypes {
 // с помощью селекторов достаем массив сохраненных постов
 // => icons добавляем еще один вариант сохраненной иконочки
 // и прописываем условие
-
-
-
+//
+// step 12 Lesson 46  (single post = selected post)
+// на наши посты необходимо как-то переходить 
+// при клике на них => реализуем это в карточке Card
 
 
 type CardProps = {
@@ -110,12 +112,20 @@ const Card: FC<CardProps> = ({ type, id, date, title, text, image, lesson_num, a
     const savedPosts = useSelector(PostSelectors.getSavedPosts);
     const savedIndex = savedPosts.findIndex((item) => item.id === id);
 
+    // переход на посты по клику 
+    // используется useNavigate и связывается с id
+    const navigate = useNavigate();
+
+    const onTitleClick = () => {
+        navigate(`/post/${id}`);
+    };
+
     return (
         <div className={classNames(cardStyle)}>
             <div className={styles.cardContent}>
                 <div className={classNames(styles.cardTextContent, { [styles.darkCardTextContent]: themeValue === Theme.Dark })}>
                     <span className={styles.date}>{date}</span>
-                    <div className={styles.cardTitle}>{title}</div>
+                    <div className={styles.cardTitle} onClick={onTitleClick}>{title}</div>
                     {/* <div className={styles.cardText}>{text}</div> */}
                     {/* через display: none не делаем через условный рендеринг (прописываем условие) */}
                     {type === CardTypes.Large && (

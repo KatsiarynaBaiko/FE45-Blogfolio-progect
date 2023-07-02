@@ -14,7 +14,9 @@ import { ApiResponse } from "apisauce";
 import { all, call, put, takeLatest } from "redux-saga/effects";
 import { PostsResponseData } from "../@types";
 import API from "src/utils/api";
-import { getPostsList, setPostsList } from "../reducers/postSlice";
+import { getPostsList, getSinglePost, setPostsList, setSinglePost } from "../reducers/postSlice";
+import { PayloadAction } from "@reduxjs/toolkit";
+import { Post } from "src/@types";
 
 // step 1 HW8
 // создаем вотчера, который отвечает за посты
@@ -37,6 +39,11 @@ import { getPostsList, setPostsList } from "../reducers/postSlice";
 // а так как нам необходимо поместить в редакс и работа будет с action, то 
 // в postSlice необходима функция, которая ловит экшен и помещает в редакс (setPostsList)
 // обрабатываем setPostsList в Home
+// ---
+// step 6 Lesson 46 (single post = selected post)
+// нам необходимо написать сагу
+// в postsSaga создаем еще одного вотчера для single post
+
 
 
 // step 4
@@ -60,6 +67,30 @@ function* postsSagaWorker () {
     }
 }
 
+
+// cоздаем еще одного вотчера для single post
+// ---
+// нам необходим action, так как работаем с данными 
+// => необходимо создать его в postSlice(step 7)
+// ---
+// после создания action и связываения с вотчером (step 9)
+// описываем воркера
+// помещаем данные в реедакс с помощью put
+// остается запустить все в page SelectedPost
+
+function* getSinglePostWorker(action: PayloadAction<string>) {
+    const response: ApiResponse<Post> = yield call(
+      API.getSinglePost,
+      action.payload
+    );
+    if (response.ok && response.data) {
+      yield put(setSinglePost(response.data));
+    } else {
+      console.error("Activate User error", response.problem);
+    }
+  }
+
+
 // step 1
 // саги работают с помощью генератора function*
 // создаем вотчера, который отвечает за посты
@@ -68,6 +99,12 @@ function* postsSagaWorker () {
 // step 3 takeLatest: принимает в себя
 // action на получение данных (которые получаем из сервера через get-запрос)
 // и воркера postsSagaWorker
+// ---
+// step 9 Lesson 46  (single post = selected post)
+// привязываем воркер  getSinglePostWorker к вотчеру
 export default function* postsSagaWatcher () {
-    yield all([takeLatest(getPostsList, postsSagaWorker)]);
+    yield all([
+        takeLatest(getPostsList, postsSagaWorker),
+        takeLatest(getSinglePost, getSinglePostWorker),
+    ]);
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FC } from "react"
 import Title from "../../components/Title";
 import styles from './SelectedPost.module.scss';
@@ -9,6 +9,10 @@ import FormPagesContainer from "../../components/FormPagesContainer";
 import classNames from "classnames";
 import { useThemeContext } from "src/context/Theme";
 import { Theme } from "src/@types";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getSinglePost, PostSelectors } from "src/redux/reducers/postSlice";
+import { RoutesList } from "../Router";
 
 
 
@@ -17,17 +21,25 @@ import { Theme } from "src/@types";
 // импортируем import {FC} from "react";
 // а также присваиваем props в const : FC <SelectedPost>
 // сразу же передаем их в FC <SelectedPost>
+// ---
+// step 2 Lesson 46 (single post = selected post)
+// Так как будем работать с параметрами то 
+// убираем пропсы в Selected post
 
-type SelectedPostProps = {
-    title: string;
-    image: string;
-    text?: string;
-}
+// type SelectedPostProps = {
+//     title: string;
+//     image: string;
+//     text?: string;
+// }
 
 
 // step 1
 // создаем компонент 
-const SelectedPost: FC<SelectedPostProps> = ({ title, image, text }) => {
+// ---
+// step 2 Lesson 46 (single post = selected post) убираем пропсы в Selected post
+// const SelectedPost: FC<SelectedPostProps> = ({ title, image, text }) => {
+
+const SelectedPost = () => {
 
     // HW4 Добавление темной темы 
     // так как меняется по проекту, то открываем контекст
@@ -35,17 +47,55 @@ const SelectedPost: FC<SelectedPostProps> = ({ title, image, text }) => {
     // темная тема - с помощью classNames => {[styles.darkAdditionalInfo]: themeValue === Theme.Dark}
     const { themeValue } = useThemeContext();
 
-    return (
-        <div className={classNames(styles.container, {[styles.darkContainer]:themeValue === Theme.Dark})}>
-            <div className={styles.breadcrumbs}>Home <span className={styles.postNumber}>| Post 14278</span></div>
-            {/* <div className={styles.title}>{title}</div> */}
-            <Title className={styles.title} title={title} />
-            <div className={styles.selectedPostImage}>
-                <img src={image} alt="#" />
-            </div>
-            {/* <div className={styles.selectedPostText}>{text}</div> */}
+    // step 2 Lesson 46 (single post = selected post)
+    // деструктурировали объект, который и создали
+    // удаляем после step 10 (так как данные будем уде получать с useSelector)
+    // const { title, image, text } = { title: '', image: '', text: '' }
 
-            <div className={styles.selectedPostText}>
+    // step 3 Lesson 46 (single post = selected post)
+    // достаем id с помощью  useParams ()
+    const { id } = useParams();
+
+    // step 4 Lesson 46 (single post = selected post)
+    // Открываем  useEffect, так все дальше будет проходить в нем.
+    // useEffect будет завязан на id из параметров (id нашего поста)
+    // ---
+    // step 10 Lesson 46 (single post = selected post)
+    // запускаем в page SelectedPost
+    // создаем наши ручки и кладем данные
+    const dispatch = useDispatch();
+
+    // step 11 получаем данные в page SelectedPost с помощью useSelecrot
+    // условный рендеринг в return: singlePost ? (...) : null
+    // null - так как поста может не быть
+    const singlePost = useSelector(PostSelectors.getSinglePost);
+
+    useEffect(() => {
+        if (id) {
+            dispatch(getSinglePost(id));
+        }
+    }, [id]);
+
+    // step 13 необходима навигация на Home при клике 
+    // => используем useNavigate и функцию onHomeClick
+    const navigate = useNavigate();
+    const onHomeClick = () => {
+        navigate(RoutesList.Home);
+    };
+
+    return singlePost ? (
+        <div className={classNames(styles.container, { [styles.darkContainer]: themeValue === Theme.Dark })}>
+            <div className={styles.breadcrumbs}>
+                <span onClick={onHomeClick}>Home</span>{" "}
+                <span className={styles.postNumber}>| Post {singlePost.id}</span></div>
+            {/* <div className={styles.title}>{title}</div> */}
+            <Title className={styles.title} title={singlePost.title} />
+            <div className={styles.selectedPostImage}>
+                <img src={singlePost.image} alt="#" />
+            </div>
+            <div className={styles.selectedPostText}>{singlePost.text}</div>
+
+            {/* <div className={styles.selectedPostText}>
                 {'Astronauts Kayla Barron and Raja Chari floated out of the International Space Station airlock for a spacewalk Tuesday, installing brackets and struts to support new solar arrays to upgrade the research lab’s power system on the same day that crewmate Mark Vande Hei marked his 341st day in orbit, a U.S. record for a single spaceflight.'}
                 <br />
                 <br />
@@ -59,23 +109,46 @@ const SelectedPost: FC<SelectedPostProps> = ({ title, image, text }) => {
                 <br />
                 <br />
                 {'The demand for Maggi Hambling’s evocative portraits and exuberant depictions of seascapes and landscapes surged this past week, when the number of collectors inquiring on her work increased more than tenfold from the week before. The British artist, esteemed for her whirling, gestural paintings and bold public sculptures, has seen a consistent wave of interest in her work that has accelerated in the past few years. This recent uptick in interest  is consistent with Hambling’s career trajectory, which has been punctuated by a flurry of public commissions, institutional recognition, and secondary-market demand.'}
-            </div>
+            </div> */}
 
-            <div className={styles.SelectedPostReaction}>
-                <div className={styles.SelectedPostReactionLikeDislike}>
-                    <div className={styles.SelectedPostLike}><LikeIcon /></div>
-                    <div className={styles.SelectedPostDislike}><DislikeIcon /></div>
+            <div className={styles.selectedPostReaction}>
+                <div className={styles.selectedPostReactionLikeDislike}>
+                    <div className={styles.selectedPostLike}><LikeIcon /></div>
+                    <div className={styles.selectedPostDislike}><DislikeIcon /></div>
                 </div>
-                <div className={styles.SelectedPostReactionToFavorites}>
-                    <BookmarkIcon /> Add to Favotites
+                <div className={styles.selectedPostReactionToFavorites}>
+                    <BookmarkIcon /> Add to Favorites
                 </div>
             </div>
         </div>
-    )
-}
+    ) : null
+};
 
 // step 2
 export default SelectedPost
 
 // step 3
 // index.ts делаем export, чтобы потом его вызывать в App.tsx
+
+
+// Lesson 46  (single post = selected post)
+// Реализовать страницу поста
+// Будет работа с параметрами (как и в подтверждении регистрации)
+// title, image, text  мы будем получать не из Props, а url
+
+// step 1 В Router указываем путь для  Selected post
+// step 2 убираем проспы в Selected post
+// step 3 достаем id с помощью  useParams ()
+// step 4 используем  useEffect, который завязан на id
+// step 5 запрос в api get(`/blog/posts/${id}/)
+// step 6 нам необходимо написать сагу и создать еще одного вотчера для single post
+//  step 7
+//  так как работаем с данными 
+// => необходимо создать экшен в postSlice(step 7). Создаем getSinglePost
+// step 8
+// создаем еще один экшен setSinglePost, так как данные необходимо положить в редакс
+// step 9 привязываем воркер  getSinglePostWorker к вотчеру. Также описываем самого воркера 
+// step 10 запускаем в page SelectedPost
+// step 11 получаем данные в page SelectedPost с помощью useSelecrot
+// step 12 на наши посты необходимо как-то переходить при клике на них=> реализуем это в карточке Card
+// step 13 необходима навигация на Home при клике => используем useNavigate и функцию onHomeClick

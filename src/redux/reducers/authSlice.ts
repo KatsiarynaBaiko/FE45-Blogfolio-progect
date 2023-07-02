@@ -7,13 +7,35 @@
 // у нас появляется пустой экшен:  sighUpUser: (state, action) => {},
 // ---
 // после создания SignUpUserPayload (step 4 Lesson 45) типизируем наш экнш
-//
+// ---
+// step 5 Lesson 46 (activate user)
+// Создаем  action для activate user , который будет отправлять данные
+// action будет пустой
+// ---
+// step 2 Lesson 47 (auth+ access token)
+// создаем action для авторизации в authSlice
+// называем по действию => мы логиним юзера => signInUser
+// и типизируем action PayloadAction<SignInUserPayload>
+// вот это действие запрашивает данные
+// ---
+// step 3 Lesson 47 (auth+ access token)
+// необходим еще один экшен, который будет ложить данные в редакс
+// => создаем setAccessToken
+// в initialState создаем accessToken
+// accessToken - это string, исходное значение ''
+// ---
+// step 7 Lesson 47 (auth+ access token)
+// чтобы мы могли использовать уже созданный токен 
+// и чтобы он не терялся нигде в initialState мы достаем его из localStorage
+// accessToken: localStorage.getItem(ACCESS_TOKEN_KEY) || ''
+
+
 
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { access } from "fs";
 import { ACCESS_TOKEN_KEY } from "src/utils/constants";
-import { SignInData, SignInUserPayload, SignUpUserPayload } from "../@types";
+import { ActivateUserPayload, SignInData, SignInUserPayload, SignUpUserPayload } from "../@types";
 import { RootState } from "../store";
 
 
@@ -36,16 +58,24 @@ const authSlice = createSlice({
 
         setAccessToken: (state, action: PayloadAction<string>) => {
             state.accessToken = action.payload
-        }
+        },
+
+        activateUser: (_, __: PayloadAction<ActivateUserPayload>) => {},
     },
     // вот тут живут функции, которые ловят экшены по типу(т.е. по названию ф-и)
 });
 
 
-export const { sighUpUser, signInUser, setAccessToken } = authSlice.actions;
+export const { sighUpUser, signInUser, setAccessToken, activateUser } = authSlice.actions;
 // а вот тут живут сами экшены, которые рождаются библиотекой исходя
 // из названия ф-ии, которая их ловит
 
+// step 8 Lesson 47 (auth+ access token)
+// нам нужно доставать токен из редакса (с помощью селектора) 
+// так как мы проверяем залогинен ли пользователь или нет 
+// (чтобы показывал/скрывать опредлененные странички, addPosts)
+// => прописываем Selector
+// !! - истинное булиновское значение
 export const AuthSelectors = {
     getLoggedIn: (state: RootState) => !!state.authReducer.accessToken,
 };

@@ -15,13 +15,23 @@ import Success from "./Success";
 
 // step 3
 // создаем enum, так как наши пути закардкожены (неизменны) и статичны 
+// ---
+// step 2 Lesson 46 (activate user)
+// меняем путь для RegistrationConfirmation на "/activate/:uid/:token"
+// это позволяем достать uid и token из url
+// ---
+// step 1 Lesson 46 (single post = selected post)
+// В RoutesList указываем путь для SelectedPost = '/post/:id'
+// и добавляем его в Router
 export enum RoutesList {
     Home = "/",
     SingUp = "/sing-up",
     SignIn = "/sign-in",
-    RegistrationConfirmation = "/sing-up/confirm",
+    // RegistrationConfirmation = "/sing-up/confirm",
+    RegistrationConfirmation = "/activate/:uid/:token",
     Success = "/sing-up/confirm/success", 
-    SelectedPost = "selected-post",
+    // SelectedPost = "selected-post",
+    SelectedPost = '/post/:id',
     Default = "*",
 }
 
@@ -54,7 +64,13 @@ export enum RoutesList {
 // перенаправляется на определенную нами страницу обычно это Home
 // для этого также используется элемент element={<Navigate to={...}/>}
 // это называется обработка несуществующих путей
-
+// ---
+// step 11 Lesson 47 (auth+ access token)
+// переменную isLoggedIn привязываем в селектору
+// в Router добавляем условный рендеринг 
+// и указываем какие странички не должны быть видны 
+// пользователю после авторизации
+// если не залогинент, то показать
 
 const Router = () => {
 
@@ -72,6 +88,7 @@ const Router = () => {
                 <Route path={RoutesList.SignIn} element={!isLoggedIn ? <SignIn /> : <Navigate to={RoutesList.Home}/>} />
                 <Route path={RoutesList.RegistrationConfirmation} element={!isLoggedIn ? <RegistrationConfirmation /> : <Navigate to={RoutesList.Home}/>} />
                 <Route path={RoutesList.Success} element={!isLoggedIn ? <Success /> : <Navigate to={RoutesList.Home}/>} />
+                <Route path={RoutesList.SelectedPost} element={<SelectedPost />} />
                 <Route path={RoutesList.Default} element={<Navigate to={RoutesList.Home}/>} />
             </Route>
         </Routes>

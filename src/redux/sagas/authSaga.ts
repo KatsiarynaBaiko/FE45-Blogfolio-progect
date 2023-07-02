@@ -4,8 +4,8 @@
 
 import { PayloadAction } from "@reduxjs/toolkit";
 import { all, call, put, takeLatest } from "redux-saga/effects";
-import { SignInUserPayload, SignInUserResponseData, SignUpResponseData, SignUpUserPayload } from "../@types";
-import { setAccessToken, sighUpUser, signInUser } from "../reducers/authSlice";
+import { ActivateUserPayload, SignInUserPayload, SignInUserResponseData, SignUpResponseData, SignUpUserPayload } from "../@types";
+import { activateUser, setAccessToken, sighUpUser, signInUser } from "../reducers/authSlice";
 import { ApiResponse } from "apisauce";
 import { callbackify } from "util";
 import API from "src/utils/api";
@@ -54,6 +54,16 @@ import { access } from "fs";
 // ---
 // для проверки можем использовать сервисы временной почты (temp-mail.org например)
 // и если пришло туда письмо активации - то все отлично :)
+// ---
+// step 6 Lesson 46 (activate user)
+// нам необходимо написать сагу для activate user - это делаем в  authSаga
+// для этого создаем нового воркера function* activateUserWorker
+// не забываем его привязать к вотчеру  authSagaWatcher
+// ---
+// step 4 Lesson 47 (auth+ access token)
+// создаем еще одного воркера signInUserWorker
+// для работы с авторизацией
+
 
 
 // step 6
@@ -99,11 +109,24 @@ function* sighUpUserWorker(action: PayloadAction<SignUpUserPayload>) {
     }
 }
 
+// воркер signInUserWorker для работы с авторизацией
+// тип для action: PayloadAction<SignInUserPayload>
+// используем ApiResponse и внутрь кладем то, что вернется (типизируем то, что придет из сервера нам)
+// обрабатываем его с помощью if
+// помещаем в редакс с использованием put
+// --
+// step 5 Lesson 47 (auth+ access token)
+// чтобы токен мы могли каждый раз использовать
+// и не пересоздавать, и чтобы он не терялся
+// используется localStorage
+// создаем файл constants с постоянными и прописываем ключи
+// кладем в localStorage наши ключи и значения токенов 
+// привязываем воркер к вотчеру
 
 function* signInUserWorker(action: PayloadAction<SignInUserPayload>) {
     const { data, callback } = action.payload;
 
-    const response:ApiResponse<SignInUserResponseData> = yield call(API.createToken, data);
+    const response: ApiResponse<SignInUserResponseData> = yield call(API.createToken, data);
 
     if (response.ok && response.data) {
         yield put(setAccessToken(response.data.access))
@@ -112,6 +135,22 @@ function* signInUserWorker(action: PayloadAction<SignInUserPayload>) {
         callback(); // в этом случае делаем callback
     } else {
         console.error("Sigh In User error", response.problem);
+    }
+}
+
+
+// воркер function* activateUserWorker для  activate user 
+// в ApiResponse нам ничего не надо передавать => <undefined>
+// && response.data - нам не нужна, так как нам достаточно того, что данные пришли
+// не забываем его привязать к нашему вотчеру authSagaWatcher
+
+function* activateUserWorker(action: PayloadAction<ActivateUserPayload>) {
+    const { data, callback } = action.payload;
+    const response: ApiResponse<undefined> = yield call(API.activateUser, data);
+    if (response.ok) {
+        callback();
+    } else {
+        console.error("Activate User error", response.problem);
     }
 }
 
@@ -128,7 +167,13 @@ function* signInUserWorker(action: PayloadAction<SignInUserPayload>) {
 // принимает в себя первым параметром экшен sighUpUser
 // вторым - наш worker (=> необходимо создать)
 // takeLatest: забери наш экшен sighUpUser и впихни его в воркер sighUpUserWorker и  пусть там он дальше работает
-
+// ---
+// привязываем воркер activateUserWorker к вотчеру
+// привязываем воркер signInUserWorker к вотчеру
 export default function* authSagaWatcher() {
-    yield all([takeLatest(sighUpUser, sighUpUserWorker), takeLatest(signInUser, signInUserWorker)]);
+    yield all([
+        takeLatest(sighUpUser, sighUpUserWorker),
+        takeLatest(signInUser, signInUserWorker),
+        takeLatest(activateUser, activateUserWorker),
+    ]);
 }

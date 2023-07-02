@@ -57,7 +57,7 @@
     text-align: justify; // выравнивание по левому и правому краю
 }
 
-.SelectedPostReaction {
+.selectedPostReaction {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -65,8 +65,8 @@
     padding: 0 99px;
 }
 
-.SelectedPostReactionLikeDislike,
-.SelectedPostReactionToFavorites {
+.selectedPostReactionLikeDislike,
+.selectedPostReactionToFavorites {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -76,16 +76,16 @@
     }
 }
 
-.SelectedPostLike,
-.SelectedPostDislike,
-.SelectedPostReactionToFavorites {
+.selectedPostLike,
+.selectedPostDislike,
+.selectedPostReactionToFavorites {
     padding: 16px 32px;
     background-color: $medium;
     border-radius: 4px;
 }
 
 
-.SelectedPostReactionToFavorites {
+.selectedPostReactionToFavorites {
     font-family: 'Inter';
     font-style: normal;
     font-weight: 600;
@@ -113,9 +113,9 @@
         color: $gray;
     }
 
-    .SelectedPostLike,
-    .SelectedPostDislike,
-    .SelectedPostReactionToFavorites {
+    .selectedPostLike,
+    .selectedPostDislike,
+    .selectedPostReactionToFavorites {
         color: $white;
         background-color: $gray;
         svg>path {

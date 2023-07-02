@@ -8,7 +8,8 @@
 import { PostsList } from "src/@types";
 
 // дженерик (для периспользования кода)
-export type PayloadWithDataAndCallback <Data> = {
+// lesson step 4 Lesson 46 (activate user)
+export type PayloadWithDataAndCallback<Data> = {
     data: Data;
     callback: () => void;
 }
@@ -20,6 +21,11 @@ export type SignUpUserData = {
 };
 
 export type SignUpUserPayload = PayloadWithDataAndCallback<SignUpUserData>
+// до дженерика
+// export type SignUpUserPayload = {
+//     data: SignUpUserData;
+//     callback: () => void;
+// }
 
 // step 6 Lesson 45 (saga)
 // поплохело, так как не непонятно что вернутся => используем ApiResponse
@@ -41,16 +47,34 @@ export type PostsResponseData = {
     results: PostsList,
 }
 
-
-
+// step 1 Lesson 47 (auth+ access token)
+// в api указываем путь для создания токена. Запрос: post  /auth/jwt/create/
+// у запроса будет тело - наша data =>  типизируем нашу data
 export type SignInData = {
     email: string,
     password: string,
 }
 
+// step 2 Lesson 47 (auth+ access token)
+// типизируем action
 export type SignInUserPayload = PayloadWithDataAndCallback<SignInData>
 
+
+// step 4 Lesson 47 (auth+ access token)
+// используем ApiResponse и внутрь кладем то, что вернется 
+// (типизируем то, что придет из сервера нам)
 export type SignInUserResponseData = {
     access: string,
     refresh: string,
 }
+
+
+// step 4  Lesson 46 (activate user)
+// в swagger ищем запрос post /auth/users/activation/ => в api и прописываем запрос
+// типизируем нашу data
+export type ActivateUserData = {
+    uid: string;
+    token: string;
+}
+
+export type ActivateUserPayload = PayloadWithDataAndCallback<ActivateUserData>;

@@ -27,6 +27,10 @@
 // yield put(setPostsList(response.data.results))
 // а так как нам необходимо поместить в редакс и работа будет с action, то 
 // в postSlice необходима функция, которая ловит экшен и помещает в редакс (setPostsList)
+// ---
+//  step 7 46 (single post = selected post)
+//  так как работаем с данными 
+// => необходимо создать экшен в postSlice(step 7)
 
 
 
@@ -62,6 +66,7 @@ import { RootState } from "../store";
 // для Bookmark (savedPosts) типизация - массив наших постов PostsList из @types 
 // ---
 // типизация postsList (полученные посты с помощью get-запроса) - массив наших постов PostsList из @types
+// типизация singlePost  - наш пост или null (так как его может и быть)
 
 
 type InitialState = {
@@ -73,6 +78,7 @@ type InitialState = {
   dislikedPosts: PostsList;
   savedPosts: PostsList;
   postsList: PostsList;
+  singlePost: Post | null;
 };
 
 // step 3
@@ -95,6 +101,7 @@ type InitialState = {
 // для Bookmark будет один массив куда ьуду помещаться/удаляться посты
 // ---
 // postsList - полученные посты с помощью get-запроса из сервера
+// singlePost - полученный пост с помощью get-запроса из сервера
 
 const initialState: InitialState = {
   isSelectedPostModalOpened: false,
@@ -104,6 +111,7 @@ const initialState: InitialState = {
   dislikedPosts: [],
   savedPosts: [],
   postsList: [],
+  singlePost: null,
 };
 
 // step 1
@@ -191,7 +199,14 @@ const initialState: InitialState = {
 // ---
 // полученные посты из сервера (get-запрос) нам необходимо отправить в редакс 
 // =>  нужна функция, которая ловит экшен и отправляет его setPostsList 
-
+// ---
+// step 7 Lesson 46 (single post = selected post)
+// нам необходимо создать экшен для singlePost (getSinglePost)
+// у нас будет пустой экшен и PayloadAction<string>
+// ---
+// step 8 Lesson 46 (single post = selected post)
+// так как данные нужно еще положить в редакс. то 
+// создаем еще один экшен setSinglePost
 
 
 
@@ -281,6 +296,11 @@ const postSlice = createSlice({
       state.postsList = action.payload;
     },
 
+    getSinglePost: (_, __: PayloadAction<string>) => {},
+ 
+    setSinglePost: (state, action: PayloadAction<Post | null>) => {
+      state.singlePost = action.payload;
+    },
   }, // вот тут живут функции, которые ловят экшены по типу(т.е. по названию ф-и)
 });
 
@@ -301,8 +321,9 @@ const postSlice = createSlice({
 // добавляем экшен setLikeStatus и обрабатываем его в CardList
 // добавляем экшен setSavedStatus и обрабатываем его в CardList
 // экспортируем getPostsList и setPostsList
+// экспортируем getSinglePost и setSinglePost
 
-export const { setSelectedPostModalOpened, setSelectedPost, setSelectedImage, setLikeStatus, setSavedStatus, getPostsList, setPostsList } =
+export const { setSelectedPostModalOpened, setSelectedPost, setSelectedImage, setLikeStatus, setSavedStatus, getPostsList, setPostsList, getSinglePost, setSinglePost, } =
   postSlice.actions;
 // а вот тут живут сами экшены, которые рождаются библиотекой исходя
 // из названия ф-ии, которая их ловит
@@ -316,6 +337,7 @@ export const { setSelectedPostModalOpened, setSelectedPost, setSelectedImage, se
 // getLikedPosts и getDislikedPosts для SelectedPost
 // создаем getSavedPosts для SavedPosts
 // создаем getPostsList для PostsList
+// создаем getSinglePost для SinglePost
 
 export const PostSelectors = {
   getSelectedPostModalOpened: (state: RootState) =>
@@ -326,7 +348,7 @@ export const PostSelectors = {
   getDislikedPosts: (state: RootState) => state.postReducer.dislikedPosts,
   getSavedPosts: (state: RootState) => state.postReducer.savedPosts,
   getPostsList: (state: RootState) => state.postReducer.postsList,
-
+  getSinglePost: (state: RootState) => state.postReducer.singlePost,
 };
 // вот отсюда мы достаем данные, которые заранее видоизменили снежками (экшенами)
 

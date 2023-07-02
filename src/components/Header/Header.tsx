@@ -88,6 +88,9 @@ const Header = () => {
     // и если она true - то доступно 
     // имя пользователя (прописываем ее в userName) и кнопка Add Post
     // const isLoggedIn = true;
+    // ---
+    // step 9 Lesson 47 (auth+ access token)
+    // переменную isLoggedIn привязываем в селектору
     const isLoggedIn = useSelector(AuthSelectors.getLoggedIn)
     // const isLoggedIn = false;
 
@@ -118,6 +121,9 @@ const Header = () => {
         setSearch(!isSearch);
     };
 
+    // step 12 Lesson 47 (auth+ access token)
+    // для Button UserIcon добавляем условный рендеринг c Username  
+    // (если залогинен -  показать Username, а иначе иконку UserIcon)
 
     return (
         <div className={classNames(styles.container, { [styles.darkContainer]: themeValue === Theme.Dark })}>
@@ -156,18 +162,19 @@ const Header = () => {
                         className={styles.searchButton}
                     />
 
-                    <Button
+                    {/* <Button
                         type={ButtonTypes.Primary}
                         title={<UserIcon />}
                         onClick={onLoginButtonClick}
                         className={styles.userButton}
-                    />
-                    {isLoggedIn ? <Username username={'Katsiaryna'} /> : <Button
-                        type={ButtonTypes.Primary}
-                        title={<UserIcon />}
-                        onClick={onLoginButtonClick}
-                        className={styles.userButton}
-                    />}
+                    /> */}
+                    {isLoggedIn ? <Username username={'Katsiaryna'} /> :
+                        <Button
+                            type={ButtonTypes.Primary}
+                            title={<UserIcon />}
+                            onClick={onLoginButtonClick}
+                            className={styles.userButton}
+                        />}
                 </div>
             </div>
 

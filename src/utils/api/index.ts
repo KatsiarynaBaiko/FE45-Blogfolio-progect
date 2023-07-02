@@ -9,7 +9,7 @@
 
 
 import { create } from "apisauce";
-import { SignInData, SignUpUserData } from "src/redux/@types";
+import { ActivateUserData, SignInData, SignUpUserData } from "src/redux/@types";
 
 // создаем API Инстанс — это виртуальная машина, которая запускается и работает в облаке
 // внутрь  напихиваем конфиги этого API
@@ -37,11 +37,31 @@ const getPosts = () => {
 };
 
 
-
-
+// step 1 Lesson 47 (auth+ access token)
+// в api указываем путь для создания токена. 
+// Запрос: post  /auth/jwt/create/
+// у запроса будет тело - наша data =>
+// типизируем нашу data в @types
 const createToken = (data: SignInData) => {
     return API.post('/auth/jwt/create/', data);
 }
+
+// step 4  Lesson 46 (activate user)
+// в swagger ищем запрос post /auth/users/activation/ => в api и прописываем запрос
+// типизируем нашу data в @types
+const activateUser = (data: ActivateUserData) => {
+    return API.post("/auth/users/activation/", data);
+};
+
+
+// step 5 Lesson 46 (single post = selected post)
+// в api запрос get(`/blog/posts/${id}/)
+// id - будет string так как это - это поисковая строка
+// а из строки мы достаем строку :)
+const getSinglePost = (id: string) => {
+    return API.get(`/blog/posts/${id}/`);
+};
+
 
 
 // не забываем экспортировать
@@ -49,4 +69,6 @@ export default {
     signUpUser,
     getPosts,
     createToken,
+    activateUser,
+    getSinglePost,
 };
