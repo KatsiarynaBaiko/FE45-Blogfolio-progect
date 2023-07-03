@@ -62,6 +62,21 @@ const getSinglePost = (id: string) => {
     return API.get(`/blog/posts/${id}/`);
 };
 
+// step 1 HW9 (userInfo)
+// создаем getUserInfo - получение инфы о юзере
+// используем запрос get  "/auth/users/me/"
+const getUserInfo = (token: string) => {
+    return API.get(
+      "/auth/users/me/",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  };
+
 
 
 // не забываем экспортировать
@@ -71,4 +86,5 @@ export default {
     createToken,
     activateUser,
     getSinglePost,
+    getUserInfo, 
 };

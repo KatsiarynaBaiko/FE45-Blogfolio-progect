@@ -79,10 +79,10 @@ const Header = () => {
     };
 
     // навигация
+    const navigate = useNavigate();
     const onLoginButtonClick = () => {
         navigate(RoutesList.SignIn);
     };
-    const navigate = useNavigate();
 
     // передаем переменную в navLinks
     // и если она true - то доступно 
@@ -124,6 +124,15 @@ const Header = () => {
     // step 12 Lesson 47 (auth+ access token)
     // для Button UserIcon добавляем условный рендеринг c Username  
     // (если залогинен -  показать Username, а иначе иконку UserIcon)
+
+    // step 7 HW9 (userInfo)
+    // нам необходимо отрендерить данные пользователя в плашечку
+    // Используем селектор и getUserInfo
+    // ---
+    // Прописываем условный рендеринг для кнопочки: 
+    // если залогинен и есть инфа - показать плашечку с инфой о пользователе
+    // иначе просто кнопочку с человечком
+    const userInfo = useSelector(AuthSelectors.getUserInfo);
 
     return (
         <div className={classNames(styles.container, { [styles.darkContainer]: themeValue === Theme.Dark })}>
@@ -168,7 +177,16 @@ const Header = () => {
                         onClick={onLoginButtonClick}
                         className={styles.userButton}
                     /> */}
-                    {isLoggedIn ? <Username username={'Katsiaryna'} /> :
+                    {/* step 12 Lesson 47 (auth+ access token) */}
+                    {/* {isLoggedIn ? <Username username={'Katsiaryna'} /> :
+                        <Button
+                            type={ButtonTypes.Primary}
+                            title={<UserIcon />}
+                            onClick={onLoginButtonClick}
+                            className={styles.userButton}
+                        />} */}
+                    {/* step 7 HW9 (userInfo) */}
+                    {isLoggedIn && userInfo ? <Username username={userInfo.username} /> :
                         <Button
                             type={ButtonTypes.Primary}
                             title={<UserIcon />}

@@ -28,23 +28,36 @@
 // чтобы мы могли использовать уже созданный токен 
 // и чтобы он не терялся нигде в initialState мы достаем его из localStorage
 // accessToken: localStorage.getItem(ACCESS_TOKEN_KEY) || ''
-
+// ---
+// step 2 HW9 (userInfo)
+// создаем action для получения данных в authSlice  => getUserInfo. 
+// Так как нам ничего не нужно передавать => тип экшена undefined
+// action будет пустой
+// ---
+// step 3 HW9 (userInfo)
+// создаем  action setUserInfo, который будет ложить данные в редакс, 
+// также в initialState создаем useInfo. Это объект - первоначальное состояние - null
+// initialState - тип UserInfoPayload или null
+// и типизируем action PayloadAction<UserInfoPayload>
+// ---
 
 
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { access } from "fs";
 import { ACCESS_TOKEN_KEY } from "src/utils/constants";
-import { ActivateUserPayload, SignInData, SignInUserPayload, SignUpUserPayload } from "../@types";
+import { ActivateUserPayload, SignInData, SignInUserPayload, SignUpUserPayload, UserInfoPayload } from "../@types";
 import { RootState } from "../store";
 
 
 type InitialState = {
-    accessToken: string
+    accessToken: string;
+    userInfo: UserInfoPayload | null;
 };
 
 const initialState: InitialState = {
-    accessToken: localStorage.getItem(ACCESS_TOKEN_KEY) || ''
+    accessToken: localStorage.getItem(ACCESS_TOKEN_KEY) || '',
+    userInfo: null,
 };
 
 
@@ -61,12 +74,18 @@ const authSlice = createSlice({
         },
 
         activateUser: (_, __: PayloadAction<ActivateUserPayload>) => {},
+
+        getUserInfo: (_, __: PayloadAction<undefined>) => { },
+
+        setUserInfo: (state, action: PayloadAction<UserInfoPayload | null>) => { 
+            state.userInfo = action.payload
+        },
     },
     // вот тут живут функции, которые ловят экшены по типу(т.е. по названию ф-и)
 });
 
 
-export const { sighUpUser, signInUser, setAccessToken, activateUser } = authSlice.actions;
+export const { sighUpUser, signInUser, setAccessToken, activateUser, getUserInfo, setUserInfo } = authSlice.actions;
 // а вот тут живут сами экшены, которые рождаются библиотекой исходя
 // из названия ф-ии, которая их ловит
 
@@ -76,8 +95,11 @@ export const { sighUpUser, signInUser, setAccessToken, activateUser } = authSlic
 // (чтобы показывал/скрывать опредлененные странички, addPosts)
 // => прописываем Selector
 // !! - истинное булиновское значение
+// ---
+// // step 4 создаем селектор getUserInfo для UserInfo
 export const AuthSelectors = {
     getLoggedIn: (state: RootState) => !!state.authReducer.accessToken,
+    getUserInfo: (state: RootState) => state.authReducer.userInfo,
 };
 // вот отсюда мы достаем данные, которые заранее видоизменили снежками (экшенами)
 

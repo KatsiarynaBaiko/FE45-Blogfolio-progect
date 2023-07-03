@@ -1,9 +1,9 @@
-import React from "react"
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 import Header from "src/components/Header";
 import Home from "src/pages/Home";
-import { AuthSelectors } from "src/redux/reducers/authSlice";
+import { AuthSelectors, getUserInfo } from "src/redux/reducers/authSlice";
 import RegistrationConfirmation from "./RegistrationConfirmation";
 import SelectedPost from "./SelectedPost";
 import SignIn from "./SignIn";
@@ -29,7 +29,7 @@ export enum RoutesList {
     SignIn = "/sign-in",
     // RegistrationConfirmation = "/sing-up/confirm",
     RegistrationConfirmation = "/activate/:uid/:token",
-    Success = "/sing-up/confirm/success", 
+    Success = "/sing-up/confirm/success",
     // SelectedPost = "selected-post",
     SelectedPost = '/post/:id',
     Default = "*",
@@ -76,6 +76,20 @@ const Router = () => {
 
     const isLoggedIn = useSelector(AuthSelectors.getLoggedIn)
 
+    // step 6 HW9 (userInfo)
+    // обрабаьываем сагу полечение инфы о юзере 
+    // Отрабатывает мы в Router, так как оне есть везде. 
+    // При обработке используем useEffect и внутри кладем наши данные ручками
+    // Также проверяем залогинен ли пользователь или нет (должен быть привязан isLoggedIn к селектору)
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            dispatch(getUserInfo());
+        }
+    }, [isLoggedIn])
+
+
     return <BrowserRouter>
         <Routes>
             {/* <Route path="/" element={<Home /> }/> */}
@@ -84,12 +98,13 @@ const Router = () => {
             {/* после создания enum */}
             <Route path={RoutesList.Home} element={<Header />}>
                 <Route path={RoutesList.Home} element={<Home />} />
-                <Route path={RoutesList.SingUp} element={!isLoggedIn ? <SingUp /> : <Navigate to={RoutesList.Home}/>} />
-                <Route path={RoutesList.SignIn} element={!isLoggedIn ? <SignIn /> : <Navigate to={RoutesList.Home}/>} />
-                <Route path={RoutesList.RegistrationConfirmation} element={!isLoggedIn ? <RegistrationConfirmation /> : <Navigate to={RoutesList.Home}/>} />
-                <Route path={RoutesList.Success} element={!isLoggedIn ? <Success /> : <Navigate to={RoutesList.Home}/>} />
+                {/* <Route path={RoutesList.SingUp} element={!isLoggedIn ? <SingUp /> : <Navigate to={RoutesList.Home} />} /> */}
+                <Route path={RoutesList.SingUp} element={ <SingUp />} />
+                <Route path={RoutesList.SignIn} element={!isLoggedIn ? <SignIn /> : <Navigate to={RoutesList.Home} />} />
+                <Route path={RoutesList.RegistrationConfirmation} element={!isLoggedIn ? <RegistrationConfirmation /> : <Navigate to={RoutesList.Home} />} />
+                <Route path={RoutesList.Success} element={!isLoggedIn ? <Success /> : <Navigate to={RoutesList.Home} />} />
                 <Route path={RoutesList.SelectedPost} element={<SelectedPost />} />
-                <Route path={RoutesList.Default} element={<Navigate to={RoutesList.Home}/>} />
+                <Route path={RoutesList.Default} element={<Navigate to={RoutesList.Home} />} />
             </Route>
         </Routes>
     </BrowserRouter>

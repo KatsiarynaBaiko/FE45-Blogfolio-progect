@@ -78,3 +78,13 @@ export type ActivateUserData = {
 }
 
 export type ActivateUserPayload = PayloadWithDataAndCallback<ActivateUserData>;
+
+// step 3 HW9 (userInfo)
+// initialState - тип UserInfoPayload или null
+// и типизируем action PayloadAction<UserInfoPayload>
+
+export type UserInfoPayload = {
+    username: string;
+    email: string;
+    id: number;
+}

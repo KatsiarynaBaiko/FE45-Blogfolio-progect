@@ -4,8 +4,8 @@
 
 import { PayloadAction } from "@reduxjs/toolkit";
 import { all, call, put, takeLatest } from "redux-saga/effects";
-import { ActivateUserPayload, SignInUserPayload, SignInUserResponseData, SignUpResponseData, SignUpUserPayload } from "../@types";
-import { activateUser, setAccessToken, sighUpUser, signInUser } from "../reducers/authSlice";
+import { ActivateUserPayload, SignInUserPayload, SignInUserResponseData, SignUpResponseData, SignUpUserPayload, UserInfoPayload } from "../@types";
+import { activateUser, getUserInfo, setAccessToken, setUserInfo, sighUpUser, signInUser } from "../reducers/authSlice";
 import { ApiResponse } from "apisauce";
 import { callbackify } from "util";
 import API from "src/utils/api";
@@ -63,6 +63,10 @@ import { access } from "fs";
 // step 4 Lesson 47 (auth+ access token)
 // создаем еще одного воркера signInUserWorker
 // для работы с авторизацией
+// ---
+// step 5 HW9 (userInfo)
+// создаем еще одного воркера getUserInfoWorker
+// для работы с получением инфы о пользователе
 
 
 
@@ -154,6 +158,32 @@ function* activateUserWorker(action: PayloadAction<ActivateUserPayload>) {
     }
 }
 
+// воркер getUserInfoWorker для работы с получением инфы о пользователе
+// нам нужен токен, то достаем его из LocalStorage.getItem
+// проверяем, есть ли токен для пользователя => используем if
+// кладем данные в редакс с использованием put
+// не забываем его привязать к нашему вотчеру authSagaWatcher
+// типизацией для ApiResponse будет UserInfoPayload 
+
+function* getUserInfoWorker() {
+
+    const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY);
+
+    if (accessToken) {
+        const response: ApiResponse<UserInfoPayload> = yield call(
+        // const response: ApiResponse<any> = yield call(
+            API.getUserInfo,
+            accessToken
+        );
+        if (response.ok && response.data) {
+            yield put(setUserInfo(response.data));
+        } else {
+            console.error("Get User Info error", response.problem);
+        }
+    }
+}
+
+
 
 // step 2 
 // создаем watcher, который будет за всем следить и перераспределять
@@ -175,5 +205,6 @@ export default function* authSagaWatcher() {
         takeLatest(sighUpUser, sighUpUserWorker),
         takeLatest(signInUser, signInUserWorker),
         takeLatest(activateUser, activateUserWorker),
+        takeLatest(getUserInfo, getUserInfoWorker),
     ]);
 }
