@@ -1,0 +1,127 @@
+@import "src/styles/colors";
+
+.container {
+    flex: 1;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: $extra-light; // фон всех страничеек
+    position: relative;
+    overflow: scroll;
+}
+
+.darkContainer {
+    background-color: $secondary;
+}
+
+.header {
+    position: fixed;
+    background-color: $primary;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.headerRightSide {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.headerCenterSearch {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    background-color: $primary-secondary;
+}
+
+.inputSearch {
+    color: $gray;
+    border-radius: none;
+    border: none;
+    background-color: $primary-secondary;
+}
+
+.closeSearchButton {
+    height: 84px;
+    width: 84px;
+    border-radius: 0;
+    background-color: $primary-secondary;
+}
+
+.infoContainer {
+    margin: 156px auto 0 auto; //72px+84px
+}
+
+.footer {
+    margin-top: 72px;
+    padding: 32px 0;
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid $medium;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: $gray;
+}
+
+.menuContainer {
+    width: 236px;
+    background-color: $white;
+    position: fixed; //=> у .container: position: relative;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column; //раскидываем меню вверх/низ
+    top: 84px; // спускаем на высоту 84px
+    height: calc(100% - 84px);
+}
+
+.burgerMenuButton {
+    height: 84px;
+    width: 84px;
+    border-radius: 0;
+    border-left: 1px solid $primary-secondary;
+    border-right: 1px solid $primary-secondary;
+}
+
+.userButton {
+    height: 84px;
+    width: 84px;
+    border-radius: 0;
+    border-left: 1px solid $primary-secondary;
+    border-right: 1px solid $primary-secondary;
+}
+
+.searchButton {
+    height: 84px;
+    width: 84px;
+    border-radius: 0;
+    border-left: 1px solid $primary-secondary;
+    border-right: 1px solid $primary-secondary;
+}
+
+.authButton {
+    height: 84px;
+}
+
+.navLinkButton {
+    padding: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    color: $secondary;
+    border-bottom: 1px solid $light;
+    text-decoration: none;
+
+    &:hover {
+        color: $primary;
+        cursor: pointer;
+    }
+}

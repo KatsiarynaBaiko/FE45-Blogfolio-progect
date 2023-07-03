@@ -1,0 +1,17 @@
+@import "src/styles/colors";
+@import "src/styles/mixins";
+
+.signIn {
+  @include signLink
+}
+
+.additionalInfo {
+  @include additionalInfo
+}
+
+.darkAdditionalInfo {
+  color: $medium;
+  .signIn {
+    color: $primary-secondary;
+  }
+}
