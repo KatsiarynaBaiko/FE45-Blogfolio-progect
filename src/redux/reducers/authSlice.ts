@@ -40,6 +40,11 @@
 // initialState - тип UserInfoPayload или null
 // и типизируем action PayloadAction<UserInfoPayload>
 // ---
+// step 4 Lesson 48 update access token (refresh and verify)
+// необходим функционал на разлогинивание пользователя (logoutUser)
+// тоже пишем сагу и action
+// action logoutUser в authSlice
+// нового воркера прописываем в authSaga
 
 
 
@@ -80,12 +85,14 @@ const authSlice = createSlice({
         setUserInfo: (state, action: PayloadAction<UserInfoPayload | null>) => { 
             state.userInfo = action.payload
         },
+
+        logoutUser: (_, __: PayloadAction<undefined>) => {},
     },
     // вот тут живут функции, которые ловят экшены по типу(т.е. по названию ф-и)
 });
 
 
-export const { sighUpUser, signInUser, setAccessToken, activateUser, getUserInfo, setUserInfo } = authSlice.actions;
+export const { sighUpUser, signInUser, setAccessToken, activateUser, getUserInfo, setUserInfo, logoutUser } = authSlice.actions;
 // а вот тут живут сами экшены, которые рождаются библиотекой исходя
 // из названия ф-ии, которая их ловит
 

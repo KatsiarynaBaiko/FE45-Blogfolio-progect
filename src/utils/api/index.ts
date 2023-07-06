@@ -16,7 +16,7 @@ import { ActivateUserData, SignInData, SignUpUserData } from "src/redux/@types";
 // baseURL - это единственный обязательный
 // "https://studapi.teachmeskills.by" - это голова, к которой будут уже присоединяться хвостики
 const API = create({
-    baseURL: "https://studapi.teachmeskills.by",
+  baseURL: "https://studapi.teachmeskills.by",
 });
 
 
@@ -26,14 +26,14 @@ const API = create({
 // у запроса не хватает тела (то есть нашей data) 
 // data требуется тип и он будет таким же, как создали уже ранее
 const signUpUser = (data: SignUpUserData) => {
-    return API.post("/auth/users/", data);
+  return API.post("/auth/users/", data);
 };
 
 // создаем getPosts - получение постов из сервера
 // => запрос get
 // лимит 12 - количество постов на страничке по макету
 const getPosts = () => {
-    return API.get("/blog/posts/?limit=12");
+  return API.get("/blog/posts/?limit=12");
 };
 
 
@@ -43,14 +43,14 @@ const getPosts = () => {
 // у запроса будет тело - наша data =>
 // типизируем нашу data в @types
 const createToken = (data: SignInData) => {
-    return API.post('/auth/jwt/create/', data);
+  return API.post('/auth/jwt/create/', data);
 }
 
 // step 4  Lesson 46 (activate user)
 // в swagger ищем запрос post /auth/users/activation/ => в api и прописываем запрос
 // типизируем нашу data в @types
 const activateUser = (data: ActivateUserData) => {
-    return API.post("/auth/users/activation/", data);
+  return API.post("/auth/users/activation/", data);
 };
 
 
@@ -59,32 +59,48 @@ const activateUser = (data: ActivateUserData) => {
 // id - будет string так как это - это поисковая строка
 // а из строки мы достаем строку :)
 const getSinglePost = (id: string) => {
-    return API.get(`/blog/posts/${id}/`);
+  return API.get(`/blog/posts/${id}/`);
 };
 
 // step 1 HW9 (userInfo)
 // создаем getUserInfo - получение инфы о юзере
 // используем запрос get  "/auth/users/me/"
 const getUserInfo = (token: string) => {
-    return API.get(
-      "/auth/users/me/",
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-  };
+  return API.get(
+    "/auth/users/me/",
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
+
+// step 2 Lesson 48 update access token (refresh and verify)
+// прописываем логику проверки валидности наших токенов
+// делаем запрос в api для verify
+// делаем запрос в api для refresh
+const verifyToken = (token: string) => {
+  return API.post("/auth/jwt/verify/", { token });
+};
+
+const refreshToken = (refresh: string) => {
+  return API.post("/auth/jwt/refresh/", { refresh });
+};
+
 
 
 
 // не забываем экспортировать
 export default {
-    signUpUser,
-    getPosts,
-    createToken,
-    activateUser,
-    getSinglePost,
-    getUserInfo, 
+  signUpUser,
+  getPosts,
+  createToken,
+  activateUser,
+  getSinglePost,
+  getUserInfo,
+  verifyToken,
+  refreshToken, 
 };

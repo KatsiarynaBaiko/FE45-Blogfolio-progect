@@ -14,7 +14,7 @@ import { ApiResponse } from "apisauce";
 import { all, call, put, takeLatest } from "redux-saga/effects";
 import { PostsResponseData } from "../@types";
 import API from "src/utils/api";
-import { getPostsList, getSinglePost, setPostsList, setSinglePost } from "../reducers/postSlice";
+import { getPostsList, getSinglePost, setPostsList, setSinglePost, setSinglePostLoading } from "../reducers/postSlice";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { Post } from "src/@types";
 
@@ -43,6 +43,10 @@ import { Post } from "src/@types";
 // step 6 Lesson 46 (single post = selected post)
 // нам необходимо написать сагу
 // в postsSaga создаем еще одного вотчера для single post
+// ---
+// Lesson 48 work with Loader (SelectedPost)
+// чтобы работал Loader для SelectedPost в postSaga
+// используем yield put(setSinglePostLoading(true));
 
 
 
@@ -56,15 +60,16 @@ import { Post } from "src/@types";
 // помещаем в редакс через put
 // => yield put(setPostsList(response.data.results))
 
-function* postsSagaWorker () {
 
-    const response: ApiResponse<PostsResponseData> = yield call(API.getPosts);
+function* postsSagaWorker() {
 
-    if (response.ok && response.data) {
-        yield put(setPostsList(response.data.results)) // yield put - выполняет функцию dispatch
-    } else {
-        console.error("Set PostsList error", response.problem);
-    }
+  const response: ApiResponse<PostsResponseData> = yield call(API.getPosts);
+
+  if (response.ok && response.data) {
+    yield put(setPostsList(response.data.results)) // yield put - выполняет функцию dispatch
+  } else {
+    console.error("Set PostsList error", response.problem);
+  }
 }
 
 
@@ -77,18 +82,26 @@ function* postsSagaWorker () {
 // описываем воркера
 // помещаем данные в реедакс с помощью put
 // остается запустить все в page SelectedPost
+// ---
+// Lesson 48 work with Loader (SelectedPost)
+// чтобы работал Loader для SelectedPost в postSaga
+// в самом начале (то есть в воркере getSinglePostWorker )
+// используем yield put(setSinglePostLoading(true));
+// и в любом случае в конце false
 
 function* getSinglePostWorker(action: PayloadAction<string>) {
-    const response: ApiResponse<Post> = yield call(
-      API.getSinglePost,
-      action.payload
-    );
-    if (response.ok && response.data) {
-      yield put(setSinglePost(response.data));
-    } else {
-      console.error("Activate User error", response.problem);
-    }
+  yield put(setSinglePostLoading(true));
+  const response: ApiResponse<Post> = yield call(
+    API.getSinglePost,
+    action.payload
+  );
+  if (response.ok && response.data) {
+    yield put(setSinglePost(response.data));
+  } else {
+    console.error("Activate User error", response.problem);
   }
+  yield put(setSinglePostLoading(false));
+}
 
 
 // step 1
@@ -102,9 +115,9 @@ function* getSinglePostWorker(action: PayloadAction<string>) {
 // ---
 // step 9 Lesson 46  (single post = selected post)
 // привязываем воркер  getSinglePostWorker к вотчеру
-export default function* postsSagaWatcher () {
-    yield all([
-        takeLatest(getPostsList, postsSagaWorker),
-        takeLatest(getSinglePost, getSinglePostWorker),
-    ]);
+export default function* postsSagaWatcher() {
+  yield all([
+    takeLatest(getPostsList, postsSagaWorker),
+    takeLatest(getSinglePost, getSinglePostWorker),
+  ]);
 }

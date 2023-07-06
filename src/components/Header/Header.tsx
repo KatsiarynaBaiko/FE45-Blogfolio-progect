@@ -10,8 +10,8 @@ import { useThemeContext } from "src/context/Theme";
 import classNames from "classnames";
 import { Theme } from "src/@types";
 import Input from "../Input";
-import { useSelector } from "react-redux";
-import { AuthSelectors } from "src/redux/reducers/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { AuthSelectors, logoutUser } from "src/redux/reducers/authSlice";
 
 
 // step 1
@@ -134,6 +134,17 @@ const Header = () => {
     // иначе просто кнопочку с человечком
     const userInfo = useSelector(AuthSelectors.getUserInfo);
 
+
+   // step 5 Lesson 48 update access token (refresh and verify )
+   // вешаем logout на кнопочку на боковом меню 
+   // условный рендерин: isLoggedIn ? onLogout : onLoginButtonClick
+   const dispatch = useDispatch ()
+
+   const onLogout = () => {
+    dispatch(logoutUser());
+  };
+
+
     return (
         <div className={classNames(styles.container, { [styles.darkContainer]: themeValue === Theme.Dark })}>
             <div className={styles.header}>
@@ -229,7 +240,8 @@ const Header = () => {
                             <Button
                                 type={ButtonTypes.Secondary}
                                 title={isLoggedIn ? "Log Out" : "Sign In"}
-                                onClick={onLoginButtonClick}
+                                // onClick={onLoginButtonClick}
+                                onClick={isLoggedIn ? onLogout : onLoginButtonClick}
                                 className={styles.authButton}
                             />
                         </div>

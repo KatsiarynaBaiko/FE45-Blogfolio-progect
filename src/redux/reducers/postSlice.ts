@@ -79,6 +79,7 @@ type InitialState = {
   savedPosts: PostsList;
   postsList: PostsList;
   singlePost: Post | null;
+  singlePostLoading: boolean;
 };
 
 // step 3
@@ -112,6 +113,7 @@ const initialState: InitialState = {
   savedPosts: [],
   postsList: [],
   singlePost: null,
+  singlePostLoading: false,
 };
 
 // step 1
@@ -207,7 +209,10 @@ const initialState: InitialState = {
 // step 8 Lesson 46 (single post = selected post)
 // так как данные нужно еще положить в редакс. то 
 // создаем еще один экшен setSinglePost
-
+// ---
+// Lesson 48 work with Loader (SelectedPost)
+// для того, чтобы работал Loader нам необходим action setSinglePostLoading
+// также прописываем селектор getSinglePostLoading
 
 
 const postSlice = createSlice({
@@ -296,11 +301,17 @@ const postSlice = createSlice({
       state.postsList = action.payload;
     },
 
-    getSinglePost: (_, __: PayloadAction<string>) => {},
- 
+    getSinglePost: (_, __: PayloadAction<string>) => { },
+
     setSinglePost: (state, action: PayloadAction<Post | null>) => {
       state.singlePost = action.payload;
     },
+
+    setSinglePostLoading: (state, action: PayloadAction<boolean>) => {
+      state.singlePostLoading = action.payload;
+    },
+
+
   }, // вот тут живут функции, которые ловят экшены по типу(т.е. по названию ф-и)
 });
 
@@ -323,7 +334,7 @@ const postSlice = createSlice({
 // экспортируем getPostsList и setPostsList
 // экспортируем getSinglePost и setSinglePost
 
-export const { setSelectedPostModalOpened, setSelectedPost, setSelectedImage, setLikeStatus, setSavedStatus, getPostsList, setPostsList, getSinglePost, setSinglePost, } =
+export const { setSelectedPostModalOpened, setSelectedPost, setSelectedImage, setLikeStatus, setSavedStatus, getPostsList, setPostsList, getSinglePost, setSinglePost, setSinglePostLoading, } =
   postSlice.actions;
 // а вот тут живут сами экшены, которые рождаются библиотекой исходя
 // из названия ф-ии, которая их ловит
@@ -349,6 +360,7 @@ export const PostSelectors = {
   getSavedPosts: (state: RootState) => state.postReducer.savedPosts,
   getPostsList: (state: RootState) => state.postReducer.postsList,
   getSinglePost: (state: RootState) => state.postReducer.singlePost,
+  getSinglePostLoading: (state: RootState) => state.postReducer.singlePostLoading,
 };
 // вот отсюда мы достаем данные, которые заранее видоизменили снежками (экшенами)
 

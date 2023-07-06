@@ -5,12 +5,13 @@
 import { PayloadAction } from "@reduxjs/toolkit";
 import { all, call, put, takeLatest } from "redux-saga/effects";
 import { ActivateUserPayload, SignInUserPayload, SignInUserResponseData, SignUpResponseData, SignUpUserPayload, UserInfoPayload } from "../@types";
-import { activateUser, getUserInfo, setAccessToken, setUserInfo, sighUpUser, signInUser } from "../reducers/authSlice";
+import { activateUser, getUserInfo, logoutUser, setAccessToken, setUserInfo, sighUpUser, signInUser } from "../reducers/authSlice";
 import { ApiResponse } from "apisauce";
 import { callbackify } from "util";
 import API from "src/utils/api";
 import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from "src/utils/constants";
 import { access } from "fs";
+import callCheckingAuth from "./helpers/callCheckingAuth";
 
 // redux-saga имеет 2 важных разделения в функциях:
 // функция watcher - распределение (привязывает action к исполнителю)
@@ -67,6 +68,13 @@ import { access } from "fs";
 // step 5 HW9 (userInfo)
 // создаем еще одного воркера getUserInfoWorker
 // для работы с получением инфы о пользователе
+// ---
+// step 4 Lesson 48 update access token (refresh and verify)
+// необходим функционал на разлогинивание пользователя (logoutUser)
+// тоже пишем сагу и action
+// action logoutUser в authSlice
+// нового воркера прописываем в authSaga
+// применяем logoutUser в callCheckingAuth
 
 
 
@@ -164,23 +172,48 @@ function* activateUserWorker(action: PayloadAction<ActivateUserPayload>) {
 // кладем данные в редакс с использованием put
 // не забываем его привязать к нашему вотчеру authSagaWatcher
 // типизацией для ApiResponse будет UserInfoPayload 
+// --- 
+// step 3 Lesson 48 update access token (refresh and verify)
+// используем сагу callCheckingAuth 
+// процесс по refresh and verify token, иначе logout
+
+// function* getUserInfoWorker() {
+//     const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY);
+//     if (accessToken) {
+//         const response: ApiResponse<UserInfoPayload> = yield call(
+//             API.getUserInfo,
+//             accessToken
+//         );
+//         if (response.ok && response.data) {
+//             yield put(setUserInfo(response.data));
+//         } else {
+//             console.error("Get User Info error", response.problem);
+//         }
+//     }
+// }
+
+
+// step 3 Lesson 48 update access token (refresh and verify)
+// мы можем комбинировать наши саги => используем callCheckingAuth
+// процесс по refresh and verify token, иначе logout
 
 function* getUserInfoWorker() {
-
-    const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY);
-
-    if (accessToken) {
-        const response: ApiResponse<UserInfoPayload> = yield call(
-        // const response: ApiResponse<any> = yield call(
-            API.getUserInfo,
-            accessToken
-        );
-        if (response.ok && response.data) {
-            yield put(setUserInfo(response.data));
-        } else {
-            console.error("Get User Info error", response.problem);
-        }
+    const response: ApiResponse<UserInfoPayload> | undefined =
+        yield callCheckingAuth(API.getUserInfo);
+    if (response && response?.ok && response?.data) {
+        yield put(setUserInfo(response.data));
+    } else {
+        console.error("Get User Info error", response?.problem);
     }
+} 
+
+
+// step 4 Lesson 48 update access token (refresh and verify)
+// нового воркера прописываем в для logoutUser
+function* logoutWorker() {
+    localStorage.removeItem(ACCESS_TOKEN_KEY);
+    localStorage.removeItem(REFRESH_TOKEN_KEY);
+    yield put(setAccessToken(""));
 }
 
 
@@ -206,5 +239,6 @@ export default function* authSagaWatcher() {
         takeLatest(signInUser, signInUserWorker),
         takeLatest(activateUser, activateUserWorker),
         takeLatest(getUserInfo, getUserInfoWorker),
+        takeLatest(logoutUser, logoutWorker),
     ]);
 }

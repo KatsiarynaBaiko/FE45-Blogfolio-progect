@@ -88,3 +88,11 @@ export type UserInfoPayload = {
     email: string;
     id: number;
 }
+
+// step 2 Lesson 48 update access token (refresh and verify)
+// прописываем логику проверки валидности наших токенов
+// в cлучае позитивного ответа refresh нам возвращается string (cм. запрос)
+// => идем в типы и создаем RefreshResponseData
+export type RefreshResponseData = {
+    access: string;
+  };

@@ -13,6 +13,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getSinglePost, PostSelectors } from "src/redux/reducers/postSlice";
 import { RoutesList } from "../Router";
+import Loader from "src/components/Loader";
 
 
 
@@ -83,7 +84,11 @@ const SelectedPost = () => {
         navigate(RoutesList.Home);
     };
 
-    return singlePost ? (
+    // Lesson 48 work with Loader (SelectedPost)
+    // использкем селектоор для Loader
+    const isSinglePostLoading = useSelector(PostSelectors.getSinglePostLoading);
+
+    return singlePost && !isSinglePostLoading ? (
         <div className={classNames(styles.container, { [styles.darkContainer]: themeValue === Theme.Dark })}>
             <div className={styles.breadcrumbs}>
                 <span onClick={onHomeClick}>Home</span>{" "}
@@ -121,7 +126,10 @@ const SelectedPost = () => {
                 </div>
             </div>
         </div>
-    ) : null
+        // ) : null
+    ) : (
+        <Loader />
+    );
 };
 
 // step 2

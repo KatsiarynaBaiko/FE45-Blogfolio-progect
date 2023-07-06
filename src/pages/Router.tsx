@@ -98,8 +98,8 @@ const Router = () => {
             {/* после создания enum */}
             <Route path={RoutesList.Home} element={<Header />}>
                 <Route path={RoutesList.Home} element={<Home />} />
-                {/* <Route path={RoutesList.SingUp} element={!isLoggedIn ? <SingUp /> : <Navigate to={RoutesList.Home} />} /> */}
-                <Route path={RoutesList.SingUp} element={ <SingUp />} />
+                <Route path={RoutesList.SingUp} element={!isLoggedIn ? <SingUp /> : <Navigate to={RoutesList.Home} />} />
+                {/* <Route path={RoutesList.SingUp} element={ <SingUp />} /> */}
                 <Route path={RoutesList.SignIn} element={!isLoggedIn ? <SignIn /> : <Navigate to={RoutesList.Home} />} />
                 <Route path={RoutesList.RegistrationConfirmation} element={!isLoggedIn ? <RegistrationConfirmation /> : <Navigate to={RoutesList.Home} />} />
                 <Route path={RoutesList.Success} element={!isLoggedIn ? <Success /> : <Navigate to={RoutesList.Home} />} />
