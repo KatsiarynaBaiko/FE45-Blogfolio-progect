@@ -67,7 +67,7 @@ import { RootState } from "../store";
 // ---
 // типизация postsList (полученные посты с помощью get-запроса) - массив наших постов PostsList из @types
 // типизация singlePost  - наш пост или null (так как его может и быть)
-
+// типизация myPost - полученные посты с помощью get-запроса - массив постов PostsList из @types
 
 type InitialState = {
   isSelectedPostModalOpened: boolean;
@@ -80,6 +80,7 @@ type InitialState = {
   postsList: PostsList;
   singlePost: Post | null;
   singlePostLoading: boolean;
+  myPosts: PostsList;
 };
 
 // step 3
@@ -103,6 +104,7 @@ type InitialState = {
 // ---
 // postsList - полученные посты с помощью get-запроса из сервера
 // singlePost - полученный пост с помощью get-запроса из сервера
+// myPosts - полученный пост с помощью get-запроса из сервера
 
 const initialState: InitialState = {
   isSelectedPostModalOpened: false,
@@ -114,6 +116,7 @@ const initialState: InitialState = {
   postsList: [],
   singlePost: null,
   singlePostLoading: false,
+  myPosts: []
 };
 
 // step 1
@@ -213,6 +216,19 @@ const initialState: InitialState = {
 // Lesson 48 work with Loader (SelectedPost)
 // для того, чтобы работал Loader нам необходим action setSinglePostLoading
 // также прописываем селектор getSinglePostLoading
+// ---
+// step 2 HW10 MyPosts
+// создаем action для получения данных в postSlice getMyPosts. 
+// Так как нам ничего не нужно передавать => тип экшена undefined
+// ---
+// step 3 HW10 MyPosts
+// создаем  action setMyPosts, который будет ложить данные в редакс, 
+// также в initialState создаем myPosts. Это массив - первоначальное состояние - []
+// и типизируем action PayloadAction<PostsList>
+// ---
+// step 4 HW10 MyPosts
+// создаем селектор getMyPosts для myPosts 
+
 
 
 const postSlice = createSlice({
@@ -311,6 +327,12 @@ const postSlice = createSlice({
       state.singlePostLoading = action.payload;
     },
 
+    getMyPosts: (_, __: PayloadAction<undefined>) => { },
+
+    setMyPosts: (state, action: PayloadAction<PostsList>) => {
+      state.myPosts = action.payload;
+    },
+    
 
   }, // вот тут живут функции, которые ловят экшены по типу(т.е. по названию ф-и)
 });
@@ -334,7 +356,7 @@ const postSlice = createSlice({
 // экспортируем getPostsList и setPostsList
 // экспортируем getSinglePost и setSinglePost
 
-export const { setSelectedPostModalOpened, setSelectedPost, setSelectedImage, setLikeStatus, setSavedStatus, getPostsList, setPostsList, getSinglePost, setSinglePost, setSinglePostLoading, } =
+export const { setSelectedPostModalOpened, setSelectedPost, setSelectedImage, setLikeStatus, setSavedStatus, getPostsList, setPostsList, getSinglePost, setSinglePost, setSinglePostLoading, getMyPosts, setMyPosts, } =
   postSlice.actions;
 // а вот тут живут сами экшены, которые рождаются библиотекой исходя
 // из названия ф-ии, которая их ловит
@@ -349,6 +371,7 @@ export const { setSelectedPostModalOpened, setSelectedPost, setSelectedImage, se
 // создаем getSavedPosts для SavedPosts
 // создаем getPostsList для PostsList
 // создаем getSinglePost для SinglePost
+// создаем getMyPosts для MyPosts 
 
 export const PostSelectors = {
   getSelectedPostModalOpened: (state: RootState) =>
@@ -361,6 +384,7 @@ export const PostSelectors = {
   getPostsList: (state: RootState) => state.postReducer.postsList,
   getSinglePost: (state: RootState) => state.postReducer.singlePost,
   getSinglePostLoading: (state: RootState) => state.postReducer.singlePostLoading,
+  getMyPosts: (state: RootState) => state.postReducer.myPosts,
 };
 // вот отсюда мы достаем данные, которые заранее видоизменили снежками (экшенами)
 

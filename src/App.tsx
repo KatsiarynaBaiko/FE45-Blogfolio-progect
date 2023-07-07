@@ -242,7 +242,7 @@ const App = () => {
   // чтобы было их три - размножаем
   const tabsList = [
     { key: TabsTypes.All, title: 'All', disabled: false },
-    { key: TabsTypes.Myfavorites, title: 'My favorites', disabled: false },
+    { key: TabsTypes.MyPosts, title: 'My Posts', disabled: false },
     { key: TabsTypes.Popular, title: 'Popular', disabled: true }
   ]
   // activeTab - это переключение Tabs => это использование хуков => создаем useState 

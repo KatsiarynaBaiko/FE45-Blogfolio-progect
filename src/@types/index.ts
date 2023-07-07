@@ -21,7 +21,7 @@ export type PostsList = Post[]
 // переносим enum, так как у нас несколько свойств Tabs
 export enum TabsTypes {
   All = 'all',
-  Myfavorites = 'myfavorites',
+  MyPosts = 'myPosts',
   Popular = 'popular',
 }
 

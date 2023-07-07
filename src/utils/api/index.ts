@@ -91,6 +91,23 @@ const refreshToken = (refresh: string) => {
 };
 
 
+// HW10 MyPosts
+// step 1 создаем запрос в api на получение моих постов
+// запрос будет аналогичен getUserInfo (так как нам нужен токен)
+// MyPosts видны только зареганым юзерам
+const getMyPosts = (token: string) => {
+  return API.get(
+    "/blog/posts/my_posts/",
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
+
 
 
 // не забываем экспортировать
@@ -103,4 +120,5 @@ export default {
   getUserInfo,
   verifyToken,
   refreshToken, 
+  getMyPosts,
 };

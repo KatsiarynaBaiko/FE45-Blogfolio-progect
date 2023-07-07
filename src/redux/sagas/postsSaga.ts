@@ -14,9 +14,10 @@ import { ApiResponse } from "apisauce";
 import { all, call, put, takeLatest } from "redux-saga/effects";
 import { PostsResponseData } from "../@types";
 import API from "src/utils/api";
-import { getPostsList, getSinglePost, setPostsList, setSinglePost, setSinglePostLoading } from "../reducers/postSlice";
+import { getMyPosts, getPostsList, getSinglePost, setMyPosts, setPostsList, setSinglePost, setSinglePostLoading } from "../reducers/postSlice";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { Post } from "src/@types";
+import callCheckingAuth from "./helpers/callCheckingAuth";
 
 // step 1 HW8
 // создаем вотчера, который отвечает за посты
@@ -47,6 +48,10 @@ import { Post } from "src/@types";
 // Lesson 48 work with Loader (SelectedPost)
 // чтобы работал Loader для SelectedPost в postSaga
 // используем yield put(setSinglePostLoading(true));
+// ---
+// HW10 MyPosts
+// нам необходимо написать сагу
+// в postsSaga создаем еще одного вотчера для myPosts
 
 
 
@@ -104,6 +109,50 @@ function* getSinglePostWorker(action: PayloadAction<string>) {
 }
 
 
+// step 5  HW10 MyPosts
+// приступаем к работе в саге postSaga. Создаем еще одного воркера
+// типизация ApiResponse будет PostsResponseData 
+// приходит аналогичный ответ, как при полцчении всех постов => <PostsResponseData>
+// так как нам нужен живой токен (запустить процесс refresh and verify token, иначе logout)
+// => используем сагу-помощника callCheckingAut
+// обрабатываем с помощью if и помещаем в редакс с  помощью put
+// не забываем его привязать к нашему вотчеру postsSagaWatcher
+
+function* getMyPostsWorker() {
+
+  const response: ApiResponse<PostsResponseData>= yield callCheckingAuth(API.getMyPosts);
+
+  // if (response.ok && response.data) {
+  //   yield put(setMyPosts(response.data.results));
+  // } else {
+  //   console.error("Set My Posts error", response.problem);
+  // }
+
+  // если в ApiResponse добавить "| undefined"
+  // if (response && response?.status === 404) {
+  //   yield put(setMyPosts([]));
+  //   console.error("404 выводит в консоль", response.problem);
+  // }
+  // else if (response && response?.ok && response?.data) {
+  //   yield put(setMyPosts(response.data.results)); 
+  // }
+  // else {
+  //   console.error("Set My Posts error", response?.problem);
+  // }
+
+  if (response.status === 404) {
+    yield put(setMyPosts([]));
+    console.error("404 выводит в консоль", response.problem);
+  }
+  else if (response.ok && response.data) {
+    yield put(setMyPosts(response.data.results)); 
+  }
+  else {
+    console.error("Set My Posts error", response.problem);
+  }
+}
+
+
 // step 1
 // саги работают с помощью генератора function*
 // создаем вотчера, который отвечает за посты
@@ -115,9 +164,14 @@ function* getSinglePostWorker(action: PayloadAction<string>) {
 // ---
 // step 9 Lesson 46  (single post = selected post)
 // привязываем воркер  getSinglePostWorker к вотчеру
+// --
+// step 5  HW10 MyPosts
+// привязываем воркер getMyPostsWorker к вотчеру
+
 export default function* postsSagaWatcher() {
   yield all([
     takeLatest(getPostsList, postsSagaWorker),
     takeLatest(getSinglePost, getSinglePostWorker),
+    takeLatest(getMyPosts, getMyPostsWorker),
   ]);
 }

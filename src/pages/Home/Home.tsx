@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useThemeContext } from "src/context/Theme";
 import { AuthSelectors } from "src/redux/reducers/authSlice";
-import { getPostsList, PostSelectors } from "src/redux/reducers/postSlice";
+import { getMyPosts, getPostsList, PostSelectors } from "src/redux/reducers/postSlice";
 // на 43 уроке конфликт - замена CardsListik на PostsList в @types"
 // import { CardsListik, TabsTypes, Theme } from "../../@types";
 import { PostsList, TabsTypes, Theme } from "../../@types";
@@ -202,7 +202,10 @@ const Home = () => {
     // const [isLoggedIn, setLoggedIn] = useState(false);
     // const [cardsList, setCardsList] = useState<PostsList>([]); 
     // убираем state так как перенесли данные в редакс (HW8 step 5) и вместо него useSelector c getPostsList
-    const cardsList = useSelector(PostSelectors.getPostsList)
+    // ---
+    // step 7 HW10 можно закоментировать, так как есть перключатель по табинам
+    // const cardsList = useSelector(PostSelectors.getPostsList)
+   
 
     // step 10 Lesson 47 (auth+ access token)
     // переменную isLoggedIn привязываем в селектору
@@ -213,7 +216,7 @@ const Home = () => {
         () => [
             { key: TabsTypes.All, title: 'All Posts', disabled: false },
             { key: TabsTypes.Popular, title: 'Popular', disabled: false },
-            { key: TabsTypes.Myfavorites, title: 'My Favourites', disabled: !isLoggedIn },
+            { key: TabsTypes.MyPosts, title: 'My Posts', disabled: !isLoggedIn },
         ],
         [isLoggedIn]
     );
@@ -221,7 +224,7 @@ const Home = () => {
     // HW8 step 5
     // в useEffect вызываем dispatch (наши ручки) которые кидают наши посты
     // делаем в useEffect - так как префетчинг данных
-    const dispatch = useDispatch ()
+    const dispatch = useDispatch()
 
     useEffect(() => {
         // setCardsList(MOCK_ARRAY);
@@ -241,6 +244,49 @@ const Home = () => {
     // темная тема - с помощью classNames => {[styles.darkHomeContainer]: themeValue === Theme.Dark}
     const { themeValue } = useThemeContext();
 
+
+    // step 6 HW10 
+    // обрабатываем нашу сагу по получению Моих постов при нажатии на табины
+    // При обработке используем useEffect и внутри кладем наши данные ручками
+    // В массиве зависимостей в useEffect будет [activeTab] - 
+    // так как все зависит от активной табины
+
+    useEffect(() => {
+        if (activeTab === TabsTypes.MyPosts) {
+            dispatch(getMyPosts())
+        } else {
+            dispatch(getPostsList())
+        }
+    }, [activeTab])
+
+
+    // step 7 HW10
+    // в return мы передаем  <CardsList cardsList={cardsList} />
+    // где на данном этапе  const cardsList = useSelector(PostSelectors.getPostsList)
+    // то есть это только наши все посты
+    // то есть на любой табине мы видим все посты
+    // ---
+    // если заменить сonst cardsList = useSelector(PostSelectors.getMyPosts)
+    // то мы будем видеть только myPost (на данном этапе пустой массив) 
+    // опять же на любой табине мы видим все myPost
+    // const cardsList = useSelector(PostSelectors.getMyPosts)
+    // ---
+    // у нас не хатает переключателя ??? который будет привязан к activeTab
+    // типо SwithCase
+    // и нам его нужно передавать в return  <CardsList cardsList={переключатель} />
+
+    const allPosts = useSelector(PostSelectors.getPostsList)
+    const myPosts = useSelector(PostSelectors.getMyPosts)
+
+    const tabsSwitcherForCurrentPostsList = () => {
+        switch (activeTab) {
+            case TabsTypes.MyPosts:
+                return myPosts;
+            default: return allPosts;
+        }
+    }
+
+
     return (
         <div className={classNames(styles.container, { [styles.darkContainer]: themeValue === Theme.Dark })}>
 
@@ -253,7 +299,8 @@ const Home = () => {
             />
 
             {/* <CardsList cardsList={MOCK_ARRAY} /> */}
-            <CardsList cardsList={cardsList} />
+            {/* <CardsList cardsList={cardsList} /> */}
+            <CardsList cardsList={tabsSwitcherForCurrentPostsList()} />
 
             <SelectedPostModal />
 
@@ -299,3 +346,47 @@ export default Home
 // Используем селектор и getUserInfo
 // Прописываем условный рендеринг для кнопочки: если залогинен и есть инфа - показать пташечку - иначе просто кнопочку с человечком
 // выдает ошибку с токеном: пишет, что такой токен есть или он неверный => фиксила через constants и меняла значение access токене
+
+
+
+
+// HW10 Сделать запрос на мои посты и их отрендерить - получить их с бекенда
+// Есть кнопочка My posts ( бывшая My favorites) (pages -> Home). 
+// Она активна только тогда когда заполнен пользователь (ранее прописывали для нее !isLoggedIn)
+// И при нажатии на данную кнопочку делается запрос  в api на получение моих постов (get /blog/posts/my_posts/ )
+// Если мы ТЫКАЕМ на табину My Posts - делается запрос на мои посты, если ТЫКАЕМ на  All Posts - то тогда запрос на все посты => 
+// Все зависит от activeTab
+// (переменной), которая и запрашивает посты
+// => if activeTab = myPost - делаем запрос на мои посты 
+// else - запрос на все посты
+// Условие в useEffect
+// => Отслеживаем мы в залогинен ли пользователь и активную табину
+// В массиве зависимостей в useEffect будет [activeTab]
+// Не забыть про токен, который прописывается по аналогии с getUserInfo
+// Токен пишется в начале
+// В саге если прилетело response.status 404 - положить пустой массив
+// Если response.data - то положить data
+// В противном случае показать проблему в consol.log
+
+// HW10 MyPosts
+// step 1 создаем запрос в api на получение моих постов
+// step 2 создаем action для получения данных в postSlice  => getMyPosts. 
+// Так как нам ничего не нужно передавать => тип экшена undefined
+// step 3 создаем  action setMyPosts, который будет ложить данные в редакс, 
+// также в initialState создаем myPosts. Это массив - первоначальное состояние - []
+// и типизируем action PayloadAction<PostsList>
+// step 4 создаем селектор getUserInfo для myPosts 
+// step 5 приступаем к работе в саге postSaga.  Создаем еще одного воркера
+//  типизируем ApiResponse<PostsResponseData>
+// так как нам нужен живой токен используем сагу-помощника callCheckingAut
+//  обрабатываем с помощью if и помещаем в редакс с  помощью put
+// не забываем его привязать к нашему вотчеру postsSagaWatcher
+// step 6 необходимо обработать нашу сагу. Отрабатывает мы в Home 
+// При обработке используем useEffect и внутри кладем наши данные ручками
+// В массиве зависимостей в useEffect будет [activeTab] - 
+// так как все зависит от активной табины
+// step 7 используем селектор для myPosts
+// на всех табинах мы видим одно и тоже
+// => у нас не хатает переключателя ??? который будет привязан к activeTab
+// типо SwithCase
+// и нам его нужно передавать в return  <CardsList cardsList={переключатель} />
