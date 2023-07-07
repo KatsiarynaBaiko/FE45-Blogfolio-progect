@@ -1,0 +1,27 @@
+@import "src/styles/colors";
+@import "src/styles/mixins";
+
+
+.modalContainer {
+    position: absolute;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(38, 34, 47, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.modalContent {
+    background-color: $white;
+
+
+}
+
+.modalInfo {
+    padding: 82px 77px 54px 73px;
+}
