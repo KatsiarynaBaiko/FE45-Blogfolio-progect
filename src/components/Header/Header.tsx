@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react"
+import React, { KeyboardEvent, useMemo, useState } from "react"
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { CloseIcon, MenuIcon, SearchIcon, UserIcon } from "src/assets/icons";
 import Button, { ButtonTypes } from "../Button";
@@ -116,9 +116,18 @@ const Header = () => {
     const [inputValue, setInputValue] = useState('');
 
     // открытие и закрытие инпутв
+    // ---
+    // step 8 Lesson 49 search 
+    // запускаем работу поиска: нам необходимо проверять
+    // если серч и в интуп что-то введено - навигируем на страницу с поиском
+    // также параллельно очищаем строку поиска
     const [isSearch, setSearch] = useState(false);
     const handleSearchOpened = () => {
         setSearch(!isSearch);
+        if (isSearch && inputValue) {
+            navigate(`posts/${inputValue}`);
+            setInputValue("");
+        }
     };
 
     // step 12 Lesson 47 (auth+ access token)
@@ -135,15 +144,31 @@ const Header = () => {
     const userInfo = useSelector(AuthSelectors.getUserInfo);
 
 
-   // step 5 Lesson 48 update access token (refresh and verify )
-   // вешаем logout на кнопочку на боковом меню 
-   // условный рендерин: isLoggedIn ? onLogout : onLoginButtonClick
-   const dispatch = useDispatch ()
+    // step 5 Lesson 48 update access token (refresh and verify )
+    // вешаем logout на кнопочку на боковом меню 
+    // условный рендерин: isLoggedIn ? onLogout : onLoginButtonClick
+    const dispatch = useDispatch()
 
-   const onLogout = () => {
-    dispatch(logoutUser());
-  };
+    const onLogout = () => {
+        dispatch(logoutUser());
+    };
 
+
+    // step 1 Lesson 49 onKeyDown
+    // функционал для поиска по нажатию на кнопочку (она может быть любой - Enter например)
+    // => создаем функцию onKeyDown
+    // HTMLTextAreaElement - добавляем, так как у нас еще textarea
+    // onKeyDown всовываем в инпут
+    // он ругается, так как нет этой пропсы => добавляем onKeyDown в пропсы инпута
+
+
+    const onKeyDown = (
+        event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+        if (event.key === "Enter") {
+            handleSearchOpened();
+        }
+    };
 
     return (
         <div className={classNames(styles.container, { [styles.darkContainer]: themeValue === Theme.Dark })}>
@@ -163,6 +188,7 @@ const Header = () => {
                             placeholder='Search...'
                             onChange={setInputValue}
                             value={inputValue}
+                            onKeyDown={onKeyDown}
                         />
                         <Button
                             type={ButtonTypes.Primary}

@@ -11,3 +11,4 @@ export { CloseIcon } from "./CloseIcon";
 export { SearchIcon } from "./SearchIcon";
 export { UserIcon } from "./UserIcon";
 export { AddBookmarkIcon } from './AddBookmarkIcon';
+export { EmptyListIcon } from './EmptyListIcon';

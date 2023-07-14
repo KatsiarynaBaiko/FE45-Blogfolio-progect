@@ -19,11 +19,15 @@ import { useNavigate } from "react-router-dom";
 // создаем enum, так как у нас три свойства Card
 // перечисление каких-либо фиксированных свойств
 // не забываем export emun
+// ---
+// step 6 Lesson 49 search (по нажатию на кнопку)
+// добавляем еще одно значение для enum: Search - размер карчек в результате поиска
 
 export enum CardTypes {
     Large = 'large',
     Medium = 'medium',
-    Small = 'small'
+    Small = 'small',
+    Search = "search",
 }
 
 // step 5

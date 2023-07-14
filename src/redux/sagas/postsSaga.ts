@@ -14,7 +14,7 @@ import { ApiResponse } from "apisauce";
 import { all, call, put, takeLatest } from "redux-saga/effects";
 import { PostsResponseData } from "../@types";
 import API from "src/utils/api";
-import { getMyPosts, getPostsList, getSinglePost, setMyPosts, setPostsList, setSinglePost, setSinglePostLoading } from "../reducers/postSlice";
+import { getMyPosts, getPostsList, getSearchedPosts, getSinglePost, setMyPosts, setPostsList, setSearchedPosts, setSinglePost, setSinglePostLoading } from "../reducers/postSlice";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { Post } from "src/@types";
 import callCheckingAuth from "./helpers/callCheckingAuth";
@@ -52,6 +52,9 @@ import callCheckingAuth from "./helpers/callCheckingAuth";
 // HW10 MyPosts
 // нам необходимо написать сагу
 // в postsSaga создаем еще одного вотчера для myPosts
+// ---
+// step 5 Lesson 49 search (по нажатию на кнопку)
+// после создания экшенов в postSlice идем в postsSaga и создаем воркера для работы с поиском (SearchedPostsWorker)
 
 
 
@@ -153,6 +156,24 @@ function* getMyPostsWorker() {
 }
 
 
+// step 5 Lesson 49 search (по нажатию на кнопку)
+// создаем воркера для работы с поиском (SearchedPostsWorker)
+// нам нужно передавать запрос => action: PayloadAction<string> и достаем из  action.payload
+
+function* getSearchedPostsWorker(action: PayloadAction<string>) {
+  const response: ApiResponse<PostsResponseData> = yield call(
+    API.getPosts,
+    action.payload
+  );
+  if (response.ok && response.data) {
+    yield put(setSearchedPosts(response.data.results));
+  } else {
+    console.error("Searched Posts error", response.problem);
+  }
+}
+
+
+
 // step 1
 // саги работают с помощью генератора function*
 // создаем вотчера, который отвечает за посты
@@ -167,11 +188,16 @@ function* getMyPostsWorker() {
 // --
 // step 5  HW10 MyPosts
 // привязываем воркер getMyPostsWorker к вотчеру
+// ---
+// step 5 Lesson 49 search (по нажатию на кнопку)
+// привязываем воркер getSearchedPostsWorker к вотчеру
+
 
 export default function* postsSagaWatcher() {
   yield all([
     takeLatest(getPostsList, postsSagaWorker),
     takeLatest(getSinglePost, getSinglePostWorker),
     takeLatest(getMyPosts, getMyPostsWorker),
+    takeLatest(getSearchedPosts, getSearchedPostsWorker),
   ]);
 }

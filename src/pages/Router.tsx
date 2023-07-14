@@ -5,6 +5,7 @@ import Header from "src/components/Header";
 import Home from "src/pages/Home";
 import { AuthSelectors, getUserInfo } from "src/redux/reducers/authSlice";
 import RegistrationConfirmation from "./RegistrationConfirmation";
+import Search from "./Search";
 import SelectedPost from "./SelectedPost";
 import SignIn from "./SignIn";
 import SingUp from "./SingUp";
@@ -23,6 +24,12 @@ import Success from "./Success";
 // step 1 Lesson 46 (single post = selected post)
 // В RoutesList указываем путь для SelectedPost = '/post/:id'
 // и добавляем его в Router
+// ---
+// step 2 Lesson 49 search (по нажатию на кнопку)
+// указываем путь для Search = "/posts/:search",
+// :search - достаем это из url  
+// и добавляем его в Router
+
 export enum RoutesList {
     Home = "/",
     SingUp = "/sing-up",
@@ -32,6 +39,7 @@ export enum RoutesList {
     Success = "/sing-up/confirm/success",
     // SelectedPost = "selected-post",
     SelectedPost = '/post/:id',
+    Search = "/posts/:search",
     Default = "*",
 }
 
@@ -71,6 +79,9 @@ export enum RoutesList {
 // и указываем какие странички не должны быть видны 
 // пользователю после авторизации
 // если не залогинент, то показать
+// ---
+// step 2 Lesson 49 search (по нажатию на кнопку)
+// создаем новый путь для Search
 
 const Router = () => {
 
@@ -104,6 +115,7 @@ const Router = () => {
                 <Route path={RoutesList.RegistrationConfirmation} element={!isLoggedIn ? <RegistrationConfirmation /> : <Navigate to={RoutesList.Home} />} />
                 <Route path={RoutesList.Success} element={!isLoggedIn ? <Success /> : <Navigate to={RoutesList.Home} />} />
                 <Route path={RoutesList.SelectedPost} element={<SelectedPost />} />
+                <Route path={RoutesList.Search} element={<Search />} />
                 <Route path={RoutesList.Default} element={<Navigate to={RoutesList.Home} />} />
             </Route>
         </Routes>

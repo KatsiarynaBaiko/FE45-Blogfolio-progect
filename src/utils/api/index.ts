@@ -32,8 +32,17 @@ const signUpUser = (data: SignUpUserData) => {
 // создаем getPosts - получение постов из сервера
 // => запрос get
 // лимит 12 - количество постов на страничке по макету
-const getPosts = () => {
-  return API.get("/blog/posts/?limit=12");
+// ---
+// step 3 Lesson 49 search (по нажатию на кнопку)
+// добавляем параметр Search в наши посты (смотрим доп параметры в swagger)
+// этот параметр является необязательным (может быть, а тожет и не быть поисковой строки)
+
+// const getPosts = () => {
+//   return API.get("/blog/posts/?limit=12");
+// };
+
+const getPosts = (search?: string) => {
+  return API.get("/blog/posts", { search, limit: 12 });
 };
 
 

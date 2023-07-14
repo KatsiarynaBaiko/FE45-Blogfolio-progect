@@ -68,6 +68,7 @@ import { RootState } from "../store";
 // типизация postsList (полученные посты с помощью get-запроса) - массив наших постов PostsList из @types
 // типизация singlePost  - наш пост или null (так как его может и быть)
 // типизация myPost - полученные посты с помощью get-запроса - массив постов PostsList из @types
+// типизация searchedPosts - полученные посты с помощью get-запроса - массив постов PostsList из @types
 
 type InitialState = {
   isSelectedPostModalOpened: boolean;
@@ -81,6 +82,7 @@ type InitialState = {
   singlePost: Post | null;
   singlePostLoading: boolean;
   myPosts: PostsList;
+  searchedPosts: PostsList;
 };
 
 // step 3
@@ -105,6 +107,7 @@ type InitialState = {
 // postsList - полученные посты с помощью get-запроса из сервера
 // singlePost - полученный пост с помощью get-запроса из сервера
 // myPosts - полученный пост с помощью get-запроса из сервера
+// myPosts - полученные посты с помощью get-запроса из сервера
 
 const initialState: InitialState = {
   isSelectedPostModalOpened: false,
@@ -116,7 +119,8 @@ const initialState: InitialState = {
   postsList: [],
   singlePost: null,
   singlePostLoading: false,
-  myPosts: []
+  myPosts: [],
+  searchedPosts: [],
 };
 
 // step 1
@@ -228,6 +232,12 @@ const initialState: InitialState = {
 // ---
 // step 4 HW10 MyPosts
 // создаем селектор getMyPosts для myPosts 
+// ---
+// step 4 step 1 Lesson 49 search (по нажатию на кнопку)
+// в reducers -> postSlice и создаем action на получение данных getSearchedPosts
+// также данные необходимо положить в редакс => нежен еще один action setSearchedPosts и селектор к нему
+
+
 
 
 
@@ -332,7 +342,13 @@ const postSlice = createSlice({
     setMyPosts: (state, action: PayloadAction<PostsList>) => {
       state.myPosts = action.payload;
     },
-    
+
+    getSearchedPosts: (_, __: PayloadAction<string>) => { },
+
+    setSearchedPosts: (state, action: PayloadAction<PostsList>) => {
+      state.searchedPosts = action.payload;
+    },
+
 
   }, // вот тут живут функции, которые ловят экшены по типу(т.е. по названию ф-и)
 });
@@ -356,7 +372,12 @@ const postSlice = createSlice({
 // экспортируем getPostsList и setPostsList
 // экспортируем getSinglePost и setSinglePost
 
-export const { setSelectedPostModalOpened, setSelectedPost, setSelectedImage, setLikeStatus, setSavedStatus, getPostsList, setPostsList, getSinglePost, setSinglePost, setSinglePostLoading, getMyPosts, setMyPosts, } =
+export const { setSelectedPostModalOpened, setSelectedPost,
+  setSelectedImage, setLikeStatus, setSavedStatus,
+  getPostsList, setPostsList,
+  getSinglePost, setSinglePost, setSinglePostLoading,
+  getMyPosts, setMyPosts,
+  getSearchedPosts, setSearchedPosts, } =
   postSlice.actions;
 // а вот тут живут сами экшены, которые рождаются библиотекой исходя
 // из названия ф-ии, которая их ловит
@@ -385,6 +406,7 @@ export const PostSelectors = {
   getSinglePost: (state: RootState) => state.postReducer.singlePost,
   getSinglePostLoading: (state: RootState) => state.postReducer.singlePostLoading,
   getMyPosts: (state: RootState) => state.postReducer.myPosts,
+  getSearchedPosts: (state: RootState) => state.postReducer.searchedPosts,
 };
 // вот отсюда мы достаем данные, которые заранее видоизменили снежками (экшенами)
 

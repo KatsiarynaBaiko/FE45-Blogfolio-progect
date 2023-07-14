@@ -2,10 +2,13 @@ import React from "react";
 import { FC } from "react";
 import { useDispatch } from "react-redux";
 import { LikeStatus, Post, PostsList, SaveStatus } from "src/@types";
+import { useCardActions } from "src/hooks";
 import { setLikeStatus, setSavedStatus, setSelectedImage, setSelectedPost, setSelectedPostModalOpened } from "src/redux/reducers/postSlice";
+import EmptyState from "../ EmptyState";
 // import { CardsListik } from "../../@types";
 import Card from "../Card/Card";
 import { CardTypes } from "../Card/Card";
+import Loader from "../Loader";
 import styles from './CardsList.module.scss';
 
 
@@ -64,33 +67,42 @@ type CardsListProps = {
 // ---
 // HW7
 // необходимо прописать функционал кнопочки Bookmark (onSavedClick)
-
+// ---
+// step 5 Lesson 49 empty state
+// вставляем Loader в CardsList
+// Loader можно заменить на EmptyState и показывать грустную картинку
 
 
 const CardsList: FC<CardsListProps> = ({ cardsList }) => {
 
     const dispatch = useDispatch();
 
-    const onMoreClick = (post: Post) => () => {
-        dispatch(setSelectedPostModalOpened(true));
-        dispatch(setSelectedPost(post));
-        // было Card, на 43 уроке конфликт - замена на Post в @types
-        // dispatch - ручки
-        // setSelectedPost - экшен, куда данные должны улететь
-        // null - payload, т е сами данные, которые летят в ф-ии, которые их меняют
-    };
+    // step 6.4 Lesson 49 search (по нажатию на кнопку)
+    // в CardsList удаляем все функции, так как создан кастомный хук useCardActions и используем его
+    // const onMoreClick = (post: Post) => () => {
+    //     dispatch(setSelectedPostModalOpened(true));
+    //     dispatch(setSelectedPost(post));
+    //     // было Card, на 43 уроке конфликт - замена на Post в @types
+    //     // dispatch - ручки
+    //     // setSelectedPost - экшен, куда данные должны улететь
+    //     // null - payload, т е сами данные, которые летят в ф-ии, которые их меняют
+    // };
 
-    const onImageClick = (cardsList: string) => () => {
-        dispatch(setSelectedPostModalOpened(true));
-        dispatch(setSelectedImage(cardsList));
-        // dispatch - ручки
-        // setSelectedPost - экшен, куда данные должны улететь
-        // null - payload, т е сами данные, которые летят в ф-ии, которые их меняют
-    };
+    // step 6.4 Lesson 49 search (по нажатию на кнопку)
+    // в CardsList удаляем все функции, так как создан кастомный хук useCardActions и используем его
+    // const onImageClick = (cardsList: string) => () => {
+    //     dispatch(setSelectedPostModalOpened(true));
+    //     dispatch(setSelectedImage(cardsList));
+    //     // dispatch - ручки
+    //     // setSelectedPost - экшен, куда данные должны улететь
+    //     // null - payload, т е сами данные, которые летят в ф-ии, которые их меняют
+    // };
 
-    const onStatusClick = (card: Post) => (status: LikeStatus) => {
-        dispatch(setLikeStatus({ card, status }))
-    }
+    // step 6.4 Lesson 49 search (по нажатию на кнопку)
+    // в CardsList удаляем все функции, так как создан кастомный хук useCardActions и используем его
+    // const onStatusClick = (card: Post) => (status: LikeStatus) => {
+    //     dispatch(setLikeStatus({ card, status }))
+    // }
 
     // setSavedStatus - version 1
     // const onSavedClick = (card: Post) => (status: SaveStatus) => {
@@ -98,9 +110,17 @@ const CardsList: FC<CardsListProps> = ({ cardsList }) => {
     // }
 
     // setSavedStatus - version 2
-    const onSavedClick = (card: Post) => () => {
-        dispatch(setSavedStatus({ card }))
-    }
+    // ---
+    // step 6.4 Lesson 49 search (по нажатию на кнопку)
+    // в CardsList удаляем все функции, так как создан кастомный хук useCardActions и используем его
+    // const onSavedClick = (card: Post) => () => {
+    //     dispatch(setSavedStatus({ card }))
+    // }
+
+    // step 6.4 Lesson 49 search (по нажатию на кнопку)
+    // в CardsList удаляем все функции, так как создан кастомный хук useCardActions и используем его
+    // делаем деструктуризацию и достаем функции
+    const { onStatusClick, onSavedClick, onMoreClick, onImageClick } = useCardActions();
 
 
     return cardsList.length ? (
@@ -126,7 +146,14 @@ const CardsList: FC<CardsListProps> = ({ cardsList }) => {
                 })}
             </div>
         </div>
-    ) : null;
+    // ) : null;
+    ) : (<Loader />);
+    // ) : (
+    //     <EmptyState
+    //         title={"Nothing was found..."}
+    //         description={"Try to add new post"}
+    //     />
+    // );
 }
 
 

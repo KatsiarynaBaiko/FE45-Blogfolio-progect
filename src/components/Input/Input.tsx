@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import React, { ChangeEvent } from "react";
+import React, { KeyboardEvent, ChangeEvent } from "react";
 import { FC } from "react";
 import { Theme } from "src/@types";
 import { useThemeContext } from "src/context/Theme";
@@ -9,6 +9,8 @@ import styles from './Input.module.scss';
 // прорисываем props и типизируем
 // в onChange если что-то передается в параментрах,
 // то указываем параметры и их типы, то есть (value: string)
+// onKeyDown - (Lesson 49 поиск по нажатию на кнопку на клавиатуре) 
+// onKeyDown достаем из пропсов и вставляем в инпут
 
 type InputProps = {
     title?: string;
@@ -19,6 +21,7 @@ type InputProps = {
     errorText?: string;
     isTextarea?: boolean;
     className?: string;
+    onKeyDown?: (event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 };
 
 // step 1
@@ -45,7 +48,7 @@ type InputProps = {
 // => (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)
 
 
-const Input: FC<InputProps> = ({ title, errorText, placeholder, onChange, disabled, value, isTextarea, className }) => {
+const Input: FC<InputProps> = ({ title, errorText, placeholder, onChange, disabled, value, isTextarea, className, onKeyDown }) => {
     // return null
 
     // HW4 Добавление темной темы 
@@ -66,6 +69,7 @@ const Input: FC<InputProps> = ({ title, errorText, placeholder, onChange, disabl
             [styles.disabled]: disabled,
             [styles.errorInput]: errorText,
         }),
+        onKeyDown
     };
 
     return (
