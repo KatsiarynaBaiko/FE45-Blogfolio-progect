@@ -1,0 +1,9 @@
+@import "src/styles/colors";
+@import "src/styles/mixins";
+
+.container {
+  margin-top: 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
