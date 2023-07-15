@@ -1,0 +1,15 @@
+// step 10 Lesson 50 пагинация (бесконечная прокрутка)
+// чтобы заработал скрол задаем id="scrollableDiv"
+// в стилях overflow-y: scroll и высоту (например, height: 500px;)
+
+
+@import "src/styles/colors";
+@import "src/styles/mixins";
+
+.container {
+  margin-top: 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  // width: 900px;
+}

@@ -1,0 +1,65 @@
+@import "src/styles/colors";
+
+.pagesContainer {
+    margin: 72px 0;
+    display: flex;
+    padding: 0;
+}
+
+.pageNumber {
+    list-style-type: none;
+    margin-right: 8px;
+    display: flex;
+    width: 28px;
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+    border-radius: 2px;
+    color: #53607a;
+    outline: none;
+    padding: 4px;
+    user-select: none;
+
+    &:hover {
+        cursor: pointer;
+        background-color: $primary-secondary;
+        color: $white;
+    }
+}
+
+.linkPage {
+    outline: none;
+
+    &:focus {
+        outline: none;
+    }
+}
+
+.activePageNumber {
+    box-sizing: border-box;
+    border: 1px solid $primary;
+    color: $primary;
+}
+
+.arrowButton {
+    margin: auto;
+    align-items: flex-start;
+    list-style-type: none;
+    padding: 4px;
+    border-radius: 4px;
+    user-select: none;
+
+    &:hover {
+        background-color: $primary-secondary;
+        color: $white;
+        cursor: pointer;
+    }
+}
+
+.blockedButton {
+    &:hover {
+        background-color: transparent;
+        color: $secondary;
+        cursor: not-allowed;
+    }
+}
