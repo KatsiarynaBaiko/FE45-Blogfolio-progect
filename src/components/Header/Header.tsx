@@ -12,6 +12,7 @@ import { Theme } from "src/@types";
 import Input from "../Input";
 import { useDispatch, useSelector } from "react-redux";
 import { AuthSelectors, logoutUser } from "src/redux/reducers/authSlice";
+import { clearSearchedPosts } from "src/redux/reducers/postSlice";
 
 
 // step 1
@@ -121,10 +122,18 @@ const Header = () => {
     // запускаем работу поиска: нам необходимо проверять
     // если серч и в интуп что-то введено - навигируем на страницу с поиском
     // также параллельно очищаем строку поиска
+    // ---
+    // step 9 Lesson 50 пагинация (бесконечная прокрутка)
+    // возникает косячок, что результаты старого поиска сохраняются 
+    // и на него накладывается новый 
+    //этой решается через очистку предыдущего запроса при предотправке запроса
+    // => dispatch(clearSearchedPosts());
+
     const [isSearch, setSearch] = useState(false);
     const handleSearchOpened = () => {
         setSearch(!isSearch);
         if (isSearch && inputValue) {
+            dispatch(clearSearchedPosts());
             navigate(`posts/${inputValue}`);
             setInputValue("");
         }

@@ -31,6 +31,13 @@
 //  step 7 46 (single post = selected post)
 //  так как работаем с данными 
 // => необходимо создать экшен в postSlice(step 7)
+// --- 
+// step 6 Lesson 50 пагинация (нумерическая)
+// в postsSlice создаем экшен setPostsListLoading (чтобы работал Loader)
+// обновляем экшены getPostsList и setPostsList
+// ---
+// step 3 Lesson 50 пагинация (бесконечная прокрутка)
+// обновляем экшены getSearchedPosts и setSearchedPosts с учетом бесконечной прокрутки
 
 
 
@@ -47,6 +54,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // было Card, на 43 уроке конфликт - замена на Post в @types
 // import { Card } from "src/@types";
 import { LikeStatus, Post, PostsList, SaveStatus } from "src/@types";
+import { GetPostsPayload, GetSearchedPostsPayload, SetPostsListPayload, SetSearchedPostsPayload } from "../@types";
 import { RootState } from "../store";
 
 // step 4 
@@ -69,6 +77,9 @@ import { RootState } from "../store";
 // типизация singlePost  - наш пост или null (так как его может и быть)
 // типизация myPost - полученные посты с помощью get-запроса - массив постов PostsList из @types
 // типизация searchedPosts - полученные посты с помощью get-запроса - массив постов PostsList из @types
+// типизация isPostsListLoading -  boolean;
+// типизация totalCount - общее количество постов - number
+// типизация totalSearchedCount - общее количество постов при поиске- number
 
 type InitialState = {
   isSelectedPostModalOpened: boolean;
@@ -83,6 +94,9 @@ type InitialState = {
   singlePostLoading: boolean;
   myPosts: PostsList;
   searchedPosts: PostsList;
+  isPostsListLoading: boolean;
+  totalCount: number;
+  totalSearchedCount: number;
 };
 
 // step 3
@@ -108,6 +122,9 @@ type InitialState = {
 // singlePost - полученный пост с помощью get-запроса из сервера
 // myPosts - полученный пост с помощью get-запроса из сервера
 // myPosts - полученные посты с помощью get-запроса из сервера
+// isPostsListLoading: false (первоначальное значение у boolean - это false)
+// totalCount - первоначальное значение = 0 (так как сперва 0 постов)
+// totalSearchedCount - первоначальное значение = 0 (так как сперва 0 постов)
 
 const initialState: InitialState = {
   isSelectedPostModalOpened: false,
@@ -121,6 +138,9 @@ const initialState: InitialState = {
   singlePostLoading: false,
   myPosts: [],
   searchedPosts: [],
+  isPostsListLoading: false,
+  totalCount: 0,
+  totalSearchedCount: 0,
 };
 
 // step 1
@@ -236,9 +256,31 @@ const initialState: InitialState = {
 // step 4 step 1 Lesson 49 search (по нажатию на кнопку)
 // в reducers -> postSlice и создаем action на получение данных getSearchedPosts
 // также данные необходимо положить в редакс => нежен еще один action setSearchedPosts и селектор к нему
-
-
-
+/// ---
+// step 6 Lesson 50 пагинация (нумерическая)
+// в postsSlice создаем экшен setPostsListLoading
+// => добавляем в initialState - isPostsListLoading
+// обновляем экшены getPostsList и setPostsList
+// для setPostsList типизируем payload в setPostsListPayload @types
+// для setPostsList добавляем в initialState - totalCount - общее количество постов
+// в setPostsList нам необходимо прописать условие 
+// если перезапись, то присвоить вместо страрого массива новый маасив 
+// то есть его запушить =>  state.postsList.push(...postsList);
+// => ...postsList - мы разворачиваем массив и допихиваем туда элементы массива
+// если не применять оператор ... (spred) то вышел бы массив в массивк
+// и возвращаемся к работе в postsSaga воркера getPostsWorker
+// ---
+// step 3 Lesson 50 пагинация (бесконечная прокрутка)
+// в postSlice обновляем экшены getSearchedPosts и setSearchedPosts 
+// с учетом добавления бесконечной прокрутки. 
+// Также прописываем типы payload GetSearchedPostsPayload и SetSearchedPostsPayload в @types
+// ---
+// step 9 Lesson 50 пагинация (бесконечная прокрутка)
+//  возникает косячок, что результаты старого запроса сохраняются 
+// и на него накладывается новый 
+// это решается через очистку предыдущего запроса при предотправке запроса к
+// => в Header в handleSearchOpened и передаем функцию очистки dispatch(clearSearchedPosts());
+// в postSlice прописываем экшен на очистку => clearSearchedPosts
 
 
 const postSlice = createSlice({
@@ -321,10 +363,22 @@ const postSlice = createSlice({
         state.savedPosts.splice(savedIndex, 1)
     },
 
-    getPostsList: (_, __: PayloadAction<undefined>) => { },
+    // getPostsList: (_, __: PayloadAction<undefined>) => { },
 
-    setPostsList: (state, action: PayloadAction<PostsList>) => {
-      state.postsList = action.payload;
+    // setPostsList: (state, action: PayloadAction<PostsList>) => {
+    //   state.postsList = action.payload;
+    // },
+
+    getPostsList: (_, __: PayloadAction<GetPostsPayload>) => { },
+
+    setPostsList: (state, action: PayloadAction<SetPostsListPayload>) => {
+      const { total, isOverwrite, postsList } = action.payload;
+      state.totalCount = total;
+      if (isOverwrite) {
+        state.postsList = postsList;
+      } else {
+        state.postsList.push(...postsList);
+      }
     },
 
     getSinglePost: (_, __: PayloadAction<string>) => { },
@@ -343,12 +397,27 @@ const postSlice = createSlice({
       state.myPosts = action.payload;
     },
 
-    getSearchedPosts: (_, __: PayloadAction<string>) => { },
+    // getSearchedPosts: (_, __: PayloadAction<string>) => { },
 
-    setSearchedPosts: (state, action: PayloadAction<PostsList>) => {
-      state.searchedPosts = action.payload;
+    // setSearchedPosts: (state, action: PayloadAction<PostsList>) => {
+    //   state.searchedPosts = action.payload;
+    // },
+
+    getSearchedPosts: (_, __: PayloadAction<GetSearchedPostsPayload>) => { },
+    
+    setSearchedPosts: ( state,action: PayloadAction<SetSearchedPostsPayload>) => {
+      const { total, postsList } = action.payload;
+      state.totalSearchedCount = total;
+      state.searchedPosts.push(...postsList);
     },
 
+    setPostsListLoading: (state, action: PayloadAction<boolean>) => {
+      state.isPostsListLoading = action.payload;
+    },
+
+    clearSearchedPosts: (state) => {
+      state.searchedPosts = [];
+    },
 
   }, // вот тут живут функции, которые ловят экшены по типу(т.е. по названию ф-и)
 });
@@ -371,13 +440,16 @@ const postSlice = createSlice({
 // добавляем экшен setSavedStatus и обрабатываем его в CardList
 // экспортируем getPostsList и setPostsList
 // экспортируем getSinglePost и setSinglePost
+// экспортируем setPostsListLoading
 
 export const { setSelectedPostModalOpened, setSelectedPost,
   setSelectedImage, setLikeStatus, setSavedStatus,
   getPostsList, setPostsList,
   getSinglePost, setSinglePost, setSinglePostLoading,
   getMyPosts, setMyPosts,
-  getSearchedPosts, setSearchedPosts, } =
+  getSearchedPosts, setSearchedPosts,
+  setPostsListLoading,
+  clearSearchedPosts, } =
   postSlice.actions;
 // а вот тут живут сами экшены, которые рождаются библиотекой исходя
 // из названия ф-ии, которая их ловит
@@ -393,6 +465,16 @@ export const { setSelectedPostModalOpened, setSelectedPost,
 // создаем getPostsList для PostsList
 // создаем getSinglePost для SinglePost
 // создаем getMyPosts для MyPosts 
+// создаем getPostsListLoading для PostsList
+// ---
+// step 8 Lesson 50 пагинация (нумерическая)
+// нам нужно получить итоговое количество постов, которое есть => создаем селектор getTotalPostsCount
+// и в Home вызываем через useSelector
+// ---
+// step 5 Lesson 50 пагинация (бесконечная прокрутка)
+// нам нужно получить итоговое количество постов, которые есть при поиске => создаем селектор getTotalSearchedPosts
+// в InitialState добавляем totalSearchedCount
+// и в search вызываем через useSelector
 
 export const PostSelectors = {
   getSelectedPostModalOpened: (state: RootState) =>
@@ -407,6 +489,9 @@ export const PostSelectors = {
   getSinglePostLoading: (state: RootState) => state.postReducer.singlePostLoading,
   getMyPosts: (state: RootState) => state.postReducer.myPosts,
   getSearchedPosts: (state: RootState) => state.postReducer.searchedPosts,
+  getPostsListLoading: (state: RootState) => state.postReducer.isPostsListLoading,
+  getTotalPostsCount: (state: RootState) => state.postReducer.totalCount,
+  getTotalSearchedPosts: (state: RootState) =>state.postReducer.totalSearchedCount,
 };
 // вот отсюда мы достаем данные, которые заранее видоизменили снежками (экшенами)
 

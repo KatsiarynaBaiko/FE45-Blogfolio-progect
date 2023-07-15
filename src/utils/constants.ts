@@ -14,3 +14,7 @@
 export const ACCESS_TOKEN_KEY = 'AccessTokenFE48'
 
 export const REFRESH_TOKEN_KEY = 'RefreshTokenFE45'
+
+// step 1 Lesson 50 пагинация (нумерическая)
+// оздаем константу с указанием количества постов на странице (PER_PAGE)
+export const PER_PAGE = 12

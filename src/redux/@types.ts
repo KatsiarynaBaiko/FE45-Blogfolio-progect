@@ -43,7 +43,7 @@ export type SignUpResponseData = {
 export type PostsResponseData = {
     count: number,
     next: string,
-    previous: null,
+    previous: string,
     results: PostsList,
 }
 
@@ -95,4 +95,39 @@ export type UserInfoPayload = {
 // => идем в типы и создаем RefreshResponseData
 export type RefreshResponseData = {
     access: string;
-  };
+};
+
+// step 4 Lesson 50 пагинация (нумерическая)
+// добавляем новый тип для payload - GetPostsPayload, 
+// который будет получать  offset и isOverwrite
+// isOverwrite (перезаписать) - нужен для перезаписи страниц в redux
+export type GetPostsPayload = {
+    offset: number;
+    isOverwrite: boolean;
+};
+
+// step 5 Lesson 50 пагинация (нумерическая)
+// добавляем новый тип payload SetPostsListPayload для setPostsList
+// total - количество постов
+export type SetPostsListPayload = {
+    total: number;
+    postsList: PostsList;
+    isOverwrite: boolean;
+};
+
+
+// step 3 Lesson 50 пагинация (бесконечная прокрутка)
+// в postSlice обновляем экшены getSearchedPosts и setSearchedPosts 
+// с учетом добавления бесконечной прокрутки. 
+// Также прописываем типы payload // Также прописываем типы payload 
+// GetSearchedPostsPayload и SetSearchedPostsPayload в @types
+
+export type GetSearchedPostsPayload = {
+    offset: number;
+    search: string;
+};
+
+// для SetSearchedPostsPayload используем Omit
+// Omit новый тип, в котором можно указать свойства, 
+// которые будут исключены из исходного типа
+export type SetSearchedPostsPayload = Omit<SetPostsListPayload, "isOverwrite">; 

@@ -10,6 +10,7 @@
 
 import { create } from "apisauce";
 import { ActivateUserData, SignInData, SignUpUserData } from "src/redux/@types";
+import { PER_PAGE } from "../constants";
 
 // создаем API Инстанс — это виртуальная машина, которая запускается и работает в облаке
 // внутрь  напихиваем конфиги этого API
@@ -36,15 +37,22 @@ const signUpUser = (data: SignUpUserData) => {
 // step 3 Lesson 49 search (по нажатию на кнопку)
 // добавляем параметр Search в наши посты (смотрим доп параметры в swagger)
 // этот параметр является необязательным (может быть, а тожет и не быть поисковой строки)
+// ---
+// step 2 Lesson 50 пагинация (нумерическая)
+// в api в нашем запросе get /blog/post добавляем параметр PER_PAGE и offset (как переменные, а не значения)
+// search? нам приходит, но так как это необязательный параментр - то ставим его в конце
+
 
 // const getPosts = () => {
 //   return API.get("/blog/posts/?limit=12");
 // };
+// const getPosts = (search?: string) => {
+//   return API.get("/blog/posts", { search, limit: 12 });
+// };
 
-const getPosts = (search?: string) => {
-  return API.get("/blog/posts", { search, limit: 12 });
+const getPosts = (offset: number, search?: string) => {
+  return API.get("/blog/posts/", { limit: PER_PAGE, offset, search });
 };
-
 
 // step 1 Lesson 47 (auth+ access token)
 // в api указываем путь для создания токена. 

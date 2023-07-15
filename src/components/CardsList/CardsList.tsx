@@ -16,9 +16,13 @@ import styles from './CardsList.module.scss';
 // CardsListik - это из @types 
 // на 43 уроке конфликт - замена на PostsList
 // то есть это массив наших постов (карточек)
+// ---
+// step 13 Lesson 50 пагинация (нумерическая) 
+// добавляем пропсу isLoading для Loader 
 type CardsListProps = {
     // cardsList: CardsListik;
     cardsList: PostsList;
+    isLoading: boolean;
 }
 
 // step 5 стилизация
@@ -71,9 +75,13 @@ type CardsListProps = {
 // step 5 Lesson 49 empty state
 // вставляем Loader в CardsList
 // Loader можно заменить на EmptyState и показывать грустную картинку
+// ---
+// // step 13 Lesson 50 пагинация (нумерическая) 
+// вставляем Loading.
+// Используем условный рендеринг в <CardsList />
 
 
-const CardsList: FC<CardsListProps> = ({ cardsList }) => {
+const CardsList: FC<CardsListProps> = ({ cardsList, isLoading }) => {
 
     const dispatch = useDispatch();
 
@@ -123,7 +131,7 @@ const CardsList: FC<CardsListProps> = ({ cardsList }) => {
     const { onStatusClick, onSavedClick, onMoreClick, onImageClick } = useCardActions();
 
 
-    return cardsList.length ? (
+    return cardsList.length && !isLoading ? (
         <div className={styles.cardsListContainer}>
             <div className={styles.cardsListWrapLeft}>
                 {/* <Card type={CardTypes.Large} {...cardsList[0]} /> */}

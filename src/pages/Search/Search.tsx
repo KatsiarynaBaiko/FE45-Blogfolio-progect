@@ -21,9 +21,22 @@
 // step 1 Lesson 49 onKeyDown
 // функционал для поиска по нажатию на кнопочку (она может быть любой - Enter например)
 // => идем в Header
+// ---
+// step 2 Lesson 50 пагинация (бесконечная прокрутка)
+// используем беспонечный скрол для страницы поиска (InfiniteScroll)
+// step 4 Lesson 50 пагинация (бесконечная прокрутка)
+// нам необходимо завести переменную с текущей страницей
+// step 5 Lesson 50 пагинация (бесконечная прокрутка)
+// итоговое количество постов из postSlice
+// step 6 Lesson 50 пагинация (бесконечная прокрутка)
+// пишем useEffect и результаты поиска с бесконечной прокруткой
+// step 7 Lesson 50 пагинация (бесконечная прокрутка)
+// создаем функцию, которая показывает следующие посты при прокрутке 
 
 
-import React, { useEffect } from "react";
+
+
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { RoutesList } from "src/pages/Router";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,6 +46,9 @@ import { useCardActions } from "src/hooks";
 import styles from "./Search.module.scss";
 import EmptyState from "src/components/ EmptyState";
 import Card, { CardTypes } from "src/components/Card";
+import InfiniteScroll from "react-infinite-scroll-component";
+import Loader from "src/components/Loader";
+import { PER_PAGE } from "src/utils/constants";
 
 
 
@@ -57,6 +73,8 @@ import Card, { CardTypes } from "src/components/Card";
 // первоначально используем компонент Title, куда помещаем ${search} - сам запрос (то есть слова из поисковой строки)
 // также нам нужен searchList => промапить массив в карточку + достать его из селектора с помощью useSelector
 // в CardTypes добавляется еще одно значение для enum: Search - размер карчек в результате поиска
+// так как мы мапим массив - не забываем ключ, иначе в console будет ошибка
+// ключом является наш id =>  key={post.id}
 // ---
 // пишем кастомный хук для фукций в карточке
 // onStatusClick, onSavedClick, onImageClick, onMoreClick (так как ругается)
@@ -70,6 +88,31 @@ import Card, { CardTypes } from "src/components/Card";
 // вызываем компонент EmptyState, который будет появляться при поиске, если нет нужного результата поиска 
 // => используем условный рендеринг и зависит от длины массива (searchedPosts.length)
 // также используем фрагмент ( <>...  </>) - пустой тег, когда нужно вставить куда-то группу элементов
+// ---
+// step 2 Lesson 50 пагинация (бесконечная прокрутка)
+// смотрим, как используется библиотека с кодом, 
+// копируем его и вставляем в Search.   
+// <InfiniteScroll /> мы вставляем вместо реакт-фрагмента
+// ---
+// step 4 Lesson 50 пагинация (бесконечная прокрутка)
+// нам необходимо завести переменную с текущей страницей
+// текущая страница, на которой мы находимся
+// ---
+// step 5 Lesson 50 пагинация (бесконечная прокрутка)
+// итоговое количество постов из postSlice
+// getTotalPostsCount вызываем через useSelector
+// ---
+// step 6 Lesson 50 пагинация (бесконечная прокрутка)
+// пишем useEffect, где если не search - навигирует на Home
+// иначе показать результаты поиска с бесконечной прокруткой
+// ---
+// step 7 Lesson 50 пагинация (бесконечная прокрутка)
+// создаем функцию, которая показывает следующие посты при прокрутке 
+// после достижения первых 12
+// ---
+// step 10 Lesson 50 пагинация (бесконечная прокрутка)
+// чтобы заработал скрол задаем id="scrollableDiv"
+// в стилях overflow-y: scroll и высоту (например, height: 500px;)
 
 
 const Search = () => {
@@ -91,24 +134,56 @@ const Search = () => {
 
   const { onStatusClick, onSavedClick, onMoreClick, onImageClick } = useCardActions(); // деструктуризация кастомного хука и достаем функции
 
+  // step 6 Lesson 50 пагинация (бесконечная прокрутка)
+  // комментируем и добавляем функционал бесконечной прокрутки
+  // useEffect(() => {
+  //   if (!search) {
+  //     navigate(RoutesList.Home);
+  //   } else {
+  //     dispatch(getSearchedPosts(search));
+  //   }
+  // }, [dispatch, navigate, search]);
+
+  
+  // текущая страница, на которой мы находимся
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // итоговое количество постов из postSlice
+  const totalPosts = useSelector(PostSelectors.getTotalSearchedPosts);
+
+  // useEffect c добавление бесконечной прокрутки
   useEffect(() => {
     if (!search) {
       navigate(RoutesList.Home);
     } else {
-      dispatch(getSearchedPosts(search));
+      const offset = (currentPage - 1) * PER_PAGE;
+      dispatch(getSearchedPosts({ search, offset }));
     }
-  }, [dispatch, navigate, search]);
+  }, [dispatch, navigate, search, currentPage]);
 
+ // функция, которая показывает следующие посты при прокрутке
+  const onNextReached = () => {
+    setCurrentPage(currentPage + 1);
+  };
 
   return (
     <div>
       <Title title={`Search results: "${search}"`} />
-      <div className={styles.container}>
+      <div className={styles.container} id="scrollableDiv">
         {searchedPosts.length ? (
-          <>
+          // <>
+          <InfiniteScroll
+            next={onNextReached}
+            scrollThreshold={0.7} // когда достигли 70% экрана показать следуюшие посты
+            hasMore={searchedPosts.length < totalPosts} //надо ли вызывать следующуб функцию next
+            loader={<Loader />}
+            dataLength={searchedPosts.length} //длина подгруженных данных
+            scrollableTarget="scrollableDiv"
+          >
             {searchedPosts.map((post) => {
               return (
                 <Card
+                  key={post.id}
                   type={CardTypes.Search}
                   onStatusClick={onStatusClick(post)}
                   onSavedClick={onSavedClick(post)}
@@ -118,7 +193,8 @@ const Search = () => {
                 />
               );
             })}
-          </>
+          </InfiniteScroll>
+          // </>
         ) : (
           <EmptyState
             title={"Nothing was found..."}

@@ -1,9 +1,11 @@
 import classNames from "classnames";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Pagination from "src/components/Pagination";
 import { useThemeContext } from "src/context/Theme";
 import { AuthSelectors } from "src/redux/reducers/authSlice";
 import { getMyPosts, getPostsList, PostSelectors } from "src/redux/reducers/postSlice";
+import { PER_PAGE } from "src/utils/constants";
 // на 43 уроке конфликт - замена CardsListik на PostsList в @types"
 // import { CardsListik, TabsTypes, Theme } from "../../@types";
 import { PostsList, TabsTypes, Theme } from "../../@types";
@@ -204,8 +206,9 @@ const Home = () => {
     // убираем state так как перенесли данные в редакс (HW8 step 5) и вместо него useSelector c getPostsList
     // ---
     // step 7 HW10 можно закоментировать, так как есть перключатель по табинам
-    // const cardsList = useSelector(PostSelectors.getPostsList)
-   
+    // step 7 Lesson 50 пагинация (нумерическая) - разкомментируем наш сardsList
+    const cardsList = useSelector(PostSelectors.getPostsList)
+
 
     // step 10 Lesson 47 (auth+ access token)
     // переменную isLoggedIn привязываем в селектору
@@ -227,8 +230,10 @@ const Home = () => {
     const dispatch = useDispatch()
 
     useEffect(() => {
+        const offset = (currentPage - 1) * PER_PAGE;
         // setCardsList(MOCK_ARRAY);
-        dispatch(getPostsList())
+        // dispatch(getPostsList())
+        dispatch(getPostsList({ offset, isOverwrite: true }));
     }, [])
 
     const onTabClick = (tab: TabsTypes) => () => {
@@ -252,12 +257,52 @@ const Home = () => {
     // так как все зависит от активной табины
 
     useEffect(() => {
+        const offset = (currentPage - 1) * PER_PAGE;
         if (activeTab === TabsTypes.MyPosts) {
             dispatch(getMyPosts())
         } else {
-            dispatch(getPostsList())
+            // dispatch(getPostsList())
+            dispatch(getPostsList({ offset, isOverwrite: true }));
         }
     }, [activeTab])
+
+
+    // step 7 Lesson 50 пагинация (нумерическая)
+    // и пропишем другой useEffect с включением пагинации
+    // isOverwrite - перезапись - нужна ли она, когда на первой странице - да - => true
+
+    // useEffect(() => {
+    //     dispatch(getPostsList({ offset: 0, isOverwrite: true }));
+    // }, [activeTab])
+
+    // step 8 Lesson 50 пагинация (нумерическая)
+    // getTotalPostsCount вызываем через useSelector
+    const totalCount = useSelector(PostSelectors.getTotalPostsCount);
+
+    // step 9 Lesson 50 пагинация (нумерическая)
+    // создаем мемоизированную переменную pagesCount 
+    // и считаем ее по формуле 
+    //сколько итого у нас страниц
+    const pagesCount = useMemo(
+        () => Math.ceil(totalCount / PER_PAGE),
+        [totalCount]
+    );
+
+    // step 9 Lesson 50 пагинация (нумерическая)
+    // нам необходимо завести переменную с текущей страницей
+    //текущая страница, на которой мы находимся
+    const [currentPage, setCurrentPage] = useState(1);
+
+    // step 7.1 Lesson 50 пагинация (нумерическая)
+    // можем посчиттать сколько постов нужно пропустить
+    // считаем это внутри useEffect
+    // в зависимости мы передаем currentPage (все зависит только от этой переменной)
+    // во всех useEffect где есть getPostsList также прописываем offset и добавляем параментры (offset, isOverwrite)
+    useEffect(() => {
+        // сколько надо пропустить постов (сколько мы уже посмотрели)
+        const offset = (currentPage - 1) * PER_PAGE;
+        dispatch(getPostsList({ offset, isOverwrite: true }));
+    }, [currentPage]);
 
 
     // step 7 HW10
@@ -286,6 +331,19 @@ const Home = () => {
         }
     }
 
+    // step 12 Lesson 50 пагинация (нумерическая)
+    // используем созданные компонент Pagination в Home
+    // дополнительно пишем функцию для переключения постов
+    const onPageChange = ({ selected }: { selected: number }) => {
+        setCurrentPage(selected + 1);
+    };
+
+
+    // step 13 Lesson 50 пагинация (нумерическая) 
+    // вставляем Loading. Достаем его с помощью useSelector
+    // добавляем пропсу isLoading в CardListProps
+    const isListLoading = useSelector(PostSelectors.getPostsListLoading)
+
 
     return (
         <div className={classNames(styles.container, { [styles.darkContainer]: themeValue === Theme.Dark })}>
@@ -300,7 +358,13 @@ const Home = () => {
 
             {/* <CardsList cardsList={MOCK_ARRAY} /> */}
             {/* <CardsList cardsList={cardsList} /> */}
-            <CardsList cardsList={tabsSwitcherForCurrentPostsList()} />
+            <CardsList cardsList={tabsSwitcherForCurrentPostsList()}  isLoading={isListLoading}/>
+
+            <Pagination
+                currentPage={currentPage}
+                pagesCount={pagesCount}
+                onPageChange={onPageChange}
+            />
 
             <SelectedPostModal />
 
