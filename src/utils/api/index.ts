@@ -41,7 +41,9 @@ const signUpUser = (data: SignUpUserData) => {
 // step 2 Lesson 50 пагинация (нумерическая)
 // в api в нашем запросе get /blog/post добавляем параметр PER_PAGE и offset (как переменные, а не значения)
 // search? нам приходит, но так как это необязательный параментр - то ставим его в конце
-
+// ---
+// step 1 HW11 (сортировка Title и Date по кнопке)
+// добавляем в запрос параметр orderingю он необязательный
 
 // const getPosts = () => {
 //   return API.get("/blog/posts/?limit=12");
@@ -49,9 +51,12 @@ const signUpUser = (data: SignUpUserData) => {
 // const getPosts = (search?: string) => {
 //   return API.get("/blog/posts", { search, limit: 12 });
 // };
+// const getPosts = (offset: number, search?: string) => {
+//   return API.get("/blog/posts/", { limit: PER_PAGE, offset, search });
+// };
 
-const getPosts = (offset: number, search?: string) => {
-  return API.get("/blog/posts/", { limit: PER_PAGE, offset, search });
+const getPosts = (offset: number, search?: string, ordering?: string) => {
+  return API.get("/blog/posts/", { limit: PER_PAGE, offset, search, ordering });
 };
 
 // step 1 Lesson 47 (auth+ access token)

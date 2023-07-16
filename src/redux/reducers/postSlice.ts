@@ -3,6 +3,15 @@
 // по клику на кнопочку "три точечки" (DotsMenuIcon)
 // у нас открывается модальное окно (попап) с нашим постом
 // и выбранный пост должен лежат в redux
+
+// preparing - сделать модальное окно (можно через react-modal)
+// далее создаем компонент Modal
+// ---
+// также в папке pages -> Home создаем папку SelectedPostModal
+// где и будет наш выбранный пост в модальном окне
+// нам нужно отследить вызвано ли модальное окно и какой пост в него положили
+// создаем reducer в котором все это будет происходить => postSlice (по аналогии с themeSlice)
+
 // --- HW6
 // реализовать функционал, где при нажатии на картинку появляется
 // модальное окно и в ней картинка из поста
@@ -38,16 +47,12 @@
 // ---
 // step 3 Lesson 50 пагинация (бесконечная прокрутка)
 // обновляем экшены getSearchedPosts и setSearchedPosts с учетом бесконечной прокрутки
-
-
-
-// preparing - сделать модальное окно (можно через react-modal)
-// далее создаем компонент Modal
 // ---
-// также в папке pages -> Home создаем папку SelectedPostModal
-// где и будет наш выбранный пост в модальном окне
-// нам нужно отследить вызвано ли модальное окно и какой пост в него положили
-// создаем reducer в котором все это будет происходить => postSlice (по аналогии с themeSlice)
+// step 2 HW11 (сортировка Title и Date по кнопке)
+// проверяем наш getPostWorker. 
+// обновляем в @types GetPostsPayload и добавляем ordering 
+
+
 
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
@@ -281,6 +286,10 @@ const initialState: InitialState = {
 // это решается через очистку предыдущего запроса при предотправке запроса к
 // => в Header в handleSearchOpened и передаем функцию очистки dispatch(clearSearchedPosts());
 // в postSlice прописываем экшен на очистку => clearSearchedPosts
+// --- 
+// step 2 HW11 (сортировка Title и Date по кнопке)
+// проверяем наш getPostWorker. Нужно проверить payload так как добавился параметр ordering 
+// => @types для GetPostsPayload добавляем ordering 
 
 
 const postSlice = createSlice({

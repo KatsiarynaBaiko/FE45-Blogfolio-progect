@@ -101,9 +101,13 @@ export type RefreshResponseData = {
 // добавляем новый тип для payload - GetPostsPayload, 
 // который будет получать  offset и isOverwrite
 // isOverwrite (перезаписать) - нужен для перезаписи страниц в redux
+// ---
+// step 2 HW11 (сортировка Title и Date по кнопке)
+// обновляем в @types GetPostsPayload и добавляем ordering 
 export type GetPostsPayload = {
     offset: number;
     isOverwrite: boolean;
+    ordering?: string;
 };
 
 // step 5 Lesson 50 пагинация (нумерическая)

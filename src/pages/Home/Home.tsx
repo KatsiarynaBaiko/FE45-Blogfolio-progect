@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Button, { ButtonTypes } from "src/components/Button";
 import Pagination from "src/components/Pagination";
 import { useThemeContext } from "src/context/Theme";
 import { AuthSelectors } from "src/redux/reducers/authSlice";
@@ -8,7 +9,7 @@ import { getMyPosts, getPostsList, PostSelectors } from "src/redux/reducers/post
 import { PER_PAGE } from "src/utils/constants";
 // на 43 уроке конфликт - замена CardsListik на PostsList в @types"
 // import { CardsListik, TabsTypes, Theme } from "../../@types";
-import { PostsList, TabsTypes, Theme } from "../../@types";
+import { Order, PostsList, TabsTypes, Theme } from "../../@types";
 import CardsList from "../../components/CardsList";
 import TabsList from "../../components/Tabslist/Tabslist";
 import Title from "../../components/Title";
@@ -224,6 +225,11 @@ const Home = () => {
         [isLoggedIn]
     );
 
+    // step 4 HW11 (сортировка Title и Date по кнопке)
+    // работаем с кнопочками  Title и Datee . 
+    // Так как меняется их состояние  - используем useState для ordering
+    const [ordering, setOrdering] = useState("");
+
     // HW8 step 5
     // в useEffect вызываем dispatch (наши ручки) которые кидают наши посты
     // делаем в useEffect - так как префетчинг данных
@@ -233,8 +239,8 @@ const Home = () => {
         const offset = (currentPage - 1) * PER_PAGE;
         // setCardsList(MOCK_ARRAY);
         // dispatch(getPostsList())
-        dispatch(getPostsList({ offset, isOverwrite: true }));
-    }, [])
+        dispatch(getPostsList({ offset, isOverwrite: true, ordering }));
+    }, [ordering])
 
     const onTabClick = (tab: TabsTypes) => () => {
         setActiveTab(tab);
@@ -262,10 +268,36 @@ const Home = () => {
             dispatch(getMyPosts())
         } else {
             // dispatch(getPostsList())
-            dispatch(getPostsList({ offset, isOverwrite: true }));
+            dispatch(getPostsList({ offset, isOverwrite: true, ordering }));
         }
-    }, [activeTab])
+    }, [activeTab, ordering])
 
+
+    // step 7 HW10
+    // в return мы передаем  <CardsList cardsList={cardsList} />
+    // где на данном этапе  const cardsList = useSelector(PostSelectors.getPostsList)
+    // то есть это только наши все посты
+    // то есть на любой табине мы видим все посты
+    // ---
+    // если заменить сonst cardsList = useSelector(PostSelectors.getMyPosts)
+    // то мы будем видеть только myPost (на данном этапе пустой массив) 
+    // опять же на любой табине мы видим все myPost
+    // const cardsList = useSelector(PostSelectors.getMyPosts)
+    // ---
+    // у нас не хатает переключателя ??? который будет привязан к activeTab
+    // типо SwithCase
+    // и нам его нужно передавать в return  <CardsList cardsList={переключатель} />
+
+    const allPosts = useSelector(PostSelectors.getPostsList)
+    const myPosts = useSelector(PostSelectors.getMyPosts)
+
+    const tabsSwitcherForCurrentPostsList = () => {
+        switch (activeTab) {
+            case TabsTypes.MyPosts:
+                return myPosts;
+            default: return allPosts;
+        }
+    }
 
     // step 7 Lesson 50 пагинация (нумерическая)
     // и пропишем другой useEffect с включением пагинации
@@ -301,35 +333,8 @@ const Home = () => {
     useEffect(() => {
         // сколько надо пропустить постов (сколько мы уже посмотрели)
         const offset = (currentPage - 1) * PER_PAGE;
-        dispatch(getPostsList({ offset, isOverwrite: true }));
-    }, [currentPage]);
-
-
-    // step 7 HW10
-    // в return мы передаем  <CardsList cardsList={cardsList} />
-    // где на данном этапе  const cardsList = useSelector(PostSelectors.getPostsList)
-    // то есть это только наши все посты
-    // то есть на любой табине мы видим все посты
-    // ---
-    // если заменить сonst cardsList = useSelector(PostSelectors.getMyPosts)
-    // то мы будем видеть только myPost (на данном этапе пустой массив) 
-    // опять же на любой табине мы видим все myPost
-    // const cardsList = useSelector(PostSelectors.getMyPosts)
-    // ---
-    // у нас не хатает переключателя ??? который будет привязан к activeTab
-    // типо SwithCase
-    // и нам его нужно передавать в return  <CardsList cardsList={переключатель} />
-
-    const allPosts = useSelector(PostSelectors.getPostsList)
-    const myPosts = useSelector(PostSelectors.getMyPosts)
-
-    const tabsSwitcherForCurrentPostsList = () => {
-        switch (activeTab) {
-            case TabsTypes.MyPosts:
-                return myPosts;
-            default: return allPosts;
-        }
-    }
+        dispatch(getPostsList({ offset, isOverwrite: true, ordering,}));
+    }, [currentPage, ordering]);
 
     // step 12 Lesson 50 пагинация (нумерическая)
     // используем созданные компонент Pagination в Home
@@ -338,12 +343,26 @@ const Home = () => {
         setCurrentPage(selected + 1);
     };
 
-
     // step 13 Lesson 50 пагинация (нумерическая) 
     // вставляем Loading. Достаем его с помощью useSelector
     // добавляем пропсу isLoading в CardListProps
     const isListLoading = useSelector(PostSelectors.getPostsListLoading)
 
+
+    // step 6 HW11 (сортировка Title и Date по кнопке)
+    // создаем функцию, которая будет отвечать за нашу сортировку по кнопке
+    // в нее запихиваем ранее созданный enum Order
+    const onSortButtonClick = (order: Order) => () => {
+        if (order === ordering) {
+            setOrdering("");
+            setCurrentPage(1);
+        } else {
+            setOrdering(order);
+        }
+    };
+
+    // step 7 HW11 (сортировка Title и Date по кнопке)
+    // прописываем верстку для кнопочек в return.  Используем компонент Button
 
     return (
         <div className={classNames(styles.container, { [styles.darkContainer]: themeValue === Theme.Dark })}>
@@ -356,9 +375,28 @@ const Home = () => {
                 onTabClick={onTabClick}
             />
 
+
+            <div className={styles.sortButtonsContainer}>
+                <Button title={"Date Sort"}
+                    onClick={onSortButtonClick(Order.Date)}
+                    type={ButtonTypes.Primary}
+                    className={classNames(styles.sortButton, {
+                        [styles.activeButton]: ordering === Order.Date,
+                    })}
+                />
+                <Button title={"Title Sort"}
+                    onClick={onSortButtonClick(Order.Title)}
+                    type={ButtonTypes.Primary}
+                    className={classNames(styles.sortButton, {
+                        [styles.activeButton]: ordering === Order.Title,
+                    })}
+                />
+            </div>
+
+
             {/* <CardsList cardsList={MOCK_ARRAY} /> */}
             {/* <CardsList cardsList={cardsList} /> */}
-            <CardsList cardsList={tabsSwitcherForCurrentPostsList()}  isLoading={isListLoading}/>
+            <CardsList cardsList={tabsSwitcherForCurrentPostsList()} isLoading={isListLoading} />
 
             <Pagination
                 currentPage={currentPage}

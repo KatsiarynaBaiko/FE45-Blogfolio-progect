@@ -61,3 +61,11 @@ export enum SaveStatus {
   NotSaved = 'notSaved'
 }
 
+// step 5 
+// так как у нас 2 состояния кнопочек  для сортировки 
+// то можем сделать enum Order => будет date и title
+export enum Order {
+  Date = "date",
+  Title = "title",
+}
+

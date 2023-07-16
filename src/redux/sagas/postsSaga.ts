@@ -61,6 +61,9 @@ import callCheckingAuth from "./helpers/callCheckingAuth";
 // ---
 // step 8 Lesson 50 пагинация (бесконечная прокрутка)
 // обновляем getSearchedPostsWorker
+// ---
+// step 3 HW11 (сортировка Title и Date по кнопке)
+// работаем с воркером getPostsWorker. Прокидываем через него ordering.
 
 
 // step 4
@@ -217,13 +220,18 @@ function* getSearchedPostsWorker(
 // после обновления экшенов в postSlice (step 6) передаем их в сагу
 // воркер  postsSagaWorker = getPostsWorker, только в getPostsWorker добавлен момент с пагинацией 
 // => postsSagaWorker можно закоментировать
+// ---
+// step 3 HW11 (сортировка Title и Date по кнопке)
+// работаем с воркером getPostsWorker. Прокидываем через него ordering.
+
 
 function* getPostsWorker(action: PayloadAction<GetPostsPayload>) {
   yield put(setPostsListLoading(true));
-  const { offset, isOverwrite } = action.payload;
+  const { offset, isOverwrite, ordering } = action.payload;
   const response: ApiResponse<PostsResponseData> = yield call(
     API.getPosts,
-    offset
+    offset, 
+    ordering
   );
   if (response.ok && response.data) {
     const { count, results } = response.data;
