@@ -231,6 +231,7 @@ function* getPostsWorker(action: PayloadAction<GetPostsPayload>) {
   const response: ApiResponse<PostsResponseData> = yield call(
     API.getPosts,
     offset, 
+    '',
     ordering
   );
   if (response.ok && response.data) {
