@@ -1,0 +1,28 @@
+@import "src/styles/colors";
+@import "src/styles/mixins";
+
+
+.cardsListContainer {
+    display: flex;
+    gap: 32px;
+}
+
+.cardsListWrapLeft {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.mediumContainer {
+    max-width: 744px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px 40px;
+}
+
+.smallContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    flex-wrap: wrap;
+}
