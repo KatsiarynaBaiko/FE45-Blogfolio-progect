@@ -1,0 +1,83 @@
+@import "src/styles/colors";
+
+
+.addPostContainer {
+    width: 1120px;
+
+    .title {
+        margin-bottom: 64px;
+    }
+
+    .inputTitle {
+        margin-bottom: 40px;
+    }
+
+    .uploadDragging {
+        display: flex;
+    }
+
+    .description {
+        margin-bottom: 40px;
+    }
+
+    .text {
+        margin-bottom: 48px;
+    }
+
+    .wrapContainer {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        margin-bottom: 40px;
+    }
+
+    .uploadImageWrapper {
+        display: flex;
+        align-items: center;
+    }
+
+    .removeBtn {
+        order: 1;
+        margin-left: 10px;
+        width: 160px;
+        padding: 10px, 0, 10px, 0;
+
+        text-align: center;
+    }
+
+    .imageItem {
+        display: flex;
+        align-items: center;
+        height: 80px;
+    }
+
+    .imageItemBtnWrapper {
+        display: flex;
+        gap: 10px;
+        margin-left: 10px;
+    }
+
+    .allBtn {
+        height: 50px;
+    }
+
+    .inputLessonNumber {
+        width: 90%;
+    }
+}
+
+.uploadImage {
+    padding: 9px;
+    text-align: center;
+    border: 3px dashed $secondary;
+}
+
+.endBtnWrap {
+    display: flex;
+    justify-content: space-between;
+
+    .endRightBtn {
+        display: flex;
+        gap: 24px;
+    }
+}
