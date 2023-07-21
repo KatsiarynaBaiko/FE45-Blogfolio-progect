@@ -103,8 +103,7 @@ const Header = () => {
     const navLinks = useMemo(
         () => [
             { path: RoutesList.Home, title: 'Home' },
-            // { path: RoutesList.SingUp, title: 'Add Post' }
-            ...(isLoggedIn ? [{ path: RoutesList.SingUp, title: 'Add Post' }] : [])
+            ...(isLoggedIn ? [{ path: RoutesList.AddPost, title: 'Add Post' }] : [])
         ],
         [isLoggedIn]
     );

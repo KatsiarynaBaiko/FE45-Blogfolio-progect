@@ -4,6 +4,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 import Header from "src/components/Header";
 import Home from "src/pages/Home";
 import { AuthSelectors, getUserInfo } from "src/redux/reducers/authSlice";
+import AddPost from "./AddPost";
 import RegistrationConfirmation from "./RegistrationConfirmation";
 import Search from "./Search";
 import SelectedPost from "./SelectedPost";
@@ -29,6 +30,9 @@ import Success from "./Success";
 // указываем путь для Search = "/posts/:search",
 // :search - достаем это из url  
 // и добавляем его в Router
+// ---
+// step 3 Lesson 51 AddNewPost
+// указываем путь для AddPost и создаем новый путь в роутере
 
 export enum RoutesList {
     Home = "/",
@@ -40,6 +44,7 @@ export enum RoutesList {
     // SelectedPost = "selected-post",
     SelectedPost = '/post/:id',
     Search = "/posts/:search",
+    AddPost = '/blog/posts/',
     Default = "*",
 }
 
@@ -82,6 +87,9 @@ export enum RoutesList {
 // ---
 // step 2 Lesson 49 search (по нажатию на кнопку)
 // создаем новый путь для Search
+// ---
+// step 3 Lesson 51 AddNewPost
+// привязываем AddPost в роутере и создаем новый путь
 
 const Router = () => {
 
@@ -116,6 +124,8 @@ const Router = () => {
                 <Route path={RoutesList.Success} element={!isLoggedIn ? <Success /> : <Navigate to={RoutesList.Home} />} />
                 <Route path={RoutesList.SelectedPost} element={<SelectedPost />} />
                 <Route path={RoutesList.Search} element={<Search />} />
+                <Route path={RoutesList.AddPost} element={isLoggedIn ? <AddPost /> : <Navigate to={RoutesList.Home} />} />
+                {/* <Route path={RoutesList.AddPost} element={<AddPost />} /> */}
                 <Route path={RoutesList.Default} element={<Navigate to={RoutesList.Home} />} />
             </Route>
         </Routes>

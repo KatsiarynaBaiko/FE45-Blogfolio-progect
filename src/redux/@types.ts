@@ -135,3 +135,10 @@ export type GetSearchedPostsPayload = {
 // Omit новый тип, в котором можно указать свойства, 
 // которые будут исключены из исходного типа
 export type SetSearchedPostsPayload = Omit<SetPostsListPayload, "isOverwrite">; 
+
+
+// step 5 Lesson 51 AddNewPost
+// в postSlise создаем экшен addNewPost для добавления поста
+// типизируем наш payload в @types => AddPostDataPayload
+// any - потому что мы будем прокидывать formData
+export type AddPostDataPayload = PayloadWithDataAndCallback<any>

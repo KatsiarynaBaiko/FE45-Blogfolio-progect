@@ -17,7 +17,7 @@ import { PER_PAGE } from "../constants";
 // baseURL - это единственный обязательный
 // "https://studapi.teachmeskills.by" - это голова, к которой будут уже присоединяться хвостики
 const API = create({
-  baseURL: "https://studapi.teachmeskills.by",
+  baseURL: 'https://studapi.teachmeskills.by',
 });
 
 
@@ -129,8 +129,18 @@ const getMyPosts = (token: string) => {
   );
 };
 
-
-
+// step 4 Lesson 51 AddNewPost
+// делаем запрос в api для добавления поста
+// так как добавлять можно только после того, как пользователь залогинился
+// то используем токен
+// data у нас будет anyб так как будем прокидывать formData
+const addPost = (token: string, data: any) => {
+  return API.post('/blog/posts/', data, {
+      headers: {
+          Authorization: `Bearer ${token}`,
+      }
+  })
+}
 
 // не забываем экспортировать
 export default {
@@ -143,4 +153,5 @@ export default {
   verifyToken,
   refreshToken, 
   getMyPosts,
+  addPost,
 };

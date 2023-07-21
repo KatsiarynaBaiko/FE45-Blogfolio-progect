@@ -12,9 +12,9 @@
 
 import { ApiResponse } from "apisauce";
 import { all, call, put, takeLatest } from "redux-saga/effects";
-import { GetPostsPayload, GetSearchedPostsPayload, PostsResponseData } from "../@types";
+import { AddPostDataPayload, GetPostsPayload, GetSearchedPostsPayload, PostsResponseData } from "../@types";
 import API from "src/utils/api";
-import { getMyPosts, getPostsList, getSearchedPosts, getSinglePost, setMyPosts, setPostsList, setPostsListLoading, setSearchedPosts, setSinglePost, setSinglePostLoading } from "../reducers/postSlice";
+import { addNewPost, getMyPosts, getPostsList, getSearchedPosts, getSinglePost, setMyPosts, setPostsList, setPostsListLoading, setSearchedPosts, setSinglePost, setSinglePostLoading } from "../reducers/postSlice";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { Post } from "src/@types";
 import callCheckingAuth from "./helpers/callCheckingAuth";
@@ -64,6 +64,12 @@ import callCheckingAuth from "./helpers/callCheckingAuth";
 // ---
 // step 3 HW11 (сортировка Title и Date по кнопке)
 // работаем с воркером getPostsWorker. Прокидываем через него ordering.
+// ---
+// step 6 Lesson 51 AddNewPost
+// создаем воркер addPostWorker для добавления поста
+// step 7 Lesson 51 Fix My post
+// дописываем воркера getMyPostsWorker
+
 
 
 // step 4
@@ -133,9 +139,13 @@ function* getSinglePostWorker(action: PayloadAction<string>) {
 // => используем сагу-помощника callCheckingAut
 // обрабатываем с помощью if и помещаем в редакс с  помощью put
 // не забываем его привязать к нашему вотчеру postsSagaWatcher
+// ---
+// step 7 Lesson 51 Fix My post
+// дописываем воркера getMyPostsWorker
+// добавляем наш лоадинг setPostsListLoading (fix error 404)
 
 function* getMyPostsWorker() {
-
+  yield put(setPostsListLoading(true));
   const response: ApiResponse<PostsResponseData>= yield callCheckingAuth(API.getMyPosts);
 
   // if (response.ok && response.data) {
@@ -166,6 +176,7 @@ function* getMyPostsWorker() {
   else {
     console.error("Set My Posts error", response.problem);
   }
+  yield put(setPostsListLoading(false));
 }
 
 
@@ -249,6 +260,25 @@ function* getPostsWorker(action: PayloadAction<GetPostsPayload>) {
   yield put(setPostsListLoading(false));
 }
 
+// step 6 Lesson 51 AddNewPost
+// создаем воркер addPostWorker для добавления поста
+function* addPostWorker(action: PayloadAction<AddPostDataPayload>) {
+
+  const { data, callback } = action.payload
+
+  const response: ApiResponse<undefined> = yield callCheckingAuth(
+      API.addPost,
+      data,
+  )
+  if (response.data && response.ok) {
+      callback();
+
+  } else {
+      console.error('Add Post Error', response.problem);
+
+  }
+}
+
 
 
 // step 1
@@ -268,7 +298,9 @@ function* getPostsWorker(action: PayloadAction<GetPostsPayload>) {
 // ---
 // step 5 Lesson 49 search (по нажатию на кнопку)
 // привязываем воркер getSearchedPostsWorker к вотчеру
-
+// ---
+// step 6 Lesson 51 AddNewPost
+// привязываем воркер addPostWorker к вотчеру
 
 export default function* postsSagaWatcher() {
   yield all([
@@ -277,5 +309,6 @@ export default function* postsSagaWatcher() {
     takeLatest(getMyPosts, getMyPostsWorker),
     takeLatest(getSearchedPosts, getSearchedPostsWorker),
     takeLatest(getPostsList, getPostsWorker),
+    takeLatest(addNewPost, addPostWorker),
   ]);
 }

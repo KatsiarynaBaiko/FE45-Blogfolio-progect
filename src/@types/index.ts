@@ -22,7 +22,7 @@ export type PostsList = Post[]
 export enum TabsTypes {
   All = 'all',
   MyPosts = 'myPosts',
-  Popular = 'popular',
+  Favourite = 'favourite',
 }
 
 // lesson 40

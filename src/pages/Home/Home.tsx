@@ -219,7 +219,7 @@ const Home = () => {
     const tabsList = useMemo(
         () => [
             { key: TabsTypes.All, title: 'All Posts', disabled: false },
-            { key: TabsTypes.Popular, title: 'Popular', disabled: false },
+            { key: TabsTypes.Favourite, title: 'My Favourite', disabled: false },
             { key: TabsTypes.MyPosts, title: 'My Posts', disabled: !isLoggedIn },
         ],
         [isLoggedIn]
@@ -233,14 +233,20 @@ const Home = () => {
     // HW8 step 5
     // в useEffect вызываем dispatch (наши ручки) которые кидают наши посты
     // делаем в useEffect - так как префетчинг данных
+    // ---
+    // step 8 Lesson 51 Fix My post
+    // на страничке Home обновляем наш useEffect
+    // и добавляем функционал на getMypost
+    // => все остальные useEffect можно удалять
+
     const dispatch = useDispatch()
 
-    useEffect(() => {
-        const offset = (currentPage - 1) * PER_PAGE;
-        // setCardsList(MOCK_ARRAY);
-        // dispatch(getPostsList())
-        dispatch(getPostsList({ offset, isOverwrite: true, ordering }));
-    }, [ordering])
+    // useEffect(() => {
+    //     const offset = (currentPage - 1) * PER_PAGE;
+    //     // setCardsList(MOCK_ARRAY);
+    //     // dispatch(getPostsList())
+    //     dispatch(getPostsList({ offset, isOverwrite: true, ordering }));
+    // }, [ordering])
 
     const onTabClick = (tab: TabsTypes) => () => {
         setActiveTab(tab);
@@ -261,16 +267,21 @@ const Home = () => {
     // При обработке используем useEffect и внутри кладем наши данные ручками
     // В массиве зависимостей в useEffect будет [activeTab] - 
     // так как все зависит от активной табины
+    // ---
+    // step 8 Lesson 51 Fix My post
+    // на страничке Home обновляем наш useEffect
+    // и добавляем функционал на getMypost
+    // => все остальные useEffect можно удалять
 
-    useEffect(() => {
-        const offset = (currentPage - 1) * PER_PAGE;
-        if (activeTab === TabsTypes.MyPosts) {
-            dispatch(getMyPosts())
-        } else {
-            // dispatch(getPostsList())
-            dispatch(getPostsList({ offset, isOverwrite: true, ordering }));
-        }
-    }, [activeTab, ordering])
+    // useEffect(() => {
+    //     const offset = (currentPage - 1) * PER_PAGE;
+    //     if (activeTab === TabsTypes.MyPosts) {
+    //         dispatch(getMyPosts())
+    //     } else {
+    //         // dispatch(getPostsList())
+    //         dispatch(getPostsList({ offset, isOverwrite: true, ordering }));
+    //     }
+    // }, [activeTab, ordering])
 
 
     // step 7 HW10
@@ -287,14 +298,21 @@ const Home = () => {
     // у нас не хатает переключателя ??? который будет привязан к activeTab
     // типо SwithCase
     // и нам его нужно передавать в return  <CardsList cardsList={переключатель} />
+    // ---
+    // step 9 Lesson 51 Fix My post
+    // дописываем tabsSwitcher на страничке Home (добавляем переключение на Favourites=Saved post)
+    // tab popular заменякм на favourite
 
     const allPosts = useSelector(PostSelectors.getPostsList)
     const myPosts = useSelector(PostSelectors.getMyPosts)
+    const favoritesPosts = useSelector(PostSelectors.getSavedPosts)
 
     const tabsSwitcherForCurrentPostsList = () => {
         switch (activeTab) {
             case TabsTypes.MyPosts:
                 return myPosts;
+            case TabsTypes.Favourite:
+                return favoritesPosts;
             default: return allPosts;
         }
     }
@@ -330,11 +348,28 @@ const Home = () => {
     // считаем это внутри useEffect
     // в зависимости мы передаем currentPage (все зависит только от этой переменной)
     // во всех useEffect где есть getPostsList также прописываем offset и добавляем параментры (offset, isOverwrite)
+    // ---
+    // step 8 Lesson 51 Fix My post
+    // на страничке Home обновляем наш useEffect
+    // и добавляем функционал на getMypost
+    // => все остальные useEffect можно удалять
+    // useEffect(() => {
+    //     // сколько надо пропустить постов (сколько мы уже посмотрели)
+    //     const offset = (currentPage - 1) * PER_PAGE;
+    //     dispatch(getPostsList({ offset, isOverwrite: true, ordering,}));
+    // }, [currentPage, ordering]);
+
     useEffect(() => {
         // сколько надо пропустить постов (сколько мы уже посмотрели)
-        const offset = (currentPage - 1) * PER_PAGE;
-        dispatch(getPostsList({ offset, isOverwrite: true, ordering,}));
-    }, [currentPage, ordering]);
+        if (activeTab === TabsTypes.MyPosts) {
+            dispatch(getMyPosts());
+        } else {
+            const offset = (currentPage - 1) * PER_PAGE;
+            dispatch(getPostsList({ offset, isOverwrite: true, ordering }));
+        }
+    }, [currentPage, dispatch, ordering, activeTab]);
+
+
 
     // step 12 Lesson 50 пагинация (нумерическая)
     // используем созданные компонент Pagination в Home
@@ -366,6 +401,10 @@ const Home = () => {
     // step 7 HW11 (сортировка Title и Date по кнопке)
     // прописываем верстку для кнопочек в return.  Используем компонент Button
 
+    // step 11 Lesson 51 AddNewPost+Fix My post
+    // на страничке Home добавдяем работу пагинации
+    // => {activeTab === TabsTypes.All && и вставляем наши кнопочки}
+
     return (
         <div className={classNames(styles.container, { [styles.darkContainer]: themeValue === Theme.Dark })}>
 
@@ -378,33 +417,34 @@ const Home = () => {
             />
 
 
-            <div className={styles.sortButtonsContainer}>
-                <Button title={"Date Sort"}
-                    onClick={onSortButtonClick(Order.Date)}
-                    type={ButtonTypes.Primary}
-                    className={classNames(styles.sortButton, {
-                        [styles.activeButton]: ordering === Order.Date,
-                    })}
-                />
-                <Button title={"Title Sort"}
-                    onClick={onSortButtonClick(Order.Title)}
-                    type={ButtonTypes.Primary}
-                    className={classNames(styles.sortButton, {
-                        [styles.activeButton]: ordering === Order.Title,
-                    })}
-                />
-            </div>
+            {activeTab === TabsTypes.All &&
+                <div className={styles.sortButtonsContainer}>
+                    <Button title={"Date Sort"}
+                        onClick={onSortButtonClick(Order.Date)}
+                        type={ButtonTypes.Primary}
+                        className={classNames(styles.sortButton, {
+                            [styles.activeButton]: ordering === Order.Date,
+                        })}
+                    />
+                    <Button title={"Title Sort"}
+                        onClick={onSortButtonClick(Order.Title)}
+                        type={ButtonTypes.Primary}
+                        className={classNames(styles.sortButton, {
+                            [styles.activeButton]: ordering === Order.Title,
+                        })}
+                    />
+                </div>}
 
 
             {/* <CardsList cardsList={MOCK_ARRAY} /> */}
             {/* <CardsList cardsList={cardsList} /> */}
             <CardsList cardsList={tabsSwitcherForCurrentPostsList()} isLoading={isListLoading} />
 
-            <Pagination
+            {activeTab === TabsTypes.All && <Pagination
                 currentPage={currentPage}
                 pagesCount={pagesCount}
                 onPageChange={onPageChange}
-            />
+            />}
 
             <SelectedPostModal />
 

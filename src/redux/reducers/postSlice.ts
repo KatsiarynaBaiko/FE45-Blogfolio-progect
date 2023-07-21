@@ -59,7 +59,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // было Card, на 43 уроке конфликт - замена на Post в @types
 // import { Card } from "src/@types";
 import { LikeStatus, Post, PostsList, SaveStatus } from "src/@types";
-import { GetPostsPayload, GetSearchedPostsPayload, SetPostsListPayload, SetSearchedPostsPayload } from "../@types";
+import { AddPostDataPayload, GetPostsPayload, GetSearchedPostsPayload, SetPostsListPayload, SetSearchedPostsPayload } from "../@types";
 import { RootState } from "../store";
 
 // step 4 
@@ -290,6 +290,12 @@ const initialState: InitialState = {
 // step 2 HW11 (сортировка Title и Date по кнопке)
 // проверяем наш getPostWorker. Нужно проверить payload так как добавился параметр ordering 
 // => @types для GetPostsPayload добавляем ordering 
+// ---
+// step 5 Lesson 51 AddNewPost
+// в postSlise создаем экшен addNewPost для добавления поста
+// типизируем наш payload в @types => AddPostDataPayload
+// для addNewPost будет formData и ее мы отправляем при запросе
+// => идем в addPost и пишем функцию onSubmit, чтобы все сохранилось и работало
 
 
 const postSlice = createSlice({
@@ -428,6 +434,8 @@ const postSlice = createSlice({
       state.searchedPosts = [];
     },
 
+    addNewPost: (_, __: PayloadAction<AddPostDataPayload>) => { },
+
   }, // вот тут живут функции, которые ловят экшены по типу(т.е. по названию ф-и)
 });
 
@@ -458,7 +466,8 @@ export const { setSelectedPostModalOpened, setSelectedPost,
   getMyPosts, setMyPosts,
   getSearchedPosts, setSearchedPosts,
   setPostsListLoading,
-  clearSearchedPosts, } =
+  clearSearchedPosts,
+  addNewPost, } =
   postSlice.actions;
 // а вот тут живут сами экшены, которые рождаются библиотекой исходя
 // из названия ф-ии, которая их ловит

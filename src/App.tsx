@@ -243,7 +243,7 @@ const App = () => {
   const tabsList = [
     { key: TabsTypes.All, title: 'All', disabled: false },
     { key: TabsTypes.MyPosts, title: 'My Posts', disabled: false },
-    { key: TabsTypes.Popular, title: 'Popular', disabled: true }
+    { key: TabsTypes.Favourite, title: 'My Favourite', disabled: true }
   ]
   // activeTab - это переключение Tabs => это использование хуков => создаем useState 
   // передаем дефолтное значение TabsTypes.All

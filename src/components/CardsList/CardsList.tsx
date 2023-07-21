@@ -130,8 +130,46 @@ const CardsList: FC<CardsListProps> = ({ cardsList, isLoading }) => {
     // делаем деструктуризацию и достаем функции
     const { onStatusClick, onSavedClick, onMoreClick, onImageClick } = useCardActions();
 
+    // step 10 Lesson 51 Fix My post
+    // в CardsList прописываем условие для вывода Loader или EmptyState (fix error 404)
 
-    return cardsList.length && !isLoading ? (
+    // return cardsList.length && !isLoading ? (
+    //     <div className={styles.cardsListContainer}>
+    //         <div className={styles.cardsListWrapLeft}>
+    //             {/* <Card type={CardTypes.Large} {...cardsList[0]} /> */}
+    //             <Card type={CardTypes.Large} {...cardsList[0]} onMoreClick={onMoreClick(cardsList[0])} onImageClick={onImageClick(cardsList[0].image)} onStatusClick={onStatusClick(cardsList[0])} onSavedClick={onSavedClick(cardsList[0])} />
+    //             <div className={styles.mediumContainer}>
+    //                 {cardsList.map((el, idx) => {
+    //                     if (idx >= 1 && idx <= 4) {
+    //                         // return <Card key={el.id} type={CardTypes.Medium} {...el} />
+    //                         return <Card key={el.id} type={CardTypes.Medium} {...el} onMoreClick={onMoreClick(el)} onImageClick={onImageClick(el.image)} onStatusClick={onStatusClick(el)} onSavedClick={onSavedClick(el)} />
+    //                     }
+    //                 })}
+    //             </div>
+    //         </div >
+    //         <div className={styles.smallContainer}>
+    //             {cardsList.map((el, idx) => {
+    //                 if (idx >= 5 && idx <= 10) {
+    //                     // return <Card key={el.id} type={CardTypes.Small} {...el} />
+    //                     return <Card key={el.id} type={CardTypes.Small} {...el} onMoreClick={onMoreClick(el)} onImageClick={onImageClick(el.image)} onStatusClick={onStatusClick(el)} onSavedClick={onSavedClick(el)} />
+    //                 }
+    //             })}
+    //         </div>
+    //     </div>
+    //     // ) : null;
+    // ) : (<Loader />);
+    // // ) : (
+    // //     <EmptyState
+    // //         title={"Nothing was found..."}
+    // //         description={"Try to add new post"}
+    // //     />
+    // // );
+
+    if (isLoading) {
+        return <Loader />
+    }
+
+    return cardsList.length ? (
         <div className={styles.cardsListContainer}>
             <div className={styles.cardsListWrapLeft}>
                 {/* <Card type={CardTypes.Large} {...cardsList[0]} /> */}
@@ -142,6 +180,9 @@ const CardsList: FC<CardsListProps> = ({ cardsList, isLoading }) => {
                             // return <Card key={el.id} type={CardTypes.Medium} {...el} />
                             return <Card key={el.id} type={CardTypes.Medium} {...el} onMoreClick={onMoreClick(el)} onImageClick={onImageClick(el.image)} onStatusClick={onStatusClick(el)} onSavedClick={onSavedClick(el)} />
                         }
+                        else {
+                            return null;
+                        }
                     })}
                 </div>
             </div >
@@ -151,18 +192,21 @@ const CardsList: FC<CardsListProps> = ({ cardsList, isLoading }) => {
                         // return <Card key={el.id} type={CardTypes.Small} {...el} />
                         return <Card key={el.id} type={CardTypes.Small} {...el} onMoreClick={onMoreClick(el)} onImageClick={onImageClick(el.image)} onStatusClick={onStatusClick(el)} onSavedClick={onSavedClick(el)} />
                     }
+                    else {
+                        return null;
+                    }
                 })}
             </div>
         </div>
-    // ) : null;
-    ) : (<Loader />);
-    // ) : (
-    //     <EmptyState
-    //         title={"Nothing was found..."}
-    //         description={"Try to add new post"}
-    //     />
-    // );
+    ) : (
+    <EmptyState
+        title={"Nothing was found..."}
+        description={"Try to add new post"}
+    />
+);
 }
+
+
 
 
 
