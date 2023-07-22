@@ -1,0 +1,148 @@
+@import "src/styles/colors";
+
+
+@mixin cardSpan {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: $gray;
+    margin-bottom: 8px;
+}
+
+@mixin cardTitle {
+    font-family: 'Inter';
+    font-style: normal;
+    color: $secondary;
+
+    &:hover {
+        cursor: pointer;
+        color: $primary;
+    }
+}
+
+@mixin cardText {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 28px;
+    color: $gray;
+}
+
+@mixin cardImageImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+@mixin signLink {
+    color: $primary;
+    margin-left: 4px;
+
+    &:hover {
+        cursor: pointer;
+        text-decoration: underline;
+    }
+}
+
+@mixin additionalInfo {
+    font-family: "Inter";
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20px;
+    color: $gray;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    margin-top: 24px;
+}
+
+@mixin breadcrumbs {
+    margin-bottom: 32px;
+    font-weight: 400;
+    font-size: 16px;
+    color: $secondary;
+    cursor: pointer;
+
+    &:hover {
+        color: $primary;
+    }
+}
+
+@mixin smallCard() {
+
+    .cardContent {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+        margin-bottom: 24px;
+        // gap: 32px;
+    }
+
+    .cardTextContent {
+        max-width: 222px;
+    }
+
+    .date {
+        @include cardSpan();
+    }
+
+    .cardTitle {
+        @include cardTitle();
+        font-weight: 600;
+        font-size: 18px;
+        line-height: 28px;
+    }
+
+    // через display: none не делаем через условный рендеринг (прописываем условие)
+    // .cardText {
+    //     display: none;
+    // }
+
+    .cardImage {
+        width: 96px;
+        height: 96px;
+    }
+
+    .cardImage img {
+        @include cardImageImg();
+    }
+
+    .cardReaction {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 0 41px;
+        border-bottom: 1px solid $medium;
+
+    }
+
+    .cardReactionLikeDislike,
+    .cardReactionNavigation {
+        display: flex;
+        align-items: center;
+        gap: 25px;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    .likeStatusNumber {
+        display: flex;
+        width: 40px;
+        gap: 8px;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 25px;
+        color: $secondary;
+    }
+
+    .darkLikeStatusNumber {
+        color: $white;
+    }
+
+}

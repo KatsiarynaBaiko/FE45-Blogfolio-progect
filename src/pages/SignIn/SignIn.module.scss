@@ -1,0 +1,42 @@
+@import "src/styles/colors";
+@import "src/styles/mixins";
+
+.signUp {
+    @include signLink
+}
+
+.additionalInfo {
+    @include additionalInfo
+}
+
+.forgotPassword {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 20px;
+    color: $secondary;
+    margin-top: -16px;
+
+    &:hover {
+        cursor: pointer;
+        color: $primary;
+    }
+}
+
+.darkAdditionalInfo {
+    color: $medium;
+
+    .signUp {
+        color: $primary-secondary;
+    }
+}
+
+.darkForgotPassword {
+    color: $white;
+
+    &:hover {
+        cursor: pointer;
+        color: $primary-secondary;;
+    }
+}
