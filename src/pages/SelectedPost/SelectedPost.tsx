@@ -14,6 +14,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { getSinglePost, PostSelectors } from "src/redux/reducers/postSlice";
 import { RoutesList } from "../Router";
 import Loader from "src/components/Loader";
+import { userInfo } from "os";
+import Button, { ButtonTypes } from "src/components/Button";
+import { AuthSelectors } from "src/redux/reducers/authSlice";
 
 
 
@@ -88,6 +91,18 @@ const SelectedPost = () => {
     // использкем селектоор для Loader
     const isSinglePostLoading = useSelector(PostSelectors.getSinglePostLoading);
 
+    // step 5 Lesson 52 edit and delete Post
+    // добавляем кнопочку Edit для редактирования постов
+    // в ней также прописываем условие, если singlePost.author === userInfo?.id
+    // то показываем кнопочку edit
+    // ---
+    // и создаем функцию для редактирования постов onClickEdit
+    const userInfo = useSelector(AuthSelectors.getUserInfo);
+
+    const onClickEdit = () => {
+        navigate(`/posts/${singlePost?.id}/edit`);
+    };
+
     return singlePost && !isSinglePostLoading ? (
         <div className={classNames(styles.container, { [styles.darkContainer]: themeValue === Theme.Dark })}>
             <div className={styles.breadcrumbs}>
@@ -124,6 +139,13 @@ const SelectedPost = () => {
                 <div className={styles.selectedPostReactionToFavorites}>
                     <BookmarkIcon /> Add to Favorites
                 </div>
+                {singlePost.author === userInfo?.id && (
+                    <Button
+                        type={ButtonTypes.Secondary}
+                        title={"Edit post"}
+                        onClick={onClickEdit}
+                    />
+                )}
             </div>
         </div>
         // ) : null

@@ -134,7 +134,7 @@ export type GetSearchedPostsPayload = {
 // для SetSearchedPostsPayload используем Omit
 // Omit новый тип, в котором можно указать свойства, 
 // которые будут исключены из исходного типа
-export type SetSearchedPostsPayload = Omit<SetPostsListPayload, "isOverwrite">; 
+export type SetSearchedPostsPayload = Omit<SetPostsListPayload, "isOverwrite">;
 
 
 // step 5 Lesson 51 AddNewPost
@@ -142,3 +142,23 @@ export type SetSearchedPostsPayload = Omit<SetPostsListPayload, "isOverwrite">;
 // типизируем наш payload в @types => AddPostDataPayload
 // any - потому что мы будем прокидывать formData
 export type AddPostDataPayload = PayloadWithDataAndCallback<any>
+
+
+// step 7 Lesson 52 edit and delete Post
+// работаем с кнопочкой delete. 
+// Пишем для нее функцию onDeletePost на удаление поста 
+// в postSlice создаем экшен deletePost и payload для него: DeletePostPayload
+// number - так как у нас id
+export type DeletePostPayload = PayloadWithDataAndCallback<number>;
+
+// step 8 Lesson 52 edit and delete Post
+// работаем с кнопочкой edit
+// создаем экшен  editPost  в postSlice для редактирования поста
+// и payload для него: EditPostPayload
+
+export type EditPostData = {
+    postId: number;
+    newData: any;
+};
+
+export type EditPostPayload = PayloadWithDataAndCallback<EditPostData>;

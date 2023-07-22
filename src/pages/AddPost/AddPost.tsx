@@ -19,8 +19,11 @@
 // step 9 дописываем tabsSwitcher на страничке Home (добавляем переключение на Favourites=Saved post) 
 // step 10 в CardsList прописываем условие для вывода Loader или EmptyState (fix error 404)
 // step 11 на страничке Home добавдяем работу пагинации
+// ---
+// step 2... Lesson 52 edit and delete Post
+// работа с удалением и редактированием поста (шаги прописаны ниже)
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ImageUploading, { ImageListType } from 'react-images-uploading';
 
 import Button, { ButtonTypes } from 'src/components/Button/Button';
@@ -28,10 +31,11 @@ import Input from 'src/components/Input/Input';
 import Title from 'src/components/Title/Title';
 import styles from './AddPost.module.scss'
 import classNames from 'classnames';
-import { useDispatch } from 'react-redux';
-import { addNewPost } from 'src/redux/reducers/postSlice';
-import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { addNewPost, deletePost, editPost, getSinglePost, PostSelectors } from 'src/redux/reducers/postSlice';
+import { useNavigate, useParams } from 'react-router-dom';
 import { RoutesList } from '../Router';
+import { AuthSelectors } from 'src/redux/reducers/authSlice';
 
 // step 1 создать страничку AddPost
 // компонуем ее из наших компонентов
@@ -87,6 +91,10 @@ const AddPost = () => {
     // => создаем функцию onNavigateToHome и передаем ее в callback
     // => на кнопочку onSubmit мы передаем функцию onSubmit 
     // => на кнопочку Cancel мы передаем функцию onNavigateToHome 
+    // ---
+    // step 9 Lesson 52 edit and delete Post
+    // создаем const action и передаем с помощью dispatch
+    // и if (singlePost?.author) { formData.append("author"...}
 
     const onSubmit = () => {
         const formData = new FormData() // создаем экземпляр класса
@@ -95,10 +103,93 @@ const AddPost = () => {
         formData.append("description", description);
         formData.append("lesson_num", lessonNumber);
         formData.append("image", images[0].file as Blob);
-        dispatch(addNewPost({
-            data: formData, callback: onNavigateToHome
-        }))
+
+        if (singlePost?.author) {
+            formData.append("author", singlePost.author.toString());
+        }
+
+        const action = singlePost
+            ? editPost({
+                data: { postId: singlePost.id, newData: formData },
+                callback: onNavigateToHome,
+            })
+            : addNewPost({
+                data: formData,
+                callback: onNavigateToHome,
+            });
+        dispatch(action);
+
+
+        // step 9 Lesson 52 edit and delete Post
+        // можно удалить dispatch
+        // dispatch(addNewPost({
+        //     data: formData, callback: onNavigateToHome
+        // }))
     }
+
+    // step 2 Lesson 52 edit and delete Post
+    // достаем параметр id в AddPost
+    const { id } = useParams();
+
+    // step 3 Lesson 52 edit and delete Post
+    // делаем запрос (через  useEffect) в который 
+    // через dispatch передаем getSinglePost и 
+    // который будет зависеть от id и получать SinglePost, если есть id
+
+    useEffect(() => {
+        if (id) {
+            dispatch(getSinglePost(id));
+        }
+    }, [id]);
+
+    // step 4 Lesson 52 edit and delete Post
+    // достаем наш singlePost через useSelector
+    // и пишем еще один useEffect в котором зависимостью будет singlePost?.id
+    // id? - так как id как может быть, так и нет
+    // ---
+    // редактировать посты могут только тот, кто его создал 
+    // это можно проверить через автора (он есть в Post) 
+    // и => его сравниванием с userInfo.id
+    // проверяем условие singlePost.author === userInfo.id (доступ к редактированию поста)
+    // и если они равны, то заполняем полями из singlePost
+    // если не равны, то навигируем на Home (если нет доступа)
+    // картинки у нас присылаются ссылками (запускаем проект и смотрим через redux)
+    // => используем dataURLKey="imageData"
+
+    const singlePost = useSelector(PostSelectors.getSinglePost);
+    const userInfo = useSelector(AuthSelectors.getUserInfo);
+
+    useEffect(() => {
+        if (singlePost && userInfo) {
+            if (singlePost.author === userInfo.id) {
+                setTitle(singlePost.title);
+                setLessonNumber(singlePost.lesson_num.toString());
+                setDescription(singlePost.description);
+                setText(singlePost?.text || "");
+                setImages([{ imageData: singlePost.image }]);
+            } else {
+                navigate(RoutesList.Home);
+            }
+        }
+    }, [singlePost?.id]);
+
+    // step 6 Lesson 52 edit and delete Post
+    // так как у нас редактирование поста, 
+    // то логично будет заблокировать кнопочку delete во время редактирования
+    // также меняем название кнопочки с AddPost = на Update Post
+    // => нам нужно прописать условие в самом title: singlePost?.id ? "Edit post" : "Add post"
+    // для delete добавляем disabled={!singlePost?.id} (если нету чего редактировать, то и нечего удалять)
+
+    // step 7 Lesson 52 edit and delete Post
+    // работаем с кнопочкой delete. Пишем для нее функцию onDeletePost на удаление поста 
+    // нам нужен экшен для удаления => postSlice создаем экшен deletePost
+    // в postSaga создаем наш воркер deletePostWorker
+
+    const onDeletePost = () => {
+        if (singlePost) {
+            dispatch(deletePost({ data: singlePost.id, callback: onNavigateToHome }));
+        }
+    };
 
 
     return (
@@ -159,10 +250,10 @@ const AddPost = () => {
             <Input className={styles.text} isTextarea title={'Text'} placeholder={'Add your text'} onChange={setText} value={text} />
 
             <div className={styles.endBtnWrap}>
-                <Button type={ButtonTypes.Error} title={'Delete post'} onClick={() => { }} />
+                <Button type={ButtonTypes.Error} title={'Delete post'} onClick={onDeletePost} disabled={!singlePost?.id} />
                 <div className={styles.endRightBtn} >
                     <Button type={ButtonTypes.Secondary} title={'Cancel'} onClick={onNavigateToHome} />
-                    <Button type={ButtonTypes.Primary} title={'Add post'} onClick={onSubmit} />
+                    <Button type={ButtonTypes.Primary} title={singlePost?.id ? "Edit post" : "Add post"} onClick={onSubmit} />
                 </div>
             </div>
         </div >

@@ -12,9 +12,9 @@
 
 import { ApiResponse } from "apisauce";
 import { all, call, put, takeLatest } from "redux-saga/effects";
-import { AddPostDataPayload, GetPostsPayload, GetSearchedPostsPayload, PostsResponseData } from "../@types";
+import { AddPostDataPayload, DeletePostPayload, EditPostPayload, GetPostsPayload, GetSearchedPostsPayload, PostsResponseData } from "../@types";
 import API from "src/utils/api";
-import { addNewPost, getMyPosts, getPostsList, getSearchedPosts, getSinglePost, setMyPosts, setPostsList, setPostsListLoading, setSearchedPosts, setSinglePost, setSinglePostLoading } from "../reducers/postSlice";
+import { addNewPost, deletePost, editPost, getMyPosts, getPostsList, getSearchedPosts, getSinglePost, setMyPosts, setPostsList, setPostsListLoading, setSearchedPosts, setSinglePost, setSinglePostLoading } from "../reducers/postSlice";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { Post } from "src/@types";
 import callCheckingAuth from "./helpers/callCheckingAuth";
@@ -69,7 +69,12 @@ import callCheckingAuth from "./helpers/callCheckingAuth";
 // создаем воркер addPostWorker для добавления поста
 // step 7 Lesson 51 Fix My post
 // дописываем воркера getMyPostsWorker
-
+// ---
+// step 7 Lesson 52 edit and delete Post
+// в postSaga создаем наш воркер deletePostWorker для удаления поста
+// ---
+// step 8 Lesson 52 edit and delete Post
+// в postSaga создаем наш воркер editPostWorker для редактирования
 
 
 // step 4
@@ -146,7 +151,7 @@ function* getSinglePostWorker(action: PayloadAction<string>) {
 
 function* getMyPostsWorker() {
   yield put(setPostsListLoading(true));
-  const response: ApiResponse<PostsResponseData>= yield callCheckingAuth(API.getMyPosts);
+  const response: ApiResponse<PostsResponseData> = yield callCheckingAuth(API.getMyPosts);
 
   // if (response.ok && response.data) {
   //   yield put(setMyPosts(response.data.results));
@@ -171,7 +176,7 @@ function* getMyPostsWorker() {
     console.error("404 выводит в консоль", response.problem);
   }
   else if (response.ok && response.data) {
-    yield put(setMyPosts(response.data.results)); 
+    yield put(setMyPosts(response.data.results));
   }
   else {
     console.error("Set My Posts error", response.problem);
@@ -241,7 +246,7 @@ function* getPostsWorker(action: PayloadAction<GetPostsPayload>) {
   const { offset, isOverwrite, ordering } = action.payload;
   const response: ApiResponse<PostsResponseData> = yield call(
     API.getPosts,
-    offset, 
+    offset,
     '',
     ordering
   );
@@ -267,17 +272,53 @@ function* addPostWorker(action: PayloadAction<AddPostDataPayload>) {
   const { data, callback } = action.payload
 
   const response: ApiResponse<undefined> = yield callCheckingAuth(
-      API.addPost,
-      data,
+    API.addPost,
+    data,
   )
   if (response.data && response.ok) {
-      callback();
+    callback();
 
   } else {
-      console.error('Add Post Error', response.problem);
+    console.error('Add Post Error', response.problem);
 
   }
 }
+
+// step 7 Lesson 52 edit and delete Post
+// в postSaga создаем наш воркер deletePostWorker для удаления поста
+// нам нужен api для deletePost => идем в api и создаем запрос deletePost
+function* deletePostWorker(action: PayloadAction<DeletePostPayload>) {
+  const { data, callback } = action.payload;
+  const response: ApiResponse<undefined> = yield callCheckingAuth(
+    API.deletePost,
+    data
+  );
+  if (response.ok) {
+    callback();
+  } else {
+    console.error("Delete Post error", response.problem);
+  }
+}
+
+// step 8 Lesson 52 edit and delete Post
+// работаем с кнопочкой edit
+// создаем экшен  editPost  в postSlice для редактирования поста и payload для него: EditPostPayload
+// в postSaga создаем наш воркер editPostWorker
+// нам нужен api для editPost => идем в api и создаем запрос editPost
+function* editPostWorker(action: PayloadAction<EditPostPayload>) {
+  const { data, callback } = action.payload;
+  const response: ApiResponse<undefined> = yield callCheckingAuth(
+    API.editPost,
+    data.postId,
+    data.newData
+  );
+  if (response.ok) {
+    callback();
+  } else {
+    console.error("Edit Post error", response.problem);
+  }
+}
+
 
 
 
@@ -301,6 +342,9 @@ function* addPostWorker(action: PayloadAction<AddPostDataPayload>) {
 // ---
 // step 6 Lesson 51 AddNewPost
 // привязываем воркер addPostWorker к вотчеру
+// ---
+// step 7 Lesson 52 edit and delete Post
+// привязываем воркер deletePost к вотчеру
 
 export default function* postsSagaWatcher() {
   yield all([
@@ -310,5 +354,7 @@ export default function* postsSagaWatcher() {
     takeLatest(getSearchedPosts, getSearchedPostsWorker),
     takeLatest(getPostsList, getPostsWorker),
     takeLatest(addNewPost, addPostWorker),
+    takeLatest(deletePost, deletePostWorker),
+    takeLatest(editPost, editPostWorker),
   ]);
 }

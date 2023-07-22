@@ -33,6 +33,10 @@ import Success from "./Success";
 // ---
 // step 3 Lesson 51 AddNewPost
 // указываем путь для AddPost и создаем новый путь в роутере
+// ---
+// step 1 Lesson 52 edit and delete Post
+// в роутер указываем путь для редактирование поста
+
 
 export enum RoutesList {
     Home = "/",
@@ -45,6 +49,7 @@ export enum RoutesList {
     SelectedPost = '/post/:id',
     Search = "/posts/:search",
     AddPost = '/blog/posts/',
+    EditPost = "/posts/:id/edit",
     Default = "*",
 }
 
@@ -90,6 +95,11 @@ export enum RoutesList {
 // ---
 // step 3 Lesson 51 AddNewPost
 // привязываем AddPost в роутере и создаем новый путь
+// ---
+// step 1 Lesson 52 edit and delete MyPost
+// привязываем EditPost  в роутере и создаем новый путь
+// редактировать может только залогиненный пользователь и только свой пост
+// => проверяем на isLoggedIn,  иначе навигируем домой
 
 const Router = () => {
 
@@ -126,6 +136,7 @@ const Router = () => {
                 <Route path={RoutesList.Search} element={<Search />} />
                 <Route path={RoutesList.AddPost} element={isLoggedIn ? <AddPost /> : <Navigate to={RoutesList.Home} />} />
                 {/* <Route path={RoutesList.AddPost} element={<AddPost />} /> */}
+                <Route path={RoutesList.EditPost} element={isLoggedIn ? <AddPost /> : <Navigate to={RoutesList.Home} />}/>
                 <Route path={RoutesList.Default} element={<Navigate to={RoutesList.Home} />} />
             </Route>
         </Routes>

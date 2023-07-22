@@ -37,7 +37,7 @@
 // а так как нам необходимо поместить в редакс и работа будет с action, то 
 // в postSlice необходима функция, которая ловит экшен и помещает в редакс (setPostsList)
 // ---
-//  step 7 46 (single post = selected post)
+//  step 7 Lesson 46 (single post = selected post)
 //  так как работаем с данными 
 // => необходимо создать экшен в postSlice(step 7)
 // --- 
@@ -51,6 +51,17 @@
 // step 2 HW11 (сортировка Title и Date по кнопке)
 // проверяем наш getPostWorker. 
 // обновляем в @types GetPostsPayload и добавляем ordering 
+// ---
+// step 5 Lesson 51 AddNewPost
+// в postSlise создаем экшен addNewPost для добавления поста
+// ---
+// step 7 Lesson 52 edit and delete Post
+// работаем с кнопочкой delete.
+// нам нужен экшен для удаления => postSlice создаем экшен deletePost и payload для него: DeletePostPayload
+// ---
+// step 8 Lesson 52 edit and delete Post
+// создаем экшен  editPost  в postSlice для редактирования поста
+// и payload для него: EditPostPayload
 
 
 
@@ -59,7 +70,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // было Card, на 43 уроке конфликт - замена на Post в @types
 // import { Card } from "src/@types";
 import { LikeStatus, Post, PostsList, SaveStatus } from "src/@types";
-import { AddPostDataPayload, GetPostsPayload, GetSearchedPostsPayload, SetPostsListPayload, SetSearchedPostsPayload } from "../@types";
+import { AddPostDataPayload, DeletePostPayload, EditPostPayload, GetPostsPayload, GetSearchedPostsPayload, SetPostsListPayload, SetSearchedPostsPayload } from "../@types";
 import { RootState } from "../store";
 
 // step 4 
@@ -296,7 +307,15 @@ const initialState: InitialState = {
 // типизируем наш payload в @types => AddPostDataPayload
 // для addNewPost будет formData и ее мы отправляем при запросе
 // => идем в addPost и пишем функцию onSubmit, чтобы все сохранилось и работало
-
+// ---
+// step 7 Lesson 52 edit and delete Post
+// работаем с кнопочкой delete. Пишем для нее функцию onDeletePost на удаление поста 
+// нам нужен экшен для удаления => postSlice создаем экшен deletePost и payload для него: DeletePostPayload
+// ---
+// step 8 Lesson 52 edit and delete Post
+// работаем с кнопочкой edit
+// создаем экшен  editPost  в postSlice для редактирования поста
+// и payload для него: EditPostPayload
 
 const postSlice = createSlice({
   name: "postReducer",
@@ -419,8 +438,8 @@ const postSlice = createSlice({
     // },
 
     getSearchedPosts: (_, __: PayloadAction<GetSearchedPostsPayload>) => { },
-    
-    setSearchedPosts: ( state,action: PayloadAction<SetSearchedPostsPayload>) => {
+
+    setSearchedPosts: (state, action: PayloadAction<SetSearchedPostsPayload>) => {
       const { total, postsList } = action.payload;
       state.totalSearchedCount = total;
       state.searchedPosts.push(...postsList);
@@ -435,6 +454,10 @@ const postSlice = createSlice({
     },
 
     addNewPost: (_, __: PayloadAction<AddPostDataPayload>) => { },
+
+    deletePost: (_, __: PayloadAction<DeletePostPayload>) => {},
+
+    editPost: (_, __: PayloadAction<EditPostPayload>) => {},
 
   }, // вот тут живут функции, которые ловят экшены по типу(т.е. по названию ф-и)
 });
@@ -458,6 +481,7 @@ const postSlice = createSlice({
 // экспортируем getPostsList и setPostsList
 // экспортируем getSinglePost и setSinglePost
 // экспортируем setPostsListLoading
+// экспортируем deletePost и editPost
 
 export const { setSelectedPostModalOpened, setSelectedPost,
   setSelectedImage, setLikeStatus, setSavedStatus,
@@ -467,7 +491,8 @@ export const { setSelectedPostModalOpened, setSelectedPost,
   getSearchedPosts, setSearchedPosts,
   setPostsListLoading,
   clearSearchedPosts,
-  addNewPost, } =
+  addNewPost, 
+  deletePost, editPost,} =
   postSlice.actions;
 // а вот тут живут сами экшены, которые рождаются библиотекой исходя
 // из названия ф-ии, которая их ловит
@@ -509,7 +534,7 @@ export const PostSelectors = {
   getSearchedPosts: (state: RootState) => state.postReducer.searchedPosts,
   getPostsListLoading: (state: RootState) => state.postReducer.isPostsListLoading,
   getTotalPostsCount: (state: RootState) => state.postReducer.totalCount,
-  getTotalSearchedPosts: (state: RootState) =>state.postReducer.totalSearchedCount,
+  getTotalSearchedPosts: (state: RootState) => state.postReducer.totalSearchedCount,
 };
 // вот отсюда мы достаем данные, которые заранее видоизменили снежками (экшенами)
 

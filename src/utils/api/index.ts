@@ -136,11 +136,45 @@ const getMyPosts = (token: string) => {
 // data у нас будет anyб так как будем прокидывать formData
 const addPost = (token: string, data: any) => {
   return API.post('/blog/posts/', data, {
-      headers: {
-          Authorization: `Bearer ${token}`,
-      }
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }
   })
 }
+
+
+// step 7 работаем с кнопочкой delete. 
+// Пишем для нее функцию onDeletePost на удаление поста 
+// в postSlice создаем экшен deletePost и payload для него: DeletePostPayload
+// в postSaga создаем наш воркер deletePostWorker
+// нам нужен api для deletePost => идем в api и создаем запрос deletePost
+const deletePost = (token: string, id: number) => {
+  return API.delete(
+    `/blog/posts/${id}/`,
+    {}, // в параментрах нет ничего
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
+// step 8 Lesson 52 edit and delete Post
+// работаем с кнопочкой edit
+// создаем экшен  editPost  в postSlice для редактирования поста и payload для него: EditPostPayload
+// в postSaga создаем наш воркер editPostWorker
+// нам нужен api для editPost => идем в api и создаем запрос editPost
+// запрос у нас будет put, а data - наши данные
+// data: any - так как у нас formData потом передается
+const editPost = (token: string, id: number, data: any) => {
+  return API.put(`/blog/posts/${id}/`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
 
 // не забываем экспортировать
 export default {
@@ -151,7 +185,9 @@ export default {
   getSinglePost,
   getUserInfo,
   verifyToken,
-  refreshToken, 
+  refreshToken,
   getMyPosts,
   addPost,
+  deletePost,
+  editPost,
 };
