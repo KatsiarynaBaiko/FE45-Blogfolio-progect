@@ -261,3 +261,32 @@ const AddPost = () => {
 }
 
 export default AddPost;
+
+
+
+// Lesson 52 edit and delete Post
+// редактирования и удаления поста нам нужен id (ключ наш) 
+// и доступ к полям, которые мы будем редактировать
+// id мы можем получить с помощью useParams (параметр из url)
+// редактировать может только залогиненный пользователь и только свой пост (то есть тот, кто его создал)
+
+// step 1 в роутер указываем путь для редактирование поста
+// step 2 достаем параметр id в AddPost
+// step 3 делаем запрос (через useEffect) и получаем id от SinglePost, если он есть
+// step 4  достаем наш singlePost через useSelector и прописываем еще один useEffect
+// в котором проверяем условие singlePost.author === userInfo.id (доступ к редактированию поста)
+// и если они равны, то заполняем полями из singlePost
+// step 5 на страничке SelectedPost (SinglePost) добавляем кнопочку Edit для редактирования постов и создаем функцию для редактирования постов onClickEdit
+ // step 6 так как у нас редактирование, то логично будет заблокировать кнопочку delete во время редактирования + пишем условие какую кнопку показать  Edit post или Add post
+// step 7 работаем с кнопочкой delete. 
+// Пишем для нее функцию onDeletePost на удаление поста 
+// в postSlice создаем экшен deletePost и payload для него: DeletePostPayload
+ // в postSaga создаем наш воркер deletePostWorker
+// нам нужен api для deletePost => идем в api и создаем запрос deletePost
+// step 8 работаем с кнопочкой edit
+// создаем экшен  editPost  в postSlice для редактирования поста и payload для него: EditPostPayload
+// в postSaga создаем наш воркер editPostWorker
+// нам нужен api для editPost => идем в api и создаем запрос editPost
+// step 9 идем в AddPost и в функцию onSubmit
+// создаем const action и передаем с помощью dispatch
+// и if (singlePost?.author) { formData.append("author"...}
