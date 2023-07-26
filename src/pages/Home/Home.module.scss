@@ -1,0 +1,38 @@
+@import "src/styles/colors";
+@import "src/styles/mixins";
+
+.pageTitle {
+    margin-bottom: 40px;
+}
+
+.darkContainer {
+    background-color: $secondary;
+}
+
+
+.sortButtonsContainer {
+    margin-bottom: 50px;
+    display: flex;
+    justify-content: start;
+    gap: 15px;
+
+
+
+    .sortButton {
+
+        padding: 8px 16px;
+        text-align: center;
+        border-radius: 10px;
+        font-size: 12px;
+
+        &:hover {
+            background-color: $primary-secondary;
+            color: $white;
+            cursor: pointer;
+        }
+    }
+}
+
+.activeButton {
+    background-color: $primary-secondary; 
+}

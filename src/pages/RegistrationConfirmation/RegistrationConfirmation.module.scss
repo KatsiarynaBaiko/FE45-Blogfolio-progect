@@ -1,0 +1,15 @@
+@import "src/styles/colors";
+@import "src/styles/mixins";
+
+.textRegistrationConfirmation {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: $secondary;
+}
+
+.darkTextRegistrationConfirmation {
+    color: $white;
+}
