@@ -45,13 +45,19 @@
 // тоже пишем сагу и action
 // action logoutUser в authSlice
 // нового воркера прописываем в authSaga
-
-
+// ---
+// step 3 Lesson 53 (reset password)
+// создаем новый экшен resetPassword для сброса пароля 
+// и payload к нему ResetPasswordPayload 
+// ---
+// step 13 Lesson 53 (reset password confirmation)
+// создаем новый экшен resetPasswordConfirm для восстановления пароля 
+// и payload к нему ResetPasswordConfirmationPayload
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { access } from "fs";
 import { ACCESS_TOKEN_KEY } from "src/utils/constants";
-import { ActivateUserPayload, SignInData, SignInUserPayload, SignUpUserPayload, UserInfoPayload } from "../@types";
+import { ActivateUserPayload, ResetPasswordConfirmationPayload, ResetPasswordPayload, SignInData, SignInUserPayload, SignUpUserPayload, UserInfoPayload } from "../@types";
 import { RootState } from "../store";
 
 
@@ -87,12 +93,18 @@ const authSlice = createSlice({
         },
 
         logoutUser: (_, __: PayloadAction<undefined>) => {},
+
+        resetPassword: (_, __: PayloadAction<ResetPasswordPayload>) => {},
+
+        resetPasswordConfirm: (_, __: PayloadAction<ResetPasswordConfirmationPayload>) => {},
+
+
     },
     // вот тут живут функции, которые ловят экшены по типу(т.е. по названию ф-и)
 });
 
 
-export const { sighUpUser, signInUser, setAccessToken, activateUser, getUserInfo, setUserInfo, logoutUser } = authSlice.actions;
+export const { sighUpUser, signInUser, setAccessToken, activateUser, getUserInfo, setUserInfo, logoutUser, resetPassword, resetPasswordConfirm, } = authSlice.actions;
 // а вот тут живут сами экшены, которые рождаются библиотекой исходя
 // из названия ф-ии, которая их ловит
 

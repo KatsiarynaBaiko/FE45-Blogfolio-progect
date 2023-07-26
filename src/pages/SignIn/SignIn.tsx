@@ -45,6 +45,14 @@ const SignIn = () => {
         dispatch(signInUser({ data: { email, password }, callback: () => navigate(RoutesList.Home) }))
     }
 
+    // step 7 Lesson 53 (reset password) 
+    // ResetPassword привязываем к кнопке SignIn
+    // создаем функцию onReset и навишируем на ResetPassword
+    // и передаем там, где forgotPassword
+    const onReset = () => {
+        navigate(RoutesList.ResetPassword)
+    }
+
     return (
         <FormPagesContainer
             title={'Sign In'}
@@ -61,7 +69,7 @@ const SignIn = () => {
             <Input title={'Email'} placeholder={'Your email'} onChange={setEmail} value={email} />
             <Input title={'Password'} placeholder={'Your password'} onChange={setPassword} value={password} />
 
-            <div className={classNames(styles.forgotPassword, { [styles.darkForgotPassword]: themeValue === Theme.Dark })}>Forgot password?</div>
+            <div className={classNames(styles.forgotPassword, { [styles.darkForgotPassword]: themeValue === Theme.Dark })} onClick={onReset}> {'Forgot password?'}</div>
 
         </FormPagesContainer>
     )

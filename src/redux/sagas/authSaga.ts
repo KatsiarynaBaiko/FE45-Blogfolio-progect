@@ -4,8 +4,8 @@
 
 import { PayloadAction } from "@reduxjs/toolkit";
 import { all, call, put, takeLatest } from "redux-saga/effects";
-import { ActivateUserPayload, SignInUserPayload, SignInUserResponseData, SignUpResponseData, SignUpUserPayload, UserInfoPayload } from "../@types";
-import { activateUser, getUserInfo, logoutUser, setAccessToken, setUserInfo, sighUpUser, signInUser } from "../reducers/authSlice";
+import { ActivateUserPayload, ResetPasswordConfirmationPayload, ResetPasswordPayload, SignInUserPayload, SignInUserResponseData, SignUpResponseData, SignUpUserPayload, UserInfoPayload } from "../@types";
+import { activateUser, getUserInfo, logoutUser, resetPassword, resetPasswordConfirm, setAccessToken, setUserInfo, sighUpUser, signInUser } from "../reducers/authSlice";
 import { ApiResponse } from "apisauce";
 import { callbackify } from "util";
 import API from "src/utils/api";
@@ -75,6 +75,12 @@ import callCheckingAuth from "./helpers/callCheckingAuth";
 // action logoutUser в authSlice
 // нового воркера прописываем в authSaga
 // применяем logoutUser в callCheckingAuth
+// ---
+// step 4 Lesson 53 (reset password)
+// создаем новый воркер  resetPasswordWorker для сброса пароля
+// ---
+// step 14 Lesson 53 (reset password confirmation)
+// создаем новый воркер  resetPasswordConfirmationWorker для восстановления пароля
 
 
 
@@ -205,7 +211,7 @@ function* getUserInfoWorker() {
     } else {
         console.error("Get User Info error", response?.problem);
     }
-} 
+}
 
 
 // step 4 Lesson 48 update access token (refresh and verify)
@@ -216,7 +222,34 @@ function* logoutWorker() {
     yield put(setAccessToken(""));
 }
 
+// step 4 Lesson 53 (reset password)
+// создаем новый воркер  resetPasswordWorker для сброса пароля
+function* resetPasswordWorker(action: PayloadAction<ResetPasswordPayload>) {
+    const { data, callback } = action.payload;
+    const response: ApiResponse<undefined> = yield call(
+        API.resetPassword,
+        data
+    );
+    if (response.ok) {
+        callback();
+    } else {
+        console.error("Reset Password error", response.problem);
+    }
+}
 
+// step 14 Lesson 53 (reset password confirmation)
+// создаем новый воркер  resetPasswordConfirmationWorker 
+// для восстановления пароля
+
+function* resetPasswordConfirmationWorker(action: PayloadAction<ResetPasswordConfirmationPayload>) {
+    const { data, callback } = action.payload;
+    const response: ApiResponse<undefined> = yield call(API.resetPasswordConfirmation, data);
+    if (response.ok) {
+        callback();
+    } else {
+        console.error("Reset Password Confirmation error", response.problem);
+    }
+}
 
 // step 2 
 // создаем watcher, который будет за всем следить и перераспределять
@@ -233,6 +266,8 @@ function* logoutWorker() {
 // ---
 // привязываем воркер activateUserWorker к вотчеру
 // привязываем воркер signInUserWorker к вотчеру
+// привязываем воркер resetPasswordWorker к вотчеру
+// привязываем воркер resetPasswordConfirmationWorker к вотчеру
 export default function* authSagaWatcher() {
     yield all([
         takeLatest(sighUpUser, sighUpUserWorker),
@@ -240,5 +275,7 @@ export default function* authSagaWatcher() {
         takeLatest(activateUser, activateUserWorker),
         takeLatest(getUserInfo, getUserInfoWorker),
         takeLatest(logoutUser, logoutWorker),
+        takeLatest(resetPassword, resetPasswordWorker),
+        takeLatest(resetPasswordConfirm, resetPasswordConfirmationWorker),
     ]);
 }

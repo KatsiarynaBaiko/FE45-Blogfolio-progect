@@ -9,7 +9,7 @@
 
 
 import { create } from "apisauce";
-import { ActivateUserData, SignInData, SignUpUserData } from "src/redux/@types";
+import { ActivateUserData, ResetPasswordConfirmationData, SignInData, SignUpUserData } from "src/redux/@types";
 import { PER_PAGE } from "../constants";
 
 // создаем API Инстанс — это виртуальная машина, которая запускается и работает в облаке
@@ -175,6 +175,19 @@ const editPost = (token: string, id: number, data: any) => {
   });
 };
 
+// step 2 Lesson 53 (reset password)
+// создаем api для сброса пароля
+const resetPassword = (email: string) => {
+  return API.post("/auth/users/reset_password/", { email });
+};
+
+// step 12 Lesson 53 (reset password confirmation)
+// создаем api запрос для восстановления пароля
+// в api передаем нашу data - и типизируем ее: ResetPasswordConfirmationData в @types
+const resetPasswordConfirmation = (data: ResetPasswordConfirmationData) => {
+  return API.post("/auth/users/reset_password_confirm/", data);
+};
+
 
 // не забываем экспортировать
 export default {
@@ -190,4 +203,6 @@ export default {
   addPost,
   deletePost,
   editPost,
+  resetPassword,
+  resetPasswordConfirmation,
 };

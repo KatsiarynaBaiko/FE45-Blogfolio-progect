@@ -25,6 +25,7 @@ type FormPagesContainerProps = {
     btnTitle: string;
     onSubmit: () => void;
     additionalInfo?: ReactElement;
+    isSubmitDisabled?: boolean;
 };
 
 // step 1
@@ -36,6 +37,10 @@ type FormPagesContainerProps = {
 // => <div className={styles.formContainer}></div>
 // children - пополняемость контейнера соответсвующими инпутами
 // Back to home - правильно называется "breadcrumbs"
+// ---
+// validation Lesson 53
+// создаем пропсу isSubmitDisabled в FormPagesContainer
+// и передаем ее в кнопочку
 
 const FormPagesContainer: FC<FormPagesContainerProps> = ({
     title,
@@ -43,6 +48,8 @@ const FormPagesContainer: FC<FormPagesContainerProps> = ({
     btnTitle,
     onSubmit,
     additionalInfo,
+    isSubmitDisabled,
+
 }) => {
 
     // HW4 Добавление темной темы 
@@ -54,7 +61,7 @@ const FormPagesContainer: FC<FormPagesContainerProps> = ({
 
     // return <div></div>
     return (
-        <div className={classNames(styles.container, {[styles.darkContainer]: themeValue === Theme.Dark})}>
+        <div className={classNames(styles.container, { [styles.darkContainer]: themeValue === Theme.Dark })}>
             <div className={styles.breadcrumbs}>Back to home</div>
             <Title title={title} />
             <div className={styles.formContainer}>
@@ -64,6 +71,7 @@ const FormPagesContainer: FC<FormPagesContainerProps> = ({
                     title={btnTitle}
                     onClick={onSubmit}
                     className={styles.button}
+                    disabled={isSubmitDisabled}
                 />
                 <div>{additionalInfo}</div>
             </div>

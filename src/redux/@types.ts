@@ -162,3 +162,24 @@ export type EditPostData = {
 };
 
 export type EditPostPayload = PayloadWithDataAndCallback<EditPostData>;
+
+// step 3 Lesson 53 (reset password)
+// создаем новый экшен resetPassword для сброса пароля 
+// и payload к нему ResetPasswordPayload 
+// string - так как email
+export type ResetPasswordPayload = PayloadWithDataAndCallback<string>;
+
+
+// step 12 Lesson 53 (reset password confirmation)
+// создаем api запрос для восстановления пароля
+// в api передаем нашу data - и типизируем ее: ResetPasswordConfirmationData
+export type ResetPasswordConfirmationData = {
+    uid: string,
+    token: string,
+    new_password: string
+}
+
+// step 13 Lesson 53 (reset password confirmation)
+// создаем новый экшен resetPasswordConfirm для восстановления пароля 
+// и payload к нему ResetPasswordConfirmationPayload
+export type ResetPasswordConfirmationPayload = PayloadWithDataAndCallback<ResetPasswordConfirmationData>;

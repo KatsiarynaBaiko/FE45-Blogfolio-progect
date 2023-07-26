@@ -6,6 +6,8 @@ import Home from "src/pages/Home";
 import { AuthSelectors, getUserInfo } from "src/redux/reducers/authSlice";
 import AddPost from "./AddPost";
 import RegistrationConfirmation from "./RegistrationConfirmation";
+import ResetPassword from "./ResetPassword";
+import ResetPasswordConfirmation from "./ResetPasswordConfirmation";
 import Search from "./Search";
 import SelectedPost from "./SelectedPost";
 import SignIn from "./SignIn";
@@ -36,6 +38,13 @@ import Success from "./Success";
 // ---
 // step 1 Lesson 52 edit and delete Post
 // в роутер указываем путь для редактирование поста
+// ---
+// step 6 Lesson 53 (reset password) 
+// привязываем ResetPassword  к роутеру
+// ---
+// step 8 Lesson 53 (reset password confirmation) 
+// Проверяем как работает сброс пароля. 
+// В роутер создаем ResetPasswordConfirm для его восстановления
 
 
 export enum RoutesList {
@@ -50,6 +59,10 @@ export enum RoutesList {
     Search = "/posts/:search",
     AddPost = '/blog/posts/',
     EditPost = "/posts/:id/edit",
+    ResetPassword = "/password/reset",
+    // ссылка из письма на сброс пароля
+    // ResetPasswordConfirm = /password/reset/confirm/Njc3Ng/brxwg1-02e48459830d66694a2a1dd71f3af4e1
+    ResetPasswordConfirm = "/password/reset/confirm/:uid/:token",
     Default = "*",
 }
 
@@ -100,6 +113,11 @@ export enum RoutesList {
 // привязываем EditPost  в роутере и создаем новый путь
 // редактировать может только залогиненный пользователь и только свой пост
 // => проверяем на isLoggedIn,  иначе навигируем домой
+// ---
+// step 6 Lesson 53 (reset password) 
+// привязываем ResetPassword  к роутеру
+// step 10 (reset password confirmation)
+// привязываем ResetPasswordConfirmation к роутеру
 
 const Router = () => {
 
@@ -136,8 +154,10 @@ const Router = () => {
                 <Route path={RoutesList.Search} element={<Search />} />
                 <Route path={RoutesList.AddPost} element={isLoggedIn ? <AddPost /> : <Navigate to={RoutesList.Home} />} />
                 {/* <Route path={RoutesList.AddPost} element={<AddPost />} /> */}
-                <Route path={RoutesList.EditPost} element={isLoggedIn ? <AddPost /> : <Navigate to={RoutesList.Home} />}/>
+                <Route path={RoutesList.EditPost} element={isLoggedIn ? <AddPost /> : <Navigate to={RoutesList.Home} />} />
+                <Route path={RoutesList.ResetPassword} element={<ResetPassword />} />
                 <Route path={RoutesList.Default} element={<Navigate to={RoutesList.Home} />} />
+                <Route path={RoutesList.ResetPasswordConfirm} element={<ResetPasswordConfirmation />} />
             </Route>
         </Routes>
     </BrowserRouter>

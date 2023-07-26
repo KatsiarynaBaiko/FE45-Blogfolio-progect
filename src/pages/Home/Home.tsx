@@ -404,6 +404,9 @@ const Home = () => {
     // step 11 Lesson 51 AddNewPost+Fix My post
     // на страничке Home добавдяем работу пагинации
     // => {activeTab === TabsTypes.All && и вставляем наши кнопочки}
+    // ---
+    // стилизуем кнопочки, чтобы было интуитивно понятно, какая из них тыкнута
+    // можно также через условный рендеринг
 
     return (
         <div className={classNames(styles.container, { [styles.darkContainer]: themeValue === Theme.Dark })}>
@@ -421,17 +424,29 @@ const Home = () => {
                 <div className={styles.sortButtonsContainer}>
                     <Button title={"Date Sort"}
                         onClick={onSortButtonClick(Order.Date)}
-                        type={ButtonTypes.Primary}
-                        className={classNames(styles.sortButton, {
-                            [styles.activeButton]: ordering === Order.Date,
-                        })}
+                        // type={ButtonTypes.Primary}
+                        // className={classNames(styles.sortButton, {
+                        //     [styles.activeButton]: ordering === Order.Date,
+                        // })}
+                        className={styles.sortButton}
+                        type={
+                            ordering === Order.Date
+                                ? ButtonTypes.Primary
+                                : ButtonTypes.Secondary
+                        }
                     />
                     <Button title={"Title Sort"}
                         onClick={onSortButtonClick(Order.Title)}
-                        type={ButtonTypes.Primary}
-                        className={classNames(styles.sortButton, {
-                            [styles.activeButton]: ordering === Order.Title,
-                        })}
+                        // type={ButtonTypes.Primary}
+                        // className={classNames(styles.sortButton, {
+                        //     [styles.activeButton]: ordering === Order.Title,
+                        // })}
+                        className={styles.sortButton}
+                        type={
+                            ordering === Order.Title
+                                ? ButtonTypes.Primary
+                                : ButtonTypes.Secondary
+                        }
                     />
                 </div>}
 
